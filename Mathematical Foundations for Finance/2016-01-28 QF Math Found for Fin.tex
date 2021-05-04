@@ -1,0 +1,1268 @@
+\documentclass[a4paper,landscape,8pt,fleqn]{scrartcl}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, landscape, margin=1.1cm]{geometry}
+\usepackage{latexsym}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{empheq}			% emphasize (box) equations
+\usepackage{float}				% add H as an option for floats
+\usepackage{parskip}			% add no indentation to new paragraphs
+\usepackage{enumitem}		% description lists
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{framed}
+
+\pagestyle{plain}
+\columnsep 30pt
+\columnseprule .4pt
+
+\setlength{\mathindent}{0.1cm}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}		% required for boxing several lines of equations at once
+
+\renewcommand*{\familydefault}{\sfdefault}		% set font to default sans-serif
+
+\renewcommand{\labelitemi}{\tiny$\blacksquare$}		% change symbol of itemized lists
+\setlist[itemize]{leftmargin=0.4cm}								% reduce indentation of itemized lists
+\renewcommand{\labelenumi}{(\roman{enumi})}			% change counter of enumerated lists
+\setlist[enumerate]{leftmargin=0.4cm}							% reduce indentation of enumerated lists
+
+\renewcommand{\arraystretch}{1}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+%\allowdisplaybreaks	% equations can be split on two pages/columns
+
+\graphicspath{ {images/} }
+
+\pagestyle{fancy}
+\fancyhead{}
+\setlength{\headheight}{0pt}
+\setlength{\footheight}{14pt}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\lfoot{Fabian MARBACH}
+\cfoot{p \thepage\ / \pageref{LastPage}}
+\rfoot{Mathematical Foundations for Finance}
+
+\usepackage{parskip}	% add no indentation to new paragraphs
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth1.5pt
+width0.25\columnwidth\vspace*{1.2em}\Large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth0.75pt
+width0.25\columnwidth\vspace*{1.2em}\large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\vspace*{1.2em}\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\Mx}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\dd}[2]{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand{\DD}[2]{\frac{\text{D}#1}{\text{D}#2}}
+\newcommand{\deidei}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\Lbrace}[1]{\left\{\begin{array}{ll}#1\end{array}\right.} % left brace with text
+
+% Declare mathematical operators
+\DeclareMathOperator{\erf}{erf}					% error function
+\DeclareMathOperator{\Var}{Var}				% variance
+\DeclareMathOperator{\Varn}{Varn}			% variation
+\DeclareMathOperator{\QV}{QV}				% quadratic variation
+\DeclareMathOperator{\Cov}{Cov}				% covariance
+\DeclareMathOperator{\Ber}{Ber}				% Bernoulli distribution
+\DeclareMathOperator{\Bin}{Bin}				% Binomial distribution
+\DeclareMathOperator{\Geom}{Geom}		% Geometric distribution
+\DeclareMathOperator{\Poi}{Poi}					% Poisson distribution
+\DeclareMathOperator{\Gammaa}{Gamma}	% Gamma distribution
+\DeclareMathOperator{\Cau}{Cau}				% Cauchy distribution
+\DeclareMathOperator{\Adj}{Adj}				% Adjoint
+\DeclareMathOperator{\Bias}{Bias}				% Bias of an estimator
+\DeclareMathOperator{\rank}{rank}				% Bias of an estimator
+
+
+\begin{document}
+\part*{Summary: Mathematical Foundations for Finance}
+Fabian MARBACH, Autumn Semester 2015/16
+\begin{multicols*}{3}
+%\tableofcontents
+%\end{multicols}
+%{\vspace*{0.3cm}}
+%{\hrule depth 0.2pt}
+%{\vspace*{0.3cm}}
+%\begin{multicols}{2}
+\raggedcolumns
+\newpage
+
+\section{Financial Markets in Discrete Time}
+
+\subsection{Basic setting}
+
+\paragraph{Basic setting of the market}
+
+\begin{itemize}
+\item \emph{Probability space:} $(\Omega, \mathcal{F}, \mathbb{P})$
+\item Finite discrete time horizon: $k = 0,1, \ldots, T$
+\item Flow of information over time: \emph{filtration} $\mathbb{F} = (\mathcal{F}_k)_{k=0,1, \ldots,T}.$ \\
+This is a family of $\sigma$-fields $\mathcal{F}_k \subseteq \mathcal{F}$ which is increasing.
+\item An ($\mathbb{R}^d$-valued) \emph{stochastic process} in discrete time: $X = (X_k)_{k=0,1, \ldots, T}$ of ($\mathbb{R}^d$-valued) RVs which are all defined on the same probability space. \\
+This describes the random evolution over time of $d$ quantities.
+\item A stochastic process is called \emph{adapted} (w.r.t. $\mathbb{F}$) if each $X_k$ is $\mathcal{F}_k$-measurable, i.e. observable at time $k$.
+\item A stochastic process is called \emph{predictable} (w.r.t. $\mathbb{F}$) if each $X_k$ is even $\mathcal{F}_{k-1}$-measurable.
+\end{itemize}
+
+\paragraph{Frictionless financial market}
+
+\begin{itemize}
+\item no transaction cost
+\item short-selling allowed
+\item investors are small, i.e. their trading does not affect stock prices
+\end{itemize}
+
+\subsection{Basic processes}
+
+\paragraph{Trading strategy $\varphi$}
+
+\begin{itemize}
+\item A trading stragey is an $\mathbb{R}^d$-valued stochastic process $\varphi = (\varphi^0, \vartheta)$.
+\item $\varphi^0 = (\varphi_k^0)_{k=0,1, \ldots, T}$ denotes the riskless asset. \\
+$\varphi^0$ is $\mathbb{R}$-valued and adapted.
+\item $\vartheta = (\vartheta_k)_{k=0,1, \ldots, T}$ denotes the $d$ risky assets. \\
+$\vartheta$ is $\mathbb{R}^d$-valued and predictable.
+\item Initial value: $\varphi = (\varphi^0,\vartheta_0 \equiv 0)$ \\
+(since there is no trading before time 0, i.e. investors start out without any shares)
+\item A trading strategy describes a dynamically evolving portfolio in the $d+1$ basic assets available for trade.
+\end{itemize}
+
+\paragraph{Value process $V$}
+
+\begin{itemize}
+\item $V(\varphi) = (V_k(\varphi))_{k=0,1, \ldots, T}$ denotes the discounted value process of the strategy $\varphi$ and is given by
+\begin{align*}
+V_k(\varphi) &:= \underbrace{\varphi_k^0 S_k^0}_{\text{bank account}} + \underbrace{\vartheta_k \cdot S_k}_{\text{portfolio}} = \varphi_k^0 + \sum_{i=1}^d \vartheta_k^i S_k^i
+\end{align*}
+\item $V$ is $\mathbb{R}$-valued and adapted.
+\item Initial value: $V_0(\varphi) = \varphi_0^0 = C_0(\varphi)$.
+\end{itemize}
+
+\paragraph{Cost process $C$}
+
+\begin{itemize}
+\item $(C_k(\vartheta))_{k=0,1,\ldots, T}$ denotes the discounted cost process associated to $\varphi$:
+\begin{align*}
+C_k(\varphi)& := V_k(\varphi) - G_k(\varphi)
+\end{align*}
+\item By construction, $C_k(\varphi)$ describes the cumulative (total) costs for the strategy $\varphi$ on the time interval $[0,k]$.
+\item Incremental cost:
+\begin{align*}
+\Delta C_{k+1}(\varphi) :&= \underbrace{\varphi_{k+1}^0 - \varphi_k^0}_\text{bank account} + \underbrace{\sum_{i=1}^d \left( \vartheta^i_{k+1} - \vartheta^i_k \right) S^i_k}_\text{portfolio}
+\end{align*}
+\end{itemize}
+
+\paragraph{Gains process $G$}
+
+\begin{itemize}
+\item $(G_k(\vartheta))_{k=0,1,\ldots, T}$ denotes the discounted gains process associated to $\vartheta$:
+\begin{align*}
+G_k(\vartheta) :&= \sum_{j=1}^k \vartheta_j \cdot \Delta S_j
+\end{align*}
+\item $G$ is $\mathbb{R}$-valued and adapted.
+\end{itemize}
+
+\paragraph{Self-financing strategy}
+
+\begin{itemize}
+\item A trading strategy $\varphi = (\varphi^0, \vartheta)$ is called self-financing if its cost process $C(\varphi)$ is constant over time.
+\item A self-financing strategy $\varphi = (\varphi^0, \vartheta)$ is uniquely determined by its initial wealth $V_0$ and its risky asset component $\vartheta$. \\
+In particular, any pair $(V_0, \vartheta)$ specifies in a unique way a self-financing strategy. \\
+If $\varphi = (\varphi^0, \vartheta)$ is self-financing, then $(\varphi_k^0)_{k=1,\ldots, T}$ is automatically predictable.
+\item It then holds for the corresponding (incremental) \emph{cost process:}
+\begin{align*}
+\Delta C_{k+1}(\varphi) &= \varphi_{k+1}^0 - \varphi_k^0 + (\vartheta_{k+1} - \vartheta_k) \cdot S_k = 0 \\
+C(\varphi) &= C_0(\varphi) = V_0(\varphi) = \varphi_0^0
+\end{align*}
+\item It then holds for the corresponding \emph{value process:}
+\begin{align*}
+V_k(\varphi) &= V_0(\varphi) + G_k(\vartheta) = \varphi_0^0 + G_k(\vartheta) \\
+&= \varphi_0^0 + \sum_{j=1}^k \vartheta_j \cdot \Delta S_j
+\end{align*}
+\end{itemize}
+Remarks:
+\begin{itemize}
+\item The notion of a strategy being self-financing is a kind of economic budget constraint.
+\item The notion of self-financing is numeraire irrelevant, i.e. it does not depend on the units in which the calculations are done.
+\end{itemize}
+
+\paragraph{Admissibility}
+
+\begin{itemize}
+\item For $a \in \mathbb{R}, a \geq 0$, a trading strategy $\varphi$ is called \emph{a-admissible} if its value process $V(\varphi)$ is uniformly bounded from below by $-a$, i.e.
+\begin{align*}
+V_k(\varphi) \geq -a, \quad \mathbb{P}\text{-a.s.}, \quad \forall k \geq 0
+\end{align*}
+\item A trading strategy is called \emph{admissible} if it is a-admissible for some $a \geq 0$.
+\end{itemize}
+Remark:
+\begin{itemize}
+\item An admissible strategy can be interpreted as a strategy having some credit line which imposes a lower bound on the associated value process. So one may make debts, but only within clearly defined limits.
+\end{itemize}
+
+\subsection{Properties of the market}
+
+\paragraph{Characterisation of financial markets via EMMs}
+
+The description of a financial market model via EMMs can be summarized as follows:
+\begin{itemize}
+\item \emph{Existence} of an EMM $\iff$ the market is \emph{arbitrage-free} \\
+i.e. $\mathbb{P}_e(S) \neq \emptyset$ by the 1\textsuperscript{st} FTAP
+\item \emph{Uniqueness} of the EMM $\iff$ the market is \emph{complete} \\
+i.e. $\#(\mathbb{P}_e(S)) = 1$ by the 2\textsuperscript{nd} FTAP
+\end{itemize}
+
+\subsubsection{Arbitrage}
+
+\paragraph{1\textsuperscript{st} Fundamental Theorem of Asset Pricing (FTAP)}
+
+\begin{itemize}
+\item Consider a financial market model in finite discrete time.
+\item Then $S$ is arbitrage-free iff there exists an EMM for $S$, i.e.
+\begin{empheq}[box=\widefbox]{align*}
+\text{(NA)} \iff \mathbb{P}_e(S) \neq \emptyset
+\end{empheq}
+\item In other words: If there exists a probability measure $\mathbb{Q} \approx \mathbb{P}$ on $\mathcal{F}_T$ s.t. $S$ is a $\mathbb{Q}$-martingale, then $S$ is arbitrage-free.
+\end{itemize}
+
+\paragraph{Arbitrage opportunity}
+
+\begin{itemize}
+\item An arbitrage opportunity is an admissible self-financing strategy $\varphi = (0,\vartheta)$ with zero initial wealth, with $V_t(\varphi) \geq 0$, $\mathbb{P}$-a.s. and with $\mathbb{P}[V_T(\varphi) > 0] > 0$.
+\item The financial market $(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{P}, S^0, S)$ or shortly $S$ is called \emph{arbitrage-free} if there exist no arbitrage opportunities.
+\item The following statements are equivalent:
+\begin{enumerate}
+\item $S$ is arbitrage-free.
+\item There exists no self-financing strategy $\varphi = (0, \vartheta)$ with zero initial wealth and satisfying $V_T(\varphi) \geq 0$, $\mathbb{P}$-a.s. and $\mathbb{P}[V_T(\varphi > 0] > 0$. In other words, $S$ satisfies (NA').
+\item For every (not necessarily admissible) self-financing strategy $\varphi$ with $V_0(\varphi) = 0$, $\mathbb{P}$-a.s. and $V_T(\varphi) \geq 0$, $\mathbb{P}$-a.s., we have $V_T(\varphi) = 0$, $\mathbb{P}$-a.s.
+\item For the space
+\begin{align*}
+\mathcal{G}' := \lbrace G_T(\varphi) | \nu \text{ is } \mathbb{R}^d \text{-valued and predictable} \rbrace
+\end{align*}
+of all final wealths that one can generate from zero initial wealth through self-financing trading, we have
+\begin{align*}
+\mathcal{G}' \cap \mathcal{L}_+^0(\mathcal{F}_T) = \lbrace 0 \rbrace
+\end{align*}
+where $\mathcal{L}_+^0(\mathcal{F}_T)$ denotes the space of all nonnegative $\mathcal{F}_T$-measurable RVs.
+\end{enumerate}
+\item \textit{Interpretation:} Absence of arbitrage is a natural economic/financial requirement for a reasonable model of a financial market, since there cannot exist ''money pumps'' (at least not for long).
+\end{itemize}
+
+\subsubsection{Completeness}
+
+\paragraph{2\textsuperscript{nd} Fundamental Theorem of Asset Pricing (FTAP)}
+
+\begin{itemize}
+\item Consider a financial market model in finite discrete time and assume that $S$ is arbitrage-free, $\mathcal{F}_0$ is trivial and $\mathcal{F}_T = \mathcal{F}$.
+\item Then $S$ is complete iff there is a unique EMM for $S$, i.e.
+\begin{empheq}[box=\widefbox]{align*}
+\text{(NA)} + \text{completeness} \iff \#(\mathbb{P}_e(S)) = 1
+\end{empheq}
+\end{itemize}
+
+\paragraph{Completeness of the market}
+
+\begin{itemize}
+\item A financial market model (in finite discrete time) is called complete if \textit{every payoff $H \in \mathcal{L}_+^0(\mathcal{F}_T)$ is attainable.}
+\item Otherwise it is called \textit{incomplete}.
+\end{itemize}
+Remark:
+\begin{itemize}
+\item If a financial market in discrete time is complete, then $\mathcal{F}_T$ is finite (i.e. completeness is quite restrictive).
+\end{itemize}
+
+\subsection{Pricing of contingent claims $H$}
+
+\paragraph{Attainability}
+
+\begin{itemize}
+\item A payoff $H \in \mathcal{L}_+^0(\mathcal{F}_T)$ is called attainable if there exists an admissible self-financing strategy $\varphi = (V_0, \vartheta)$ with $V_T(\varphi) = H$ $\mathbb{P}$-a.s.
+\item The stratety $\varphi$ is then said to \emph{replicate} $H$ and is called a \emph{replicating strategy} for $H$.
+\end{itemize}
+
+\paragraph{Valuation in complete markets (martingale pricing approach)}
+
+\begin{itemize}
+\item Consider a financial market in finite discrete time and suppose that $S$ is arbitrage-free and complete and $\mathcal{F}_0$ is trivial.
+\item Then for every payoff $H \in \mathcal{L}_+^0(\mathcal{F}_T)$, there is a unique price process $V^H = (V_k^H)_{k=0,1,\ldots,T}$ which admits no arbitrage.
+\item $V^H$ is given by:
+\begin{empheq}[box=\widefbox]{align*}
+V_k^H &= \mathbb{E}_\mathbb{Q} \left[ H | \mathcal{F}_k \right] = V_k(V_0,\vartheta)
+\end{empheq}
+for $k=0,1,\ldots,T$, for any EMM $\mathbb{Q}$ for $S$ and for any replicating strategy $\varphi = (V_0,\vartheta)$ for $H$.
+\end{itemize}
+
+\paragraph{Characterization of attainable payoffs}
+
+\begin{itemize}
+\item Consider a financial market in finite discrete time and suppose that $S$ is arbitrage-free and $\mathcal{F}_0$ is trivial.
+\item For any payoff $H \in \mathcal{L}_+^0(\mathcal{F}_T)$, the following are equivalent:
+\begin{enumerate}
+\item $H$ is \textit{attainable}.
+\item $\sup\limits_{\mathbb{Q} \in \mathbb{P}_e(S)} \mathbb{E}_\mathbb{Q}[H] < \infty$ is attained in some $\mathbb{Q}^\ast \in \mathbb{P}_e(S)$, i.e. the supremum is finite and a maximum. \\
+In other words, we have $\sup\limits_{\mathbb{Q} \in \mathbb{P}_e(S)} \mathbb{E}_\mathbb{Q}[H] = \mathbb{E}_{\mathbb{Q}^\ast}[H] < \infty$ for some $\mathbb{Q}^\ast \in \mathbb{P}_e(S)$.
+\item The mapping $\mathbb{P}_e(S) \rightarrow \mathbb{R}$, $\mathbb{Q} \mapsto \mathbb{E}_\mathbb{Q}[H]$ is constant, i.e. $H$ has the same and finite expectation under all EMMs $\mathbb{Q}$ for $S$.
+\end{enumerate}
+\item Remark: Note that not all of these relationships necessarily hold for financial markets in infinite discrete time or continuous time.
+\end{itemize}
+
+\paragraph{Approach to valuing and hedging payoffs}
+
+For a given payoff $H$ in a financial market in finite discrete time (with $\mathcal{F}_0$ trivial):
+
+\begin{enumerate}
+\item Check if $S$ is arbitrage-free by finding at least one EMM $\mathbb{Q}$ for $S$.
+\item Find all EMMs $\mathbb{Q}$ for $S$.
+\item Compute $\mathbb{E}_\mathbb{Q}[H]$ for all EMMs $\mathbb{Q}$ for $S$ and determine the supremum of $\mathbb{E}_\mathbb{Q}[H]$ over $\mathbb{Q}$.
+\item If the supremum is finite and a maximum, i.e. attained in some $\mathbb{Q}^\ast \in \mathbb{P}_e(S)$, then $H$ is attainble and its price process can be computed as $V_k^H = \mathbb{E}_\mathbb{Q}[H | \mathcal{F}_k]$, for any $\mathbb{Q} \in \mathbb{P}_(S)$. \\
+If the supremum is not attained (or, equivalently for finite discrete time, there is a pair of EMMs $\mathbb{Q}_1, \mathbb{Q}_2$ with $\mathbb{E}_{\mathbb{Q}_1}[H] \neq \mathbb{E}_{\mathbb{Q}_2}[H]$), then $H$ is not attainable.
+\end{enumerate}
+
+\paragraph{Invariance of the risk-neutral pricing method under a change of numéraire}
+
+\begin{itemize}
+\item The risk-neutral pricing method is invariant under a change of numéraire, i.e. all assets can be priced under a risk-neutral method independent of the chosen asset used for discounting.
+\item Denote with $Q^{\ast \ast}$ the EMM for $\hat S^0 := \frac{\tilde S^0}{\tilde S^1}$. \\
+Denote with $Q^\ast$ the EMM for $S^1 = \frac{\tilde S^1}{\tilde S^0}$.
+\item Then it holds for a financial market $(\tilde S^0, \tilde S^1)$ and an undiscounted payoff $\tilde H \in L^0_+(\mathcal{F}_T)$ that:
+\begin{align*}
+\tilde S^0_k \mathbb{E}_{\mathbb{Q}^\ast} \left[ \left. \frac{\tilde H}{\tilde S^0_T} \right\vert \mathcal{F}_k \right]
+&= \tilde S^1_k \mathbb{E}_{\mathbb{Q}^{\ast \ast}} \left[ \left. \frac{\tilde H}{\tilde S^1_T} \right\vert \mathcal{F}_k \right]
+\end{align*}
+\end{itemize}
+
+\paragraph{EMMs in submarkets}
+
+\begin{itemize}
+\item If a market $(S^0, S^1, \ldots, S^k)$ is (NA), i.e. there exists an EMM $\mathbb{Q}$, then this EMM $\mathbb{Q}$ is also an EMM for all submarkets. \\
+(e.g. for $(S^k, S^i), k \neq i$, for $(S^k, S^i, S^j), k \neq i \neq j$ etc.)
+\item If there exists a EMM $\mathbb{Q}^j$ for a submarket $(S^0, S^j)$ which is not also an EMM for another submarket $(S^0, S^k)$, $j \neq k$, then the whole market $(S^0, S^1, \ldots, S^k)$ is not (NA), i.e. it admits arbitrage.
+\end{itemize}
+
+\subsection{Multiplicative model}
+
+\begin{itemize}
+\item Suppose that we start with the RVs $r_1, \ldots, r_T$ and $Y_1, \ldots, Y_T$.
+\item Define the \emph{bank account/riskless asset} by:
+\begin{align*}
+\tilde S_k^0 := \prod_{j=1}^k (1+r_j), \qquad \frac{\tilde S_k^0}{\tilde S_{k-1}^0} = 1 + r_k, \qquad \tilde S_0^0 = 1
+\end{align*}
+Remarks:
+\begin{itemize}
+\item $\tilde S_k^0$ is $\mathcal{F}_{k-1}$-measurable (i.e. predictable).
+\item $r_k$ denotes the rate for $(k-1,k]$.
+\end{itemize}
+\item Define the \emph{stock/risky asset} by:
+\begin{align*}
+\tilde S_k^1 := S_0^1 \prod_{j=1}^k Y_j, \qquad \frac{\tilde S_k^1}{\tilde S_{k-1}^1} = Y_k, \qquad \tilde S_0^1 = \text{const.}, \quad \tilde S_0^1 \in \mathbb{R}
+\end{align*}
+Remarks:
+\begin{itemize}
+\item $\tilde S_k^1$ is $\mathcal{F}_k$-measurable (i.e. adapted).
+\item $Y_k$ denotes the growth factor for $(k-1,k]$.
+\item The rate of return $R_k$ is given by $Y_k = 1 + R_k$.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Cox-Ross-Rubinstein (CRR) binomial model}
+
+\paragraph{Assumptions}
+\begin{itemize}
+\item \textit{Bank account/riskless asset:} \\
+Suppose all the $r_k \in \mathbb{R}$ are constant with value $r > -1$. \\
+This means that we have the same nonrandom interest rate over each period. \\
+Then the bank account evolves as $\tilde S_k^0$ for $k=0,1, \ldots, T$.
+\item \textit{Stock/risky asset:} \\
+Suppose that $Y_1, \ldots Y_T \in \mathbb{R}$ are independent and only take two values, $1+u$ with probability $p$, and $1+d$ with probability $1-p$ (i.e. all $Y_k$ are i.i.d.). \\
+Then the stock prices at each step moves either up (by a factor $1+u$) or down (by a factor $1+d$).
+\end{itemize}
+
+\paragraph{Martingale property}
+
+The discounted stock price $\frac{\tilde S^1}{\tilde S^0}$ is a $\mathbb{P}$-martingale iff $r = p u + (1-p) d$.
+
+\paragraph{EMM}
+
+\begin{itemize}
+\item In the binomial model, there exists a probability measure $\mathbb{Q} \approx \mathbb{P}$ s.t. $\frac{\tilde S^1}{\tilde S^0}$ is a $\mathbb{Q}$-martingale iff $u > r > d$.
+\item In that case, $\mathbb{Q}$ is unique (on $\mathcal{F}_T$) and characterised by the property that $Y_1, \ldots, Y_T$ are i.i.d. under $\mathbb{Q}$ with parameter
+\begin{align*}
+q^\ast &= \mathbb{Q}[Y_k = 1+u] = \frac{r-d}{u-d} & (\nearrow \text{up}) \\
+1-q^\ast &= 1 - \mathbb{Q}[Y_k = 1+d] = \frac{u-r}{u-d} & (\searrow \text{down})
+\end{align*}
+\end{itemize}
+
+\paragraph{Arbitrage and completeness}
+
+The following statements are equivalent:
+\begin{enumerate}
+\item $u>r>d$
+\item $\exists$ a unique EMM $\mathbb{Q}^\ast$ for $\frac{\tilde S^1}{\tilde S^0}$ (on $\mathcal{F}_T$)
+\item The market $S$ is (NA) and complete.
+\end{enumerate}
+
+\paragraph{Put-Call parity}
+
+\begin{itemize}
+\item Assuming $T=1$, it holds that:
+\begin{align*}
+V_0^{C(K)} - V_0^{P(K)} = S^1_0 - \frac{K}{1+r}
+\end{align*}
+\end{itemize}
+
+\paragraph{Pricing binomial contingent claims $H$}
+
+\begin{itemize}
+\item Assume time horizon $T=1$, strike $K>0$, and a payoff function $H(x,K): \mathbb{R}_+ \to \mathbb{R}_+$ of a European style contingent claim with strike $K$.
+\item $H$ may be a European call function $C(x,K)=(x-K)^+$ \\
+or a European put function $P(x,K)=(K-x)^+$.
+\item Then $H$ can be replicated using a self-financing strategy $\varphi^{H(K)} = (V_0^{H(K)},\vartheta^{H(K)})$ s.t.
+\begin{align*}
+V_1(\varphi^{H(K)} &= \frac{H(\tilde H_1^1,K)}{1+r}, \qquad \mathbb{P}-a.s.
+\end{align*}
+and $\varphi^{H(K)}$ is given by
+\begin{align*}
+V_0^{H(K)} &= \frac{r-d}{u-d} \frac{H(S_0^1(1+u),K)}{1+r} + \frac{u-r}{u-d} \frac{H(S_0^1(1+d),K)}{1+r} \\
+\vartheta_1^{H(K)} &= \frac{H(1+u,K/S_0^1)-H(1+d,K/S_0^1)}{u-d}
+\end{align*}
+\item Note that this can also be expressed via the martingale pricing approach:
+\begin{align*}
+V_0^{H(K)} &= \mathbb{E}_\mathbb{Q} \left[ \frac{H(\tilde S_1^1,K)}{1+r} \right]
+\end{align*}
+where
+\begin{align*}
+\mathbb{Q}\left[ \tilde S_1^1=S_1^0(1+u) \right] &= q = \frac{r-d}{u-d} \\
+\mathbb{Q}\left[ \tilde S_1^1=S_1^0(1+d) \right] &= 1-q = \frac{u-r}{u-d}
+\end{align*}
+\end{itemize}
+
+\paragraph{Binomial call pricing formula}
+
+\begin{align*}
+\tilde V_k^{\tilde H} &= \tilde S_k^1 \mathbb{Q}^{\ast \ast} [W_{k,T} > x] - \tilde K \frac{\tilde S_k^0}{\tilde S_T^0} \mathbb{Q}^\ast [W_{k,T} > x] \\
+x &= \frac{\log \frac{\tilde K}{\tilde S_k^1} - (T-k) \log(1+d)}{\log \frac{1+u}{1+d}}
+\end{align*}
+Remark:
+\begin{itemize}
+\item This is the discrete analogue of the Black-Scholes formula.
+\end{itemize}
+
+\subsubsection{Multinomial model}
+
+\paragraph{EMM}
+
+\begin{itemize}
+\item IOT construct an EMM for $S^1$, it needs to hold that:
+\begin{align*}
+\mathbb{E}_\mathbb{Q}[S_1^1] &= S_0^1 \\
+\iff \mathbb{E}_\mathbb{Q}[Y_1] &= 1+r \quad \iff \quad \sum_{k=1}^m q_k (1+y_k) = 1+r
+\end{align*}
+with the further conditions:
+\begin{align*}
+\sum_{k=1}^m q_i &= 1, \qquad q_1,\ldots, q_m \in (0,1)
+\end{align*}
+\end{itemize}
+
+\paragraph{Arbitrage condition}
+
+The following statements are equivalent:
+\begin{enumerate}
+\item $y_1 < r < y_m$
+\item $\exists$ an EMM $\mathbb{Q} \approx \mathbb{P}$ s.t. $\frac{\tilde S^1}{\tilde S^0}$ is a $\mathbb{Q}$-martingale.
+\item The market $S$ is (NA).
+\end{enumerate}
+
+\paragraph{Completeness}
+
+The multinomial model is
+\begin{itemize}
+\item \emph{complete} whenever $m \leq 2$ \\
+(i.e. there are \textit{no} nodes that allow for more than two possible stock price evolutions)
+\item \emph{incomplete} whenever $m > 2$ \\
+(i.e. there is \textit{at least one} node that allows for more than two possible stock price evolutions)
+\end{itemize}
+
+\paragraph{Inequality of the payoffs of Asian and European call options}
+
+\begin{itemize}
+\item Consider a European call option $C_k^E = (\tilde S_k^1)^+$ and an Asian call option with
+\begin{align*}
+C_k^A &= \left( \frac{1}{k} \sum_{j=1}^k \tilde S_j^1 - K \right)^+
+\end{align*}
+\item Then it holds for the $\mathbb{Q}$-expectation (risk-neutral) of the two payoffs that:
+\begin{align*}
+\mathbb{E}_\mathbb{Q}\left[ \frac{C_k^A}{\tilde S_k^0} \right] &\leq \mathbb{E}_\mathbb{Q} \left[ \frac{C_k^E}{\tilde S_k^0} \right]
+\end{align*}
+\item \textit{Interpretation:} Since the volatility of an Asian style contingent claim is lower than the one of a European style contingent claim, the Asian option bears lower risk and thus yields also lower profit.
+\end{itemize}
+
+\paragraph{American options}
+
+\begin{itemize}
+\item Consider an American option with maturity $T$ and nonnegative adapted payoff process $U = (U_k)_{k=0,\ldots,T}$.
+\item Then the arbitrage-free price process $\bar V = (\bar V_k)_{k=0,\ldots,T}$ w.r.t. $\mathbb{Q}$ can be expressed as a backward recursive scheme such as:
+\begin{align*}
+\bar V_T &= U_T \\
+\bar V_k &= \max(U_k,\mathbb{E}_\mathbb{Q}[\bar V_{k+1}|\mathcal{F}_k]), \qquad \text{for } k=0,\ldots, T-1
+\end{align*}
+\end{itemize}
+
+\columnbreak
+
+\section{Martingales}
+
+\subsection{Martingales}
+
+\paragraph{Martingales}
+
+\begin{itemize}
+\item Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space with a filtration $\mathbb{F} = (\mathcal{F}_k)_{k=0,1, \ldots, T}$.
+\item A (real-valued) stochastic process $X = (X_k)_{k=0,1, \ldots, T}$ is called a \emph{martingale} (w.r.t. $\mathbb{P}$ and $\mathbb{F}$) if:
+\begin{enumerate}
+\item $X$ is adapted to $\mathbb{F}$.
+\item $X$ is $\mathbb{P}$-integrable in the sense that $X_k \in \mathcal{L}^1(\mathbb{P})$ for each $k$, i.e.
+\begin{align*}
+\mathbb{E}_\mathbb{P}[|X|] < \infty
+\end{align*}
+\item $X$ satisfies the martingale property:
+\begin{align*}
+\mathbb{E}_\mathbb{P} \left[ X_l | \mathcal{F}_k \right] = X_k \qquad \mathbb{P} \text{-a.s. for } k \leq l
+\end{align*}
+\end{enumerate}
+\item \textit{Interpretation:} This means that the best prediction for the later value $X_l$ given the information $\mathcal{F}_k$ is just the current value $X_k$. Hence the changes in a martingale cannot be predicted. \\
+In other words, a martingale describes a fair game in the sense that one cannot predict where it goes next.
+\item A \emph{supermartingale} is defined the same but with the property
+\begin{align*}
+\mathbb{E}_\mathbb{P} [ X_l | \mathcal{F}_l] \leq X_k
+\end{align*}
+\item A \emph{submartingale} is defined the same but with the property
+\begin{align*}
+\mathbb{E}_\mathbb{P} [ X_l | \mathcal{F}_l] \geq X_k
+\end{align*}
+\end{itemize}
+
+\paragraph{Equivalent Martingale Measure (EMM)}
+
+\begin{itemize}
+\item $\mathbb{Q}$ is an EMM for the stochastic process $(S_k)_{k \geq 0}$ iff $S$ is a martingale under $\mathbb{Q}$ and if $\mathbb{Q}$ is equivalent to $\mathbb{P}$.
+\item We denote by $\mathbb{P}_e(S)$ the set of all EMMs for $S$.
+\item The probability measure $\mathbb{Q}$ is equivalent to $\mathbb{P}$ ($\mathbb{Q} \approx \mathbb{P}$) iff:
+\begin{enumerate}
+\item $\mathbb{Q}[A] > 0 \iff \mathbb{P}[A] > 0$
+\item $\mathbb{Q}[\Omega] = 1$
+\end{enumerate}
+\item A stochastic process $(S_k)_{k \geq 0}$ is a $\mathbb{Q}$-martingale iff:
+\begin{enumerate}
+\item $S_k$ is adapted to the considered filtration.
+\item $S_k$ is integrable: $\mathbb{E}_\mathbb{Q}[|S_k|] < \infty$.
+\item Martingale property: $\mathbb{E}_\mathbb{Q}[S_{k+1} | \mathcal{F}_k] = S_k$.
+\end{enumerate}
+\end{itemize}
+
+\paragraph{Local martingale}
+
+\begin{itemize}
+\item An adapted process $X = (X_k)_{k=0,1, \ldots, T}$ null at 0 (i.e. with $X_0 = 0$) is called a local martingale (w.r.t. $\mathbb{P}$ and $\mathbb{F}$) if there exists a sequence of stopping times $(\tau_n)_{n \in \mathbb{N}}$ increasing to $T$ s.t. for each $n \in \mathbb{N}$, the stopped process $X^{\tau_n} = (X_{k \wedge \tau_n})_{k=0,1, \ldots, T}$ is a $(\mathbb{P}, \mathbb{F})$-martingale.
+\item We then call $(\tau_n)_{n \in \mathbb{N}}$ a \emph{localising sequence}.
+\item For any martingale $X$ and any stopping time $\tau$, the stopped process $X^\tau$ is again a martingale. \\
+In particular, $\mathbb{E}_\mathbb{P}[X_{k \wedge \tau}] = \mathbb{E}_\mathbb{P}[X_0]$, $\forall k$.
+\end{itemize}
+
+\subsection{Stopping times}
+
+\paragraph{Stopping time}
+
+The stochastic process $S^\tau = (S_k^\tau)_{k=0,1, \ldots, T}$ defined by
+\begin{align*}
+S_k^\tau(\omega) := S_{k \wedge \tau}(\omega) := S_{k \wedge \tau(\omega)}(\omega)
+\end{align*}
+is called the process $S$ stopped at $\tau$. It clearly behaves like $S$ up to time $\tau$ and remains constant after time $\tau$.
+
+\paragraph{Stopping theorem}
+
+\begin{itemize}
+\item Suppose that $M = (M_t)_{t \geq 0}$ is a $(\mathbb{P}, \mathbb{F})$-martingale with RC trajectories, and $\sigma, \tau$ are $\mathbb{F}$-stopping times with $\sigma \leq \tau$.
+\item If either $\tau$ is bounded by some $T \in (0, \infty)$  or $M$ is uniformly integrable, then $M_\tau$, $M_\sigma$ are both in $L^1(\mathbb{P})$ and
+\begin{align*}
+\mathbb{E}[M_\tau | \mathcal{F}_\sigma] = M_\sigma \qquad \mathbb{P} \text{-a.s.}
+\end{align*}
+\end{itemize}
+
+\paragraph{Cases of stopping times}
+
+\begin{itemize}
+\item Define the stopping time $\tau_a$ for $a \in \mathbb{R}, a > 0$ as:
+\begin{align*}
+\tau_a &:= \inf \lbrace t \geq 0 | W_t > a \rbrace
+\end{align*}
+Then it holds that:
+\begin{itemize}
+\item $\tau_{a_1} \leq \tau_{a_2}, \mathbb{P}$-a.s. for $a_1 < a_2$.
+\item $\mathbb{P}[\tau_a < \infty] = 1$.
+\item $W_{\tau_a} = a, \mathbb{P}$-a.s.
+\item $\mathbb{E} \left[ \left. W_{\tau_{a_2}} \right| \mathcal{F}_{\tau_{a_1}} \right] \neq W_{\tau_{a_1}}, \mathbb{P}$-a.s. \\
+i.e. the stopping theorem fails for $\tau = \tau_{a_2}$ and $\sigma = \tau_{a_1}$.
+\item $\lim_{n \to \infty} \tau_n(\omega) = \infty, \mathbb{P}$-a.s.
+\end{itemize}
+\item Define the stopping time $\rho_a$ for $a \in \mathbb{R}, a > 0$ as:
+\begin{align*}
+\rho_a &:= \sup \lbrace t \geq 0 | W_t > a \rbrace
+\end{align*}
+Then it follows that $\rho_a = \infty$ with probability 1 under $\mathbb{P}$.
+\end{itemize}
+
+\subsection{Density processes/Girsanov's theorem}
+
+\paragraph{Density in discrete time}
+
+\begin{itemize}
+\item Assume $(\Omega, \mathcal{F})$ and a filtration $\mathbb{F} = (\mathcal{F}_k)_{k=0,1,\ldots,T}$ in finite discrete time. \\
+On $(\Omega, \mathcal{F})$, we have two probability measures $\mathbb{Q}$ and $\mathbb{P}$, and we assume $\mathbb{Q} \approx \mathbb{P}$.
+\item \emph{Radon-Nykodin theorem:} There exists a density
+\begin{align*}
+\frac{d\mathbb{Q}}{d\mathbb{P}} &:= \mathcal{D}
+\end{align*}
+This is a RV $\mathcal{D} > 0$, $\mathbb{P}$-a.s. s.t. for all $A \in \mathcal{F}_k$ and for all RVs $Y \geq 0$ it holds that:
+\begin{align*}
+\mathbb{Q}[A] = \mathbb{E}_\mathbb{P}[\mathcal{D} \mathbb{I}_A], \qquad \mathbb{E}_\mathbb{Q}[Y] = \mathbb{E}_\mathbb{P}[Y \mathcal{D}].
+\end{align*}
+\item This can also be written as
+\begin{align*}
+\int_\Omega Y d\mathbb{Q} = \int_\Omega Y \mathcal{D} d\mathbb{P}
+\end{align*}
+This formula tells us how to compute $\mathbb{Q}$-expectations in terms of $\mathbb{P}$-expectations and vice-versa.
+\end{itemize}
+
+\paragraph{Density process in discrete time}
+
+\begin{itemize}
+\item Assume the same setting as before.
+\item \emph{Radon-Nykodin theorem:} The density process $Z$ of $\mathbb{Q}$ w.r.t. $\mathbb{P}$, or also called the $\mathbb{P}$-martingale $Z$, is defined as
+\begin{align*}
+Z_k :&= \mathbb{E}_\mathbb{P}[\mathcal{D}| \mathcal{F}_k] = \mathbb{E}_\mathbb{P} \left[ \left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right\vert \mathcal{F}_k \right] \qquad \text{for } k=0,1, \ldots, T
+\end{align*}
+\item Then for every $\mathcal{F}_k$-measurable RV $Y \geq 0$ or $Y \in \mathcal{L}^1(\mathbb{Q})$, it holds that
+\begin{align*}
+\mathbb{E}_\mathbb{Q}[Y | \mathcal{F}_k] = \mathbb{E}_\mathbb{P}[Y Z_k | \mathcal{F}_k]
+\end{align*}
+and for every $k \in \lbrace 0,1,\ldots, T \rbrace$ and any $A \in \mathcal{F}_k$, it holds that
+\begin{align*}
+\mathbb{Q}[A] &= \mathbb{E}_\mathbb{P}[Z_k \mathbb{I}_A]
+\end{align*}
+\item Properties:
+\begin{itemize}
+\item $Z_k$ is a RV and $Z_k > 0$, $\mathbb{P}$-a.s.
+\item A process $N = (N_k)_{k=0,1, \ldots, T}$ which is adapted in $\mathbb{F}$ is a $\mathbb{Q}$-martingale iff the product $Z N$ is a $\mathbb{P}$-martingale. \\
+(This tells us how martingale properties under $\mathbb{P}$ and $\mathbb{Q}$ are related to each other.)
+\end{itemize}
+\item \emph{Bayes formula:} \\
+If $j \leq k$ and $U_k$ is $\mathcal{F}_k$-measurable and either $\geq 0$ or in $\mathcal{L}^1(\mathbb{Q})$, then
+\begin{align*}
+\mathbb{E}_\mathbb{Q} [U_k | \mathcal{F}_j] = \frac{1}{Z_j} \mathbb{E}_\mathbb{P}[Z_k U_k | \mathcal{F}_j] \qquad \mathbb{Q} \text{-a.s.}
+\end{align*}
+This tells us how conditional expectations under $\mathbb{Q}$ and $\mathbb{P}$ are related to each other.
+\end{itemize}
+
+\paragraph{Density process in continuous time}
+
+\begin{itemize}
+\item Suppose we have $\mathbb{P}$ and a filtration $\mathbb{F} = (\mathcal{F}_t)_{t \geq 0}$. \\
+Fix $T \in (0,\infty)$ and assume only that $\mathbb{Q} \approx \mathbb{P}$ on $\mathcal{F}_T$.
+\item Then the density process $Z$ of $\mathbb{Q}$ w.r.t. $\mathbb{P}$ on $[0,T]$ is defined as
+\begin{align*}
+Z_t :&= \mathbb{E}_\mathbb{P} \left[ \left. \frac{d\mathbb{Q}|_{\mathcal{F}_T}}{d\mathbb{P}|_{\mathcal{F}_T}} \right\vert \mathcal{F}_t \right] \qquad \text{for } 0 \leq t \leq T
+\end{align*}
+\item \emph{Bayes formula:} \\
+For $s \leq t \leq T$ and every $U_t$ which is $\mathcal{F}_t$-measurable and either $\geq 0$ or in $L^1(\mathbb{Q})$, it holds that
+\begin{align*}
+\mathbb{E}_\mathbb{Q} [U_t | \mathcal{F}_s] = \frac{1}{Z_s} \mathbb{E}_\mathbb{P}[Z_t U_t | \mathcal{F}_s] \qquad \mathbb{Q} \text{-a.s.}
+\end{align*}
+\item It also holds that an adapted process $Y = (Y_t)_{0 \leq t \leq T}$ is a (local) $\mathbb{Q}$-martingale iff the product $Z Y$ is a (local) $\mathbb{P}$-martingale.
+\end{itemize}
+
+\paragraph{Girsanov's theorem}
+
+\begin{itemize}
+\item Suppose that $\mathbb{Q} \underset{\text{loc}}{\approx} \mathbb{P}$ with density process $Z$.
+\item If $M$ is a local $\mathbb{P}$-martingale null at 0, then
+\begin{align*}
+\tilde M := M - \int \frac{1}{Z} d[Z,M]
+\end{align*}
+is a local $\mathbb{Q}$-martingale null at 0.
+\item In particular, every $\mathbb{P}$-semimartingale is also a $\mathbb{Q}$-semimartingale (and vice-versa, by symmetry).
+\end{itemize}
+
+\paragraph{Girsanov (continuous version)}
+
+\begin{itemize}
+\item Suppose that $\mathbb{Q} \underset{\text{loc}}{\approx} \mathbb{P}$ with continuous density process $Z$. \\
+Write $Z = Z_0 \mathcal{E}(L)$.
+\item If $M$ is a local $\mathbb{P}$-martingale null at 0, then
+\begin{align*}
+\tilde M := M - [L,M] = M - \langle L,M \rangle
+\end{align*}
+is a local $\mathbb{Q}$-martingale null at 0.
+\item Moreover, if $W$ is a $\mathbb{P}$-BM, then $\tilde W$ is a $\mathbb{Q}$-BM.
+\item In particular, if $L = \int \nu dW$ for some $\nu \in \mathcal{L}_\text{loc}^2(W)$, then $\tilde W = W - \langle \int \nu dW, W \rangle = W - \int \nu_s ds$ so that the $\mathbb{P}$-BM $W = \tilde W + \int \nu_s ds$ becomes under $\mathbb{Q}$ a BM with (instantaneous) drift $\nu$.
+\end{itemize}
+
+\columnbreak
+
+\section{Stochastic Integration and Calculus}
+
+\subsection{Brownian motion \& Poisson processes}
+
+\paragraph{Brownian motion}
+
+\begin{itemize}
+\item A Brownian motion w.r.t. $\mathbb{P}$ and a filtration $\mathbb{F} = (\mathcal{F}_t)_{t \geq 0}$ is a real-valued stochastic process $W = (W_t)_{t \geq 0}$ which satisfies the following properties:
+\begin{description}[style=multiline,leftmargin=1cm,font=\normalfont]
+\item[(BM0)] \textit{null at zero} \\
+$W$ is adapted to $\mathbb{F}$ and null at 0 (i.e. $W_0 \equiv 0$, $\mathbb{P}$-a.s.).
+\item[(BM1)] \textit{independent and stationary increments} \\
+For $s \leq t$, the increment $W_t - W_s$ is independent (under $\mathbb{P}$) of $\mathcal{F}_s$ and satisfies under $\mathbb{P}$: $W_t - W_s \sim \mathcal{N}(0, t-s))$.
+\item[(BM2)] \textit{continuous sample paths} \\
+$W$ has continuous trajectories, i.e. for $\mathbb{P}$-a.a. $\omega \in \Omega$, the function $t \rightarrow W_t(\omega)$ on $[0, \infty)$ is continuous.
+\end{description}
+\end{itemize}
+Remarks:
+\begin{itemize}
+\item Brownian motion in $\mathbb{R}^m$ is simply an adapted $\mathbb{R}^m$-valued stochastic process null at 0 and with the increment $W_t - W_s$ having the normal distribution $\mathcal{N}(0,(t-s) \mathbb{I}_{m \times m})$, where $\mathbb{I}_{m \times m}$ denotes the identity matrix.
+\item For $\mathbb{P}$-a.a. $\omega \in \Omega$, the function $t \mapsto W_t(\omega)$ from $[0, \infty)$ to $\mathbb{R}$ is continuous, but \textit{nowhere differentiable}.
+\end{itemize}
+
+\paragraph{Transformations of BM}
+
+The following stochastic processes are BMs:
+
+\begin{itemize}
+\item $W^1 := - W$
+\item Restarting at a fixed time $T$:
+\begin{align*}
+W_t^2 := W_{T+t} -W_T
+\end{align*}
+for $t \geq 0$ and for any $T \in (0, \infty)$.
+\item Rescaling in space and time:
+\begin{align*}
+W_t^3 := c W_{\frac{t}{c^2}}
+\end{align*}
+for $t \geq 0$ and for any $c \in \mathbb{R}$, $c \neq 0$.
+\item Time-reversal on $[0,T]$:
+\begin{align*}
+W_t^4 := W_{T-t} - W_T
+\end{align*}
+for $0 \leq t \leq T$ and for any $T \in (0, \infty)$.
+\item Inversion of small and large times:
+\begin{align*}
+W_t^5 :=
+\begin{cases}
+t W_{\frac{1}{t}} & \text{for } t > 0 \\
+0 & \text{for } t = 0
+\end{cases}
+\end{align*}
+for $t \geq 0$.
+\item $W_t^6 := (W_t)^2 - t = 2 \int_0^t W_s dW_s, \qquad t \geq 0$
+\item $W_t^7 := \exp \left( \alpha W_t - \frac{1}{2} \alpha^2 t \right)$ for $t \geq 0$ and for any $\alpha \in \mathbb{R}$.
+\end{itemize}
+
+\paragraph{Laws on BM}
+
+\begin{itemize}
+\item Law of large numbers:
+\begin{align*}
+\lim_{t \rightarrow \infty} \frac{W_t}{t} = 0, \qquad \mathbb{P}\text{-a.s.}
+\end{align*}
+i.e. BM grows asymptotically less than linearly (as $t \rightarrow \infty$).
+\item Global law of the iterated logarithm (LIL): \\
+With $\psi_\text{glob}(t) := \sqrt{2 t \log(\log t))}$, it holds for $t \geq 0$ that:
+\begin{align*}
+\lim_{t \rightarrow \infty} \sup \frac{W_t}{\psi_\text{glob}(t)} = +1 \\
+\lim_{t \rightarrow \infty} \inf \frac{W_t}{\psi_\text{glob}(t)} = -1
+\end{align*}
+i.e. for $\mathbb{P}$-a.a. $\omega$, the function $t \rightarrow W_t(\omega)$ for $t \rightarrow \infty$ oscillates precisely between $t \rightarrow \pm \psi_\text{glob}(t)$.
+\item Local law of the iterated logarithm (LIL): \\
+With $\psi_\text{loc}(h) := \sqrt{2 h \log(\log \frac{1}{h})}$, it holds for $t \geq 0$ that:
+\begin{align*}
+\lim\limits_{h \searrow 0} \sup \frac{W_{t+h} - W_t}{\psi_\text{loc}(h)} = +1 \\
+\lim\limits_{h \searrow 0} \inf \frac{W_{t+h} - W_t}{\psi_\text{loc}(h)} = -1
+\end{align*}
+i.e. for $\mathbb{P}$-a.a. $\omega$, to the right of $t$, the trajectory $u \rightarrow W_u(\omega)$ around the level $W_t(\omega)$ oscillates precisely between $h \rightarrow \pm \psi_\text{loc}(h)$.
+\end{itemize}
+
+\paragraph{Poisson processes}
+
+\begin{itemize}
+\item A Poisson process $N = (N_t)_{t \geq 0}$ with parameter $\lambda \in \mathbb{R}, \lambda > 0$ and w.r.t. $(\mathbb{P},\mathbb{F})$ is a real-valued stochastic process satisfying the following properties:
+\begin{description}[style=multiline,leftmargin=1cm,font=\normalfont]
+\item[(PP0)] \textit{null at zero} \\
+$N$ is adapted to $\mathbb{F}$ and null at 0 (i.e. $N_0 \equiv 0, \mathbb{P}$-a.s.).
+\item[(PP1)] \textit{independent and stationary increments} \\
+For $0 \leq s < t$, the increment $N_t - N_s$ is independent (under $\mathbb{P}$) of $\mathcal{F}_s$ and follows (under $\mathbb{P}$) the Poisson distribution with parameter $\lambda (t-s)$, i.e. $N_t - N_s \sim \Poi(\lambda(t-s))$, i.e
+\begin{align*}
+\mathbb{P}[N_t=k] &= \frac{\lambda^k (t-s)^k}{k!} e^{-\lambda (t-s)}
+\end{align*}
+\item[(PP2)] \textit{counting process} \\
+$N$ is a counting process with jumps of size 1, i.e. for $\mathbb{P}$-a.a. $\omega$, the function $t \mapsto N_t(\omega)$ is RCLL, piecewise constant and $\mathbb{N}_0$-valued, and increases by jumps of size 1.
+\end{description}
+\item Important properties of Poisson processes: if $X \sim \Poi(\lambda)$, then:
+\begin{align*}
+\mathbb{E}[X] = \lambda, \qquad \Var[X] = \lambda
+\end{align*}
+The quadratic variation of a Poisson process equals itself, i.e.
+\begin{align*}
+[N]_t &= N_t
+\end{align*}
+\item Examples of Poisson processes: the following Poisson processes are $(\mathbb{P},\mathbb{F})$-martingales:
+\begin{itemize}
+\item \emph{Compensated Poisson process:}
+\begin{align*}
+\tilde N_t = N_t - \lambda t, \qquad t \geq 0
+\end{align*}
+\item \emph{Geometric Poisson process:}
+\begin{align*}
+S_t &= \exp \left( N_t \log(1+\sigma) - \lambda \sigma t \right), \qquad t \geq 0
+\end{align*}
+where $\sigma \in \mathbb{R}, \sigma > -1$.
+\item Two cases of squared compensated Poisson processes:
+\begin{align*}
+\left( \tilde N_t \right)^2 - N_t, \qquad \left( \tilde N_t \right)^2 - \lambda t, \qquad t \geq 0
+\end{align*}
+It follows that $[\tilde N]_t = N_t$.
+\end{itemize}
+\end{itemize}
+
+\subsection{Stochastic integration}
+
+\paragraph{Optional quadratic variation/square bracket process}
+
+\begin{itemize}
+\item For any local martingale $M = (M_t)_{t \geq 0}$ null at 0, there exists a unique adapted increasing RCLL process $[M] = ([M]_t)_{t \geq 0}$ and having the property that $M^2 - [M]$ is also a local martingale.
+\item This process can be obtained as the quadratic variation of $M$ in the following sense. \\
+There exists a sequence $(\Pi_n)_{n \in \mathbb{N}}$ of partitions $[0,)$ with $|\pi| \rightarrow 0$ as $n \rightarrow \infty$ s.t.
+\begin{align*}
+& \mathbb{P} \left[ [M]_t(\omega) = \lim\limits_{n \rightarrow \infty} \sum_{t_i \in \Pi_n} \left( M_{t_i \wedge t}(\omega) - M_{t_{i-1}\wedge t}(\omega) \right)^2 \forall t \geq 0 \right] \\
+& \qquad = 1
+\end{align*}
+We call $[M]$ the optional quadratic variation or square bracket process of $M$.
+\item If $M$ satisfies $\sup_{0 \leq s \leq t} |M_s| \in \mathcal{L}^2$ for each $t \geq 0$ (and hence is in particular a martingale), then $[M]$ is integrable (i.e. $[M]_t \in \mathcal{L}^1$ for every $t \geq 0$) and $M^2 - [M]$ is a martingale.
+\end{itemize}
+
+\paragraph{(Optional) covariation process}
+
+\begin{itemize}
+\item For two local martingales $M, N$ null at 0, we define the (optional) covariation process $[M,N]$ by polarisation, i.e.
+\begin{align*}
+[M,N] := \frac{1}{4} \left( [M+N] - [M-N] \right)
+\end{align*}
+\item The operation $[\cdot,\cdot]$ is bilinear.
+\end{itemize}
+
+\paragraph{Set of all bounded elementary processes}
+
+\begin{itemize}
+\item We denote by $b \mathcal{E}$ the set of all bounded elementary process of the form
+\begin{align*}
+H = \sum_{i=0}^{n-1} h_i \mathbb{I}_{(t_i,t_{i+1}]}
+\end{align*}
+with $n \in \mathbb{N}$, $0 \leq t_0 < t_1 < \ldots < t_n < \infty$ and each $h_i$ a bounded (real-valued) $\mathcal{F}_{t_i}$-measurable RV.
+\end{itemize}
+
+\paragraph{Stochastic integral}
+
+\begin{itemize}
+\item For any stochastic process $X = (X_t)_{t \geq 0}$, the stochastic integral $\int H dX$ of $H \in b \mathcal{E}$ is defined as
+\begin{align*}
+\int_0^t H_s dX_s := H \cdot X_t := \sum_{i=0}^{n-1} h_i \left( X_{t_{i+1} \wedge t} - X_{t_i \wedge t} \right) \quad \text{for } t \geq 0
+\end{align*}
+\item If $X$ and $H$ are both $\mathbb{R}^d$-valued, the integral is still real-valued, and we simply replace products by scalar products everywhere.
+\item The following fundamental identity applies to the quadratic variation of stochastic integrals:
+\begin{align*}
+\left[ \int_0^t H_s dX_s \right] &= \int_0^t H_s^2 d[X]_s
+\end{align*}
+\end{itemize}
+
+\paragraph{Isometry property}
+
+\begin{itemize}
+\item Suppose $M$ is a square-integrable martingale (i.e. $M_t \in \mathcal{L}^2$ for all $t \geq 0$).
+\item For every $H \in b \mathcal{E}$, the stochastic integral process $H \cdot M = \int H dM$ is then also a square-integrable martingale, and we have the isometry property
+\begin{align*}
+\mathbb{E} \left[ (H \cdot M_\infty)^2 \right] = \mathbb{E} \left[ \int_0^\infty H_s^2 d[M]_s \right]
+\end{align*}
+\end{itemize}
+
+\paragraph{Properties}
+
+\begin{itemize}
+\item (Local) Martingale properties
+\item Linearity
+\item Associativity
+\item Behaviour under stopping
+\item Quadratic variation and covaration
+\item Jumps
+\end{itemize}
+
+\subsection{Stochastic calculus}
+
+\paragraph{Itô's formula I}
+
+\begin{itemize}
+\item Suppose $X = (X_t)_{t \geq 0}$ is a continuous real-valued semimartingale and $f : \mathbb{R} \rightarrow \mathbb{R}$ is in $C^2$ (i.e. $f$ is twice continuously differentiable).
+\item Then $f(X) = (f(X_t))_{t \geq 0}$ is again a continuous (real-valued) semimartingale, and we explicitly have $\mathbb{P}$-a.s. $\forall t \geq 0$:
+\begin{align*}
+f(X_t) &= f(X_0) + \int_0^t f'(X_s) dX_s + \frac{1}{2} \int_0^t f''(X_s) d \langle X \rangle_s \\
+df(X_t) &= f'(X_t) dX_t + \frac{1}{2} f''(X_t) d \langle X \rangle_t
+\end{align*}
+\end{itemize}
+Remarks:
+\begin{itemize}
+\item The $dX$-integral is a stochastic integral. It is well-defined since $X$ is a semimartingale and $f'(X)$ is adapted and continuous, hence predictable and locally bounded. \\
+The $d\langle X \rangle$-integral is a classical Lebesgue-Stieltjes integral since $\langle X \rangle$ has increasing trajectories. It is also well-defined since $f''(X)$ is also predictable and locally bounded.
+\item In comparison to the classical chain rule, the $d\langle X \rangle$-integral is an extra second-order term coming from the quadratic variation of $X$. Hence Itô's formula can be viewed as an extension of the chain rule.
+\item The important message of this formula is that when one is dealing with stochastic models, a simple linear approximation is not good enough, since one also has to account for the second-order behaviour of $X$.
+\item $\langle X \rangle_t = \langle M \rangle_t$
+\end{itemize}
+
+\paragraph{Itô's formula II}
+
+\begin{itemize}
+\item Suppose $X = (X_t)_{t \geq 0}$ is a general $\mathbb{R}^d$-valued semimartingale and $f : \mathbb{R}^d \rightarrow \mathbb{R}$ is in $C^2$.
+\item Then $f(X) = (f(X_t))_{t \geq 0}$ is again a (real-valued) semimartingale, $\mathbb{P}$-a.s. and $\forall t \geq 0$.
+\item If $X$ has continuous trajectories:
+\begin{align*}
+f(X_t) &= f(X_0) + \sum_{i=1}^d \int_0^t \frac{\partial f}{\partial x^i}(X_s) dX_s^i \\
+& \qquad + \frac{1}{2} \sum_{i,j=1}^d \int_0^t \frac{\partial^2 f}{\partial x^i \partial x^j}(X_s) d \langle X^i, X^j \rangle_s
+\end{align*}
+\item If a stochastic process $X_t = f(t,W_t)$ with $f: \mathbb{R}^2 \to \mathbb{R}$ in $C^{1,2}$ (i.e. once continuously differentiable in time $t$ and twice continuously differentiable in $W_t$), then:
+\begin{empheq}[box=\widefbox]{align*}
+X_t &= X_0 + \underbrace{\int_0^t \frac{\partial f}{\partial w}(W_s,s) dW_s}\limits_{\text{local } (\mathbb{P},\mathbb{F}) \text{ martingale}} \\
+& \qquad + \int_0^t \left( \frac{\partial f}{\partial t}(W_s,s) + \frac{1}{2} \frac{\partial^2 f}{\partial w^2}(W_s,s) \right) ds
+\end{empheq}
+Note that $X$ is a (continuous) local $(\mathbb{P},\mathbb{F})$-martingale iff
+\begin{align*}
+\int_0^t \left( \frac{\partial f}{\partial t}(W_s,s) + \frac{1}{2} \frac{\partial^2 f}{\partial w^2}(W_s,s) \right) ds = 0, \qquad \forall t \geq 0
+\end{align*}
+\item \emph{Itô's formula with jumps} \\
+If $d=1$, $X$ real-valued but not necessarily continuous, then it holds that:
+\begin{align*}
+f(X_t) &= f(X_0) + \int_0^t f'(X_{s^-}) dX_s + \frac{1}{2} \int_0^t f''(X_{s^-}) d [X]_s \\
+& \qquad + \sum_{0 < s \leq t} \left( f(X_s) - f(X_{s^-}) \right. \\
+& \qquad \qquad \qquad \left. - f'(X_{s^-}) \Delta X_s - \frac{1}{2} f''(X_{s^-}) (\Delta X_s)^2 \right)
+\end{align*}
+\item If $f: \mathbb{R} \to \mathbb{R}$ is in $C^2$, $\alpha, \beta \in \mathbb{R}$ and the semimartingale $X = (X_t)_{t \geq 0}$ is given by $X_t = \alpha t + \beta N_t$, then:
+\begin{align*}
+f(X_t) &= f(X_0) + \alpha \int_0^t f'(X_{s-}) ds + \sum_{0<s \leq t} \left( f(X_s) - f(X_{s-}) \right)
+\end{align*}
+\end{itemize}
+
+\paragraph{Stochastic exponential}
+
+\begin{itemize}
+\item For a general real-valued semimartingale $X$ null at 0, the stochastic exponential of $X$ is defined as the unique solution $Z$ of the SDE
+\begin{align*}
+dZ_t &= Z_{t^-} dX_t, \qquad Z_0 = 1
+\end{align*}
+and it follows that the unique solution to this SDE is:
+\begin{align*}
+Z_t := \mathcal{E}(X) &= 1 + \int_0^t Z_{s^-} dX_s \qquad \forall t \geq 0
+\end{align*}
+\begin{empheq}[box=\widefbox]{align*}
+\mathcal{E}(X)_t &= \exp \left( X_t - \frac{1}{2} [X]_t \right)
+\end{empheq}
+\item \emph{Yor's formula:}
+\begin{align*}
+\mathcal{E}(X) \mathcal{E}(Y) = \mathcal{E}(X+Y+[X,Y])
+\end{align*}
+\end{itemize}
+
+\paragraph{Itô process}
+
+\begin{itemize}
+\item An Itô process is a stochastic process of the form
+\begin{align*}
+X_t &= X_0 + \int_0^t \mu_s ds + \int_0^t \sigma_s dW_s, \qquad \forall t \geq 0
+\end{align*}
+where $W$ is some Brownian motion and $\mu$ and $\sigma$ are predictable processes.
+\item More generally, $X, \mu, W$ could be vector-valued and $\sigma$ could be matrix-valued.
+\item For any $C^2$ function $f$, the process $f(X)$ is again an Itô process, and Itô's formula gives
+\begin{align*}
+f(X_t) &= f(X_0) + \int_0^t \left( f'(X_s) \mu_s + \frac{1}{2} f''(X_s) \sigma_s^2 \right) ds \\
+& \qquad + \int_0^t f'(X_s) \sigma_s dW_s
+\end{align*}
+\end{itemize}
+
+\paragraph{Itô's representation theorem}
+
+\begin{itemize}
+\item Suppose that $W = (W_t)_{t \geq 0}$ is a $\mathbb{R}^m$-valued BM.
+\item Then every RV $H \in \mathcal{L}^1(\mathcal{F}_\infty^W,P)$ has a unique representation as
+\begin{align*}
+H = \mathbb{E}[H] + \int_0^\infty \psi_s dW_s, \qquad \text{a.s.}
+\end{align*}
+for an $\mathbb{R}^m$-valued integrand $\psi \in \mathcal{L}_\text{loc}^2(W)$.
+\item $\psi$ has the additional property that $\int \psi dW$ is a $(P, \mathbb{F}^W)$-martingale on $[0,\infty]$ (and is thus uniformly integrable).
+\end{itemize}
+
+\paragraph{Itô product formula}
+
+\begin{itemize}
+\item Define the stochastic process $Z = X Y$, where $X$ and $Y$ are two continuous real-valued semimartingales.
+\item Then $Z$ can be written as the sum of stochastic integrals:
+\begin{align*}
+Z_t - Z_0 &= \int_0^t Y_s dX_s + \int_0^t X_s dY_s + \int_0^t d[X,Y]_s
+\end{align*}
+\end{itemize}
+
+\paragraph{General properties/results}
+
+\begin{itemize}
+\item Any continuous, adapted process $H$ is also predictable and locally bounded. \\
+It furthermore holds for any predictable, locally bounded process $H$ that $H \in L_\text{loc}^2(W)$.
+\item Let $f: \mathbb{R} \to \mathbb{R}$ be an arbitrary continuous convex function. Then the process $(f(W_t))_{t \geq 0}$ is integrable and is a $(\mathbb{P},\mathbb{F})$-submartingale.
+\item Given a $(\mathbb{P},\mathbb{F})$-martingale $(M_t)_{t \geq 0}$ and a measurable function $g: \mathbb{R}_+ \to \mathbb{R}$, the process
+\begin{align*}
+(M_t + g(t))_{t \geq 0}
+\end{align*}
+is a:
+\begin{itemize}
+\item $(\mathbb{P},\mathbb{F})$-supermartingale iff $g$ is decreasing;
+\item $(\mathbb{P},\mathbb{F})$-submartingale iff $g$ is increasing.
+\end{itemize}
+\item A continuous local martingale of finite variation is identically constant (and hence vanishes if it is null at 0).
+\item For a function $f: \mathbb{R} \to \mathbb{R}$ in $C^1$, the stochastic integral $\int_0^\cdot f'(W_s) dW_s$ is a continuous local martingale. \\
+Furthermore, for $f \in C^2$ it holds that $f(W)$ is a continuous local martingale iff $\int_0^\cdot f''(W_s) ds = 0$.
+\item If a predictable process $H = (H_t)_{t \geq 0}$ satisfies
+\begin{align*}
+\mathbb{E} \left[ H_s^2 ds \right] < \infty, \qquad \forall T \geq 0
+\end{align*}
+then $\int H dW_s$ is a square-integrable martingale.
+\item If $f: \mathbb{R} \to \mathbb{R}$ is bounded and continuous, then the stochastic integral $\int f(W) dW$ is a square-integrable martingale.
+\item If a process $H = (H_t)_{t \geq 0}$ is predictable and the map $s \mapsto \mathbb{E}[H_s^2]$ is continuous, then the stochastic integral $\int H dW$ is a square-integrable martingale.
+\item If $f: \mathbb{R} \to \mathbb{R}$ is polynomial, then the stochastic integral $\int f(W) dW$ is a square-integrable martingale.
+\end{itemize}
+
+\columnbreak
+
+\section{Black-Scholes Formula}
+
+\subsection{Black-Scholes (BS) model}
+
+\paragraph{BS model (undiscounted, historical measure $\mathbb{P}$)}
+
+\begin{align*}
+\tilde S_t^0 &= e^{r t} &
+\tilde S_t^1 &= \tilde S_0^1 \exp \left( \sigma W_t + \left( \mu - \frac{1}{2} \sigma^2 \right) t \right) \\
+\frac{d\tilde S_t^0}{\tilde S_t^0} &= r dt & \frac{d\tilde S_t^1}{\tilde S_t^1} &= \mu dt + \sigma dW_t
+\end{align*}
+
+\paragraph{BS model (discounted, historical measure $\mathbb{P}$)}
+
+\begin{align*}
+ S_t^0 &= 1 &
+ S_t^1 &=  S_0^1 \exp \left( \sigma W_t + \left( \mu - r - \frac{1}{2} \sigma^2 \right) t \right) \\
+& & \frac{d  S_t^1}{S_t^1} &= (\mu - r) dt + \sigma dW_t
+\end{align*}
+
+\paragraph{BS model (discounted, risk-neutral measure $\mathbb{Q}$)}
+
+\begin{align*}
+dS_t^1 &= S_t^1 \sigma \left( dW_t + \frac{\mu - r}{\sigma} dt \right) = S_t^1 \sigma dW_t^\ast \\
+S_t^1 &= S_0^1 + \int_0^t S_u^1 \sigma dW_u^\ast = S_0^1 \exp \left( \sigma W_t^\ast - \frac{1}{2} \sigma^2 t \right)
+\end{align*}
+where
+\begin{align*}
+W_t^\ast &:= W_t + \frac{\mu - r}{\sigma} t = W_t + \int_0^t \lambda ds
+\end{align*}
+
+\paragraph{Market price of risk}
+
+\begin{itemize}
+\item The market price of risk or infinitemsimal \emph{Sharpe ratio} of $S^1$ is defined as
+\begin{align*}
+\lambda^\ast = \frac{\mu - r}{\sigma}
+\end{align*}
+\end{itemize}
+
+\subsection{Black-Scholes PDE}
+
+\paragraph{Black-Scholes PDE}
+
+\begin{align*}
+0 &= \frac{\partial \tilde v}{\partial t} + r \tilde x \frac{\partial \tilde v}{\partial \tilde x} + \frac{1}{2} \sigma^2 \tilde x^2 \frac{\partial^2 \tilde v}{\partial \tilde x^2} - r \tilde v, \qquad \tilde v(T, \cdot) = \tilde h(\cdot)
+\end{align*}
+
+\subsection{Black-Scholes formula for option pricing}
+
+\paragraph{Martingale pricing approach}
+
+\begin{itemize}
+\item The discounted arbitrage-free value at time $t$ of any discounted payoff $H \in L_+^1(\mathcal{F}_T,\mathbb{Q}^\ast)$, $H_T = H(\tilde S^0_T, \tilde S^1_T)$, is given by
+\begin{empheq}[box=\widefbox]{align*}
+V_t^\ast &= \mathbb{E}_\mathbb{Q} \left[ H | \mathcal{F}_t \right] := \vartheta(t,S^1_t)
+\end{empheq}
+\item Then the discounted payoff $H$ can be hedged via the replicating strategy $(V_0,\vartheta)$ s.t.
+\begin{align*}
+V_0 + \int_0^T \vartheta_u dS^1_u = H(\tilde S^0_T, \tilde S^1_T)
+\end{align*}
+Using Itô's representation theorem the replicating strategy can be expressed as
+\begin{empheq}[box=\widefbox]{align*}
+V_t^\ast &= \vartheta(t,S^1_t) = V_0 + \int_0^t \vartheta_s dS^1_s + \underbrace{\textit{cont. FV process}}\limits_\text{''usually'' vanishes} \\
+V_0 &= \vartheta(0,S^1_0), \qquad \vartheta_t = \frac{\partial \vartheta}{\partial x}(t,S^1_t)
+\end{empheq}
+\end{itemize}
+
+\paragraph{Black-Scholes formula for a European call option}
+
+\begin{align*}
+\tilde V_t^{\tilde H} &= \tilde v(t, \tilde S_t^1) = \tilde S_t^1 \Phi(d_1) - \tilde K e^{-r(T-t)} \Phi(d_2) \\
+d_{1,2} &= \frac{\log \left( \frac{\tilde S_t^1}{\tilde K} \right) + \left( r \pm \frac{1}{2} \sigma^2 \right) (T-t)}{\sigma \sqrt{T-t}} \\
+\Phi(y) &= Q^\ast [Y \leq y] = \int_{-\infty}^y \frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}z^2} dz
+\end{align*}
+Remarks:
+\begin{itemize}
+\item $\Phi$ denotes the CDF of the standard normal distribution $\mathcal{N}(0,1)$.
+\item Note that the drift $\mu$ of the stock does not appear here. This is analogous to the result that the probability $p$ of an up move in the CRR binomial model does not appear in the binomial option pricing formula.
+\end{itemize}
+
+\paragraph{Replicating strategy for a European call option}
+
+\begin{align*}
+\nu_t^H &= \frac{\partial \tilde \nu}{\partial \tilde x}(t, \tilde S_t^1) = \Phi(d_1)
+\end{align*}
+
+\paragraph{Greeks}
+
+The derivatives of the option price w.r.t. the various parameters, i.e. the sensitivities of the option price w.r.t. to the parameters, are called Greeks.
+
+\columnbreak
+
+\section{Appendix}
+
+\paragraph{Markov's inequality}
+
+For $X$ any nonnegative integrable RV and $a \in \mathbb{R}, a > 0$:
+\begin{align*}
+\mathbb{P}[X \geq a] &\leq \frac{\mathbb{E}[X]}{a}
+\end{align*}
+
+\paragraph{Chebyshev's inequality}
+
+For $X$ an integrable RV with finite expected value $\mu \in \mathbb{R}$ and finite non-zero variance $\sigma^2, \sigma \in \mathbb{R}$ and for any real number $k > 0$:
+\begin{align*}
+\mathbb{P}[|X - \mu| \geq k \sigma] \leq \frac{1}{k^2}
+\end{align*}
+
+\paragraph{Jensen's inequality}
+
+For $X$ a RV and $f$ a convex function, it holds that
+\begin{align*}
+f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)]
+\end{align*}
+
+\paragraph{Sets/families}
+
+\begin{itemize}
+\item $L_+^0$: familiy of all nonnegative RVs
+\end{itemize}
+
+\paragraph{Correlation and Independence}
+
+\begin{itemize}
+\item Let $X$ and $Y$ be two RVs.
+\item Then $X,Y$ are \emph{uncorrelated} iff
+\begin{align*}
+\mathbb{E}[X \cdot Y] &= \mathbb{E}[X] \cdot \mathbb{E}[Y]
+\end{align*}
+\item Then $X,Y$ are \emph{independent} iff
+\begin{align*}
+\mathbb{P}[X=x,Y=y] &= \mathbb{P}[X=x] \cdot \mathbb{P}[Y=y]
+\end{align*}
+Note that independence of $X,Y$ implies that $X,Y$ are uncorrelated (but not vice-versa!).
+\end{itemize}
+
+\paragraph{Independence of equations}
+
+\begin{itemize}
+\item If there is e.g. a system of equations such as
+\begin{align*}
+\begin{cases}
+a_1 x + b_1 y = c_1 \\
+a_2 x + b_2 y = c_2 \\
+a_3 x + b_3 y = c_3
+\end{cases}
+\end{align*}
+then this system admits a solution iff
+\begin{align*}
+\det \left[
+\begin{matrix}
+a_1 & b_1 & c_1 \\
+a_2 & b_2 & c_2 \\
+a_3 & b_3 & c_3
+\end{matrix}
+\right] &= 0
+\end{align*}
+\end{itemize}
+
+\paragraph{Fubini's lemma}
+
+\begin{align*}
+\mathbb{E} \left[ \int_0^T H_s^2 ds \right] &= \int_0^T \mathbb{E} \left[ H_s^2 \right] ds
+\end{align*}
+
+\columnbreak
+\begin{center}
+\textit{intentionally left blank}
+\end{center}
+\vfill
+
+\section*{Abbreviations}
+
+\begin{description}[style=multiline,leftmargin=1cm,font=\textbf]
+\item[a.a.] almost all
+\item[a.s.] almost surely
+\item[BM] Brownian motion
+\item[CDF] cumulative distribution function
+\item[iff] if and only if
+\item[IOT] in order to
+\item[PDE] partial differential equation
+\item[PDF] probability density function
+\item[RCLL] right-continuous with left limits
+\item[RV] random variable
+\item[SDE] stochastic differential equation
+\item[s.t.] such that
+\item[w.r.t.] with respect to
+\end{description}
+
+\section*{Disclaimer}
+
+\begin{itemize}
+\item This summary is work in progress, i.e. neither completeness nor correctness of the content are guaranteed by the author.
+\item This summary may be extended or modified at the discretion of the readers.
+\item Source: Lecture Mathematical Foundations for Finance, autumn semester 2015/16, ETHZ (lecture notes, script and exercises). Copyright of the content is with the lecturers.
+\item The layout of this summary is mainly based on the summaries of several courses of the BSc ETH ME from Jonas LIECHTI.
+\end{itemize}
+
+\end{multicols*}
+
+\end{document}
