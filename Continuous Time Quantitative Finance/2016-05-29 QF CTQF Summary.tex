@@ -1,0 +1,996 @@
+\documentclass[a4paper,landscape,8pt,fleqn]{scrartcl}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, landscape, margin=1.1cm]{geometry}
+\usepackage{latexsym}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{empheq}			% emphasize (box) equations
+\usepackage{float}				% add H as an option for floats
+\usepackage{parskip}			% add no indentation to new paragraphs
+\usepackage{enumitem}		% description lists
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{framed}
+%\usepackage{dutchcal}		% lower case calligraphic letters
+
+\newcommand{\SummaryTitle}{Continuous Time Quantitative Finance}
+\newcommand{\SummaryAuthor}{Fabian MARBACH}
+\newcommand{\SummarySemester}{Spring Semester 2016}
+
+\pagestyle{plain}
+\columnsep 30pt
+\columnseprule .4pt
+
+\setlength{\mathindent}{0.1cm}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}		% required for boxing several lines of equations at once
+
+\renewcommand*{\familydefault}{\sfdefault}		% set font to default sans-serif
+
+\renewcommand{\labelitemi}{\tiny$\blacksquare$}		% change symbol of itemized lists
+\setlist[itemize]{leftmargin=0.4cm}								% reduce indentation of itemized lists
+\renewcommand{\labelenumi}{(\roman{enumi})}			% change counter of enumerated lists
+\setlist[enumerate]{leftmargin=0.4cm}							% reduce indentation of enumerated lists
+
+\renewcommand{\arraystretch}{1}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+%\allowdisplaybreaks	% equations can be split on two pages/columns
+
+\graphicspath{{images/}}
+
+\pagestyle{fancy}
+\fancyhead{}
+\setlength{\headheight}{0pt}
+\setlength{\footheight}{14pt}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\lfoot{\SummaryAuthor}
+\cfoot{p \thepage\ / \pageref{LastPage}}
+\rfoot{\SummaryTitle}
+
+\usepackage{parskip}	% add no indentation to new paragraphs
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth1.5pt
+width0.25\columnwidth\vspace*{1.2em}\Large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth0.75pt
+width0.25\columnwidth\vspace*{1.2em}\large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\vspace*{1.2em}\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\Mx}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\dd}[2]{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand{\DD}[2]{\frac{\text{D}#1}{\text{D}#2}}
+\newcommand{\deidei}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\Lbrace}[1]{\left\{\begin{array}{ll}#1\end{array}\right.} % left brace with text
+
+% Declare mathematical operators
+\DeclareMathOperator{\erf}{erf}					% error function
+\DeclareMathOperator{\Var}{Var}				% variance
+\DeclareMathOperator{\Varn}{Varn}			% variation
+\DeclareMathOperator{\QV}{QV}				% quadratic variation
+\DeclareMathOperator{\Cov}{Cov}				% covariance
+\DeclareMathOperator{\Ber}{Ber}				% Bernoulli distribution
+\DeclareMathOperator{\Bin}{Bin}				% Binomial distribution
+\DeclareMathOperator{\Geom}{Geom}		% Geometric distribution
+\DeclareMathOperator{\Poi}{Poi}					% Poisson distribution
+\DeclareMathOperator{\Gammaa}{Gamma}	% Gamma distribution
+\DeclareMathOperator{\Cau}{Cau}				% Cauchy distribution
+\DeclareMathOperator{\Adj}{Adj}				% Adjoint
+\DeclareMathOperator{\Bias}{Bias}				% Bias of an estimator
+\DeclareMathOperator{\rank}{rank}				% Bias of an estimator
+
+\begin{document}
+\part*{Summary: \SummaryTitle}
+\SummaryAuthor, \SummarySemester
+\begin{multicols*}{4}
+%\tableofcontents
+%\end{multicols}
+%{\vspace*{0.3cm}}
+%{\hrule depth 0.2pt}
+%{\vspace*{0.3cm}}
+%\begin{multicols}{2}
+\raggedcolumns
+\newpage
+
+\section{Basic Black-Scholes model}
+
+\subsection{Dynamics}
+
+\paragraph{$\mathbb{P}$-dynamics}
+
+\begin{align*}
+\frac{dS_t}{S_t} &= \mu dt + \sigma dB_t \\
+S_t &= S_0 \cdot \exp \left( \left( \mu - \frac{1}{2} \sigma^2 \right) t + \sigma W_t \right)
+\end{align*}
+where
+\begin{multicols}{2}
+\begin{description}[style=multiline,leftmargin=0.5cm]
+\item[$r$] risk-free rate
+\item[$\mu$] trend
+\item[$\sigma$] volatility
+\item[$B_t$] $\mathbb{P}$-BM
+\end{description}
+\end{multicols}
+
+\paragraph{$\mathbb{Q}$-dynamics}
+
+\begin{align*}
+\frac{dS_t}{S_t} &= r dt + \sigma dB_t \\
+S_t &= S_0 \cdot \exp \left( \left( r - \frac{1}{2} \sigma^2 \right) t + \sigma W_t \right)
+\end{align*}
+with $W_t$ a $\mathbb{Q}$-BM, $\theta = \frac{\mu-r}{\sigma}$ the risk-premium and $\exists$ an EMM $\mathbb{Q}$ s.t.
+\begin{align*}
+\left. \mathbb{Q} \right|_{\mathcal{F}_t} &= \exp \left( -\theta B_t - \frac{1}{2} \theta2 t \right) \cdot \left. \mathbb{P} \right|_{\mathcal{F}_t}
+\end{align*}
+
+\subsection{BS formula}
+
+\paragraph{BS formula for a European option}
+\begin{align*}
+C_t &= S_t \Phi (d_1) - K e^{-r(T-t)} \Phi (d_2) \\
+P_t &= K e^{-r(T-t)} \Phi (-d_1) - S_t \Phi (-d_2) \\
+d_{1,2} &= \frac{\log \frac{S_t}{K} + (r \pm \frac{\sigma^2}{2})(T-t)}{\sigma \sqrt{(T-t)}}
+\end{align*}
+with $d_2 = d_1 -\sigma \sqrt{T-t}$.
+
+\paragraph{BS PDE}
+\begin{align*}
+\partial_t C + r s \partial_s C + \frac{1}{2} \sigma^2 s^2 \partial^2_{ss} - r C &= 0 & t \in (0,T) \\
+C(s,t=T) &= g(s)
+\end{align*}
+$\forall s > 0$ with $s$ the stock price in linear space, $T$ the maturity and $g(s)$ the payoff function.
+
+\paragraph{Self-financing portfolio}
+\begin{align*}
+dV_t &= \alpha_t dC_t + \beta_t dS_t
+\end{align*}
+
+\paragraph{Hedging ratio}
+\begin{align*}
+\frac{\beta_t}{\alpha_t} &= -\partial_s C(S_t,t)
+\end{align*}
+
+\paragraph{Martingale approach}
+\begin{align*}
+&C(S_0,T) \\
+&\quad = \mathbb{E}_\mathbb{Q} \left[ e^{-r T} (S_T - K) \mathbb{I}_{S_T \geq K} \right] \\
+&\quad = \mathbb{E}_\mathbb{Q} \left[ e^{-r T} S_T \mathbb{I}_{S_T \geq K} \right] - e^{-r T} K \mathbb{Q} \left[ S_T \geq K \right]
+\end{align*}
+
+\subsection{Greeks}
+
+\paragraph{Delta}
+\begin{align*}
+\Delta &= \frac{\partial C}{\partial s} \\
+\Delta_E^C &= \Phi(d_1) > 0 \\
+\Delta_E^P &= -\Phi(-d_1) = \Phi(d_1) - 1 < 0
+\end{align*}
+
+\paragraph{Gamma}
+\begin{align*}
+\Gamma &= \frac{\partial^2 C}{\partial s^2} & \Gamma_E^C &= \Gamma_E^P = \frac{\phi(d_1)}{s \sigma \sqrt{T-t}} > 0
+\end{align*}
+
+\paragraph{Rho}
+\begin{align*}
+\rho &= \frac{\partial C}{\partial r} \\
+\rho_E^C &= K(T-t) e^{-r(T-t)} \Phi(d_2) > 0 \\
+\rho_E^P &= -K(T-t) e^{-r(T-t)} \Phi(-d_2) < 0
+\end{align*}
+
+\paragraph{Theta}
+\begin{align*}
+\Theta &= \frac{\partial C}{\partial t} \\
+\Theta_E^C &= -\frac{s \varphi(d_1) \sigma}{2\sqrt{T-t}} - r K e^{-r(T-t)} \Phi(d_2) < 0 \\
+\Theta_E^P &= -\frac{s \varphi(d_1) \sigma}{2\sqrt{T-t}} + r K e^{-r(T-t)} \Phi(-d_2) > 0
+\end{align*}
+
+\paragraph{Vega}
+\begin{align*}
+\mathcal{V} &= \frac{\partial C}{\partial \sigma} & \mathcal{V}_E^C &= \mathcal{V}_E^P = s \varphi(d_1) \sqrt{T-t} > 0
+\end{align*}
+
+\subsection{Mathematical tools}
+
+\paragraph{Girsanov's theorem}
+The stochastic exponential or Doléans exponential is defined as:
+\begin{align*}
+\mathcal{E}(X)_t &= \exp \left( X_t - \frac{1}{2} [X]_t \right)
+\end{align*}
+Define the change of measure as:
+\begin{align*}
+\left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t} &= \mathcal{E}(X)_t
+\end{align*}
+Then:
+\begin{itemize}
+\item it holds for the expectation of the RV $\xi$:
+\begin{align*}
+\mathbb{E}_\mathbb{Q}[\xi] = \mathbb{E}_\mathbb{P}\left[ \xi \cdot \left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t} \right]
+\end{align*}
+\item if $W_t$ is a $\mathbb{P}$-BM, then a $\mathbb{Q}$-BM is defined as:
+\begin{align*}
+W_t^\mathbb{Q} &= W_t^\mathbb{P} - \left[ X,W^\mathbb{P} \right]_t
+\end{align*}
+(e.g. if $X_t = \lambda W_t^\mathbb{P}$, then $W_t^\mathbb{Q} = W_t^\mathbb{P} - \lambda t$)
+\end{itemize}
+
+\paragraph{Laplace transform}
+\begin{itemize}
+\item In general, the Laplace transform is defined as:
+\begin{align*}
+\mathcal{L}\lbrace f(t) \rbrace(s) = F(s) = \int_0^\infty e^{-s t} f(t) dt
+\end{align*}
+\item In probability theory: $X$ is a a RV with PDF $f$. Then:
+\begin{align*}
+\mathcal{L}\lbrace f \rbrace = \mathbb{E} \left[ e^{-s X} \right]
+\end{align*}
+Remark: Replace $s$ with $-t$ IOT obtain the MGF (moment-generating function) of $X$, i.e. $\mathbb{E} \left[ e^{t X} \right]$.
+\end{itemize}
+
+\paragraph{Leibnitz's rule for differentiation under the integral}
+\begin{align*}
+&\frac{d}{d\alpha} \int_{a(\alpha)}^{b(\alpha)} f(x,\alpha) dx = \frac{db(\alpha)}{d\alpha} f(b(\alpha),\alpha)\\
+&\qquad - \frac{da(\alpha)}{d\alpha} f(a(\alpha),\alpha) + \int_{a(\alpha)}^{b(\alpha)} \frac{\partial f(x,\alpha)}{\partial \alpha} dx
+\end{align*}
+
+\section{American Currency Options}
+
+\paragraph{Garman-Kohlhagen model}
+Under the risk-neutral probability $\mathbb{Q}$:
+\begin{align*}
+\frac{dS_t}{S_t} &= (r-\delta) dt + \sigma dW_t
+\end{align*}
+with:
+\begin{multicols}{2}
+\begin{description}[style=multiline,leftmargin=0.5cm]
+\item[$r$] domestic risk-free rate
+\item[$\delta$] foreign risk-free rate
+\item[$\sigma$] currency volatility
+\item[$W_t$] $\mathbb{Q}$-BM
+\end{description}
+\end{multicols}
+
+\paragraph{American options}
+\begin{align*}
+C_A(S_0,T) &= \sup_{\tau \in \mathcal{T}(T)} \mathbb{E}_\mathbb{Q} \left[ e^{-r \tau} (S_\tau - K)^+ \right] \\
+P_A(S_0,T) &= \sup_{\tau \in \mathcal{T}(T)} \mathbb{E}_\mathbb{Q} \left[ e^{-r \tau} (K - S_\tau)^+ \right]
+\end{align*}
+
+\paragraph{PDE (continuation region)}
+In the continuation region, an American option satisfies the same PDE as a European option, i.e.
+\begin{align*}
+& \frac{1}{2} \sigma^2 x^2 \partial^2_{xx} C_A(x,u) + (r-\delta) x \partial_x C_A(x,u) \\
+& \qquad - r C_A(x,u) - \partial_u C_A(x,u) = 0
+\end{align*}
+
+\paragraph{Impact of parameters on exercise boundaries}
+In case of an American currency call:
+\begin{itemize}
+\item if the volatility $\sigma$ increases: \\
+then the exercise boundary increases (i.e. we wait longer)
+\item if the domestic interest rate $r$ increases: \\
+then the exercise boundary increases (i.e. we wait longer)
+\item if the foreign interest rate $\delta$ increases: \\
+then the exercise boundary decreases (i.e. we wait less)
+\end{itemize}
+
+\subsection{Decompositions}
+
+\paragraph{American currency call price}
+\begin{align*}
+& C_A(S_t,T-t) = C_E(S_t,T-t) \\
+&+ \delta S_t \int_t^T e^{-\delta (s-t)} \Phi(d_1(S_t,b_c(T-s),s-t)) ds \\
+&- r K \int_t^T e^{-r(s-t)} \Phi(d_2(S_t,b_c(T-s),s-t)) ds
+\end{align*}
+with
+\begin{align*}
+d_1(x,y,u) &= \frac{\log \frac{x}{y} + \left( r-\delta+\frac{1}{2}\sigma^2 \right) u}{\sigma \sqrt{u}} \\
+d_2(x,y,u) &= d_1(x,y,u) - \sigma \sqrt{u}
+\end{align*}
+
+\paragraph{American currency put price}
+\begin{align*}
+& P_A(S_t,T-t) = P_E(S_t,T-t) \\
+&+ r K \int_t^T e^{-r(s-t)} \Phi(-d_2(S_t,b_p(T-s),s-t)) ds \\
+&- \delta S_t \int_t^T e^{-\delta (s-t)} \Phi(-d_1(S_t,b_p(T-s),s-t)) ds
+\end{align*}
+with $d_1, d_2$ as defined above.
+
+\subsection{Perpetual American currency options}
+
+Now: $C_A(x) = C_A(x,+\infty)$ and $P_A(x) = P_A(x,+\infty)$
+
+\paragraph{PDE approach}
+\begin{align*}
+& \frac{1}{2} \sigma^2 x^2 C_A''(x) + (r-\delta) x C_A'(x) - r C_A(x) = 0
+\end{align*}
+with the following boundary conditions (continuity and smooth-pasting):
+\begin{align*}
+C_A(L^\ast) = L^\ast - K \qquad C_A'(L^\ast) = 1
+\end{align*}
+
+\paragraph{Martingale approach}
+\begin{align*}
+C_A(S_t) &= \sup_\tau \mathbb{E}_\mathbb{Q} \left[ \left. e^{-r(\tau-t)} (S_\tau - K) \right| \mathcal{F}_t \right]
+\end{align*}
+By continuity of BM:
+\begin{align*}
+C_A(S_0) &= \sup_L (L - K) \mathbb{E}_\mathbb{Q} \left[ e^{-r T_L} \right]
+\end{align*}
+Compute derivative $\partial_L (L-K) \mathbb{E}_\mathbb{Q} \left[ e^{-r T_L} \right] = 0$ IOT get $L^\ast$.
+
+\paragraph{Perpetual American call \& put}
+\begin{itemize}
+\item Continuation region ($x < L^\ast$)
+\begin{align*}
+C_A(x) &= (L^\ast - K) \left( \frac{x}{L_1^\ast} \right)^{\gamma_1} \\
+P_A(x) &= (K - L^\ast) \left( \frac{x}{L_2^\ast} \right)^{\gamma_2}
+\end{align*}
+with
+\begin{align*}
+L_{1/2}^\ast &= \frac{\gamma_{1,2}}{\gamma_{1,2} - 1} K \quad \geq K \\
+\gamma_{1,2} &= \frac{-\nu \pm \sqrt{\nu^2 + 2r}}{\sigma} \\
+ \nu &= \frac{1}{\sigma} \left( r  -\delta - \frac{1}{2} \sigma^2 \right)
+\end{align*}
+i.e. $\gamma_{1,2}$ are the positive and negative root of:
+\begin{align*}
+\frac{1}{2} \sigma^2 \gamma^2 + \left( r - \delta - \frac{1}{2} \sigma^2 \right) \gamma - r = 0
+\end{align*}
+\item Stopping region ($x \geq L^\ast$)
+\begin{align*}
+C_A(x) &= x-K \\
+P_A(x) &= K-x
+\end{align*}
+i.e. the option price simply corresponds to its intrinsic value.
+\end{itemize}
+
+\paragraph{Put-Call symmetry}
+\begin{align*}
+P_A(S_0,K,r,\delta) &= C_A(K,S_0,\delta,r)
+\end{align*}
+which comes from the fact that the right to sell a foreign currency corresponds to the right to buy the domestic one.
+
+\paragraph{Perpetual exercise boundaries}
+\begin{align*}
+b_c(K,r,\delta,T-t) \cdot b_p(K,\delta,r,T-t) = K^2
+\end{align*}
+
+\paragraph{Laplace transforms of hitting times}
+\begin{itemize}
+\item \emph{Standard $\mathbb{Q}$-BM $W_t$} \\
+If $T_y$ is the first hitting time of $y \in \mathbb{R}$ for a standard $\mathbb{Q}$-BM, i.e.
+\begin{align*}
+T_y = \inf \left \lbrace t \geq 0 : W_t = y \right \rbrace
+\end{align*}
+then the Laplace transform of $T_y$ is given as:
+\begin{align*}
+\mathbb{E}_\mathbb{Q} \left[ e^{-\frac{1}{2} \lambda^2 T_y} \right] = e^{-\lambda |y|}
+\end{align*}
+\item \emph{Drifted BM $W_t + \nu t$} \\
+Let $T_y$ be the first hitting time of $y \in \mathbb{R}$ for a drifted BM $W_t + \nu t$, i.e.
+\begin{align*}
+T_y = \inf \left \lbrace t \geq 0 : W_t + \nu t = y \right \rbrace
+\end{align*}
+Then the corresponding measure $\mathbb{Q}^\ast$ is given according to Girsanov's theorem by:
+\begin{align*}
+\left. \frac{\mathbb{Q}^\ast}{\mathbb{Q}} \right|_{\mathcal{F}_t} &= e^{-\frac{1}{2} \nu^2 t - \nu W_t}, \qquad W_t^\ast = W_t + \nu t
+\end{align*}
+and the Laplace transform of $T_y$ is given as:
+\begin{align*}
+\mathbb{E}_\mathbb{Q} \left[ e^{-\frac{1}{2} \lambda^2 T_y} \right] = e^{\nu y} e^{-|y| \sqrt{\nu^2 + \lambda^2}}
+\end{align*}
+\end{itemize}
+
+\paragraph{Reflection principle}
+\begin{itemize}
+\item If $W_t$ a $\mathbb{Q}$-BM, $\tau_m$ the first passage time of $W_t$ at the level $m$ and if another level $\omega < m$ is considered, then:
+\begin{align*}
+\mathbb{Q} \left[ \tau_m \leq t, W_t \leq \omega \right] = \mathbb{Q} \left[ W_t \geq 2m - \omega \right]
+\end{align*}
+\item If $M_t$ is the running maximum of $W_t$, then:
+\begin{align*}
+\mathbb{Q} \left[ M_t \geq m, W_t \leq \omega \right] = \mathbb{Q} \left[ W_t \geq 2m - \omega \right]
+\end{align*}
+\end{itemize}
+
+\section{Stochastic Volatility}
+
+\paragraph{Time change}
+\begin{align*}
+\Sigma_T &= \int_0^T \sigma_u^2 du \\
+\int_0^t \sigma_u dB_u &= B^\ast_{\Sigma_t} = B^\ast_{\int_0^t \sigma_u^2 du}
+\end{align*}
+where $B_t$ is the original $\mathbb{Q}$-BM and $B_t^\ast$ is the time-changed $\mathbb{Q}$-BM. \\
+For $B_t^\ast$, it holds that:
+\begin{align*}
+B_{\Sigma_t}^\ast &\sim \mathcal{N}(0,\Sigma_t), \qquad \left[ B^\ast \right]_t = \int_0^t \sigma_u^2 du
+\end{align*}
+
+\paragraph{General $\mathbb{P}$-dynamics for a currency}
+\begin{align*}
+\frac{dS_t}{S_t} &= \mu dt + \sigma_t d \tilde B_t \\
+\frac{d\sigma_t}{\sigma_t} &= f(\sigma_t) dt + \gamma d \tilde W_t
+\end{align*}
+with $\tilde W_t, \tilde B_t$ two BM with correlation coefficient $\rho$.
+
+\paragraph{General $\mathbb{Q}$-dynamics for a currency}
+\begin{align*}
+\frac{dS_t}{S_t} &= (r - \delta) dt + \sigma_t dB_t \\
+\frac{d\sigma_t}{\sigma_t} &= \left( f(\sigma_t) - \Phi_t^\sigma \right) dt + \gamma d W_t
+\end{align*}
+with $W_t, B_t$ two BM with correlation coefficient $\rho$ and $\Phi_t^\sigma$ the risk premium associated with volatility.
+
+Under $\mathbb{Q}$, the underlying price $S_T$ is then given by:
+\begin{align*}
+S_t &= S_0 e^{(r-\delta)t - \frac{1}{2} \int_0^t \sigma_u^2 du + \int_0^t dB_u} \\
+&= S_0 e^{(r-\delta)t - \frac{1}{2} \Sigma_t^2 + B^\ast_{\Sigma_t}}
+\end{align*}
+
+\subsection{Hull \& White model}
+
+\paragraph{$\mathbb{Q}$-dynamics of the Hull \& White model}
+Volatility $\sigma$ is assumed to follow a GBM.
+\begin{align*}
+\frac{dS_t}{S_t} &= r dt + \sigma_t dW_t^{(1)} \qquad \frac{d\sigma_t}{\sigma_t} = k dt + \gamma dW_t
+\end{align*}
+where $W_t^{(1)}, W_t$ two independent BM.
+
+Assumptions:
+\begin{description}[style=multiline,leftmargin=1cm,font=\textbf]
+\item[$\delta = 0$] stock option on domestic market
+\item[$\rho = 0$] volatility follows a GBM and is uncorrelated with the stock price
+\item[$\Phi_\sigma = 0$] volatility has zero systematic risk
+\end{description}
+Thus, the drift of volatility is assumed to be constant, i.e. $f(\sigma) = k$.
+
+Additional random variable: $V_T = \Sigma_T / T$.
+
+\paragraph{Hull \& White PDE}
+Apply Itô's lemma to $C_E = f(S_t,\sigma_t)$ under $\mathbb{Q}$ and use the martingale property $\mathbb{E}_\mathbb{Q}[C_E] = r C_E$ IOT obtain:
+\begin{align*}
+&\frac{1}{2} \sigma^2 x^2 \partial^2_{xx} C_E + \frac{1}{2} \gamma^2 \sigma^2 \partial^2_{\sigma \sigma} C_E + r x \partial_x C_E \\
+&\qquad + \sigma k \partial_\sigma C_E + \partial_t C_E - r C_E = 0
+\end{align*}
+
+\subsection{Scott model}
+
+\paragraph{$\mathbb{Q}$-dynamics of the Scott model}
+The Scott model assumes that the logarithm of the volatility follows a Vasicek process, i.e. $f(\sigma) = \beta (a - \log \sigma) + \frac{1}{2} \gamma^2$. Then:
+\begin{align*}
+\frac{d\sigma_t}{\sigma_t} &= \left( \beta (a - \log \sigma_t) + \frac{1}{2} \gamma^2 \right) dt + \gamma d \tilde W_t \\
+d \log \sigma_t &= \beta (a - \log \sigma_t) dt + \gamma d \tilde W_t
+\end{align*}
+
+\paragraph{Scott PDE}
+There are two approaches on how to derive the Scott PDE:
+\begin{enumerate}
+\item apply Itô's lemma to $C_E = f(S_t,\sigma_t)$ under $\mathbb{Q}$ \\
+use the martingale property $\mathbb{E}_\mathbb{Q}[C_E] = r C_E$ \\
+(as in the Hull \& White model)
+\item apply Itô's lemma to $C_E$ under $\mathbb{P}$ \\
+use a continuous time version of the two factor APT (Arbitrage Pricing Theory model) with $\mathbb{E}[dC_E / C_E]$ and $\Phi_t^S = \mu + \delta - r$ \\
+equate $\mathbb{E}[\cdot]$
+\end{enumerate}
+Then:
+\begin{align*}
+&\frac{1}{2} \sigma^2 x^2 \partial^2_{xx} C_E + \frac{1}{2} \gamma^2 \sigma^2 \partial^2_{\sigma \sigma} C_E + (r - \delta) x \partial_x C_E \\
+&\qquad + \sigma (f(\sigma) - \Phi_t^\sigma) \partial_\sigma C_E + \partial_t C_E - r C_E = 0
+\end{align*}
+
+\section{Jump Models}
+
+\subsection{Poisson processes}
+
+\paragraph{Standard Poisson process}
+A \textit{counting process}:
+\begin{itemize}
+\item \textit{without explosion} (i.e. $T = \infty$)
+\item with \textit{independent increments} \\
+i.e. for every $s,t \geq 0$ the RV $N_{t+s} - N_t$ is independent of $\mathcal{F_t^N}$
+\item with \textit{stationary increments} \\
+i.e. for every $s,t \geq 0$ the RV $N_{t+s} - N_t$ has the same law as $N_s$
+\end{itemize}
+Important properties:
+\begin{align*}
+\mathbb{P}[N_t = n] &= e^{-\lambda t} \frac{(\lambda t)^n}{n!} \\
+\mathbb{E}[N_t] &= \lambda t \qquad \Var[N_t] = \lambda t \\
+\lambda: &\text{ intensity of jumps}
+\end{align*}
+Characteristic function:
+\begin{align*}
+\mathbb{E}\left[ e^{i u N_t} \right] &= e^{\lambda t (e^{i u} - 1)}
+\end{align*}
+Useful properties:
+\begin{align*}
+\mathbb{E}\left[ e^{\alpha N_t} \right] &= e^{\lambda t (e^\alpha - 1)} \qquad \mathbb{E}\left[ x^{N_t} \right] = e^{\lambda t (x-1)}
+\end{align*}
+
+\paragraph{Compensated Poisson process $M_t$}
+The following expressions are $\mathbb{F}$-martingales:
+\begin{align*}
+M_t &:= N_t - \lambda t \\
+M_t^2 - \lambda t &= (N_t - \lambda t)^2 - \lambda t
+\end{align*}
+
+\paragraph{Itô's formula}
+\begin{align*}
+dX_t &= h_t dt + f_t dW_t + g_t dM_t \\
+dF(t,X_t) &= \partial_t F(t,X_t) dt \\
+&\quad + \partial_x F(t,X_{t-}) (dX_t - g_t dN_t) \\
+&\quad + \frac{1}{2} \partial^2_{xx} F(t,X_t) d[X]_t \\
+&\quad + \left( F(t,X_t) - F(t,X_{t-}) \right) dN_t \\
+F(t,X_t) &= F(0,X_0) + \int_0^t \partial_t F(s,X_s) ds \\
+&\quad + \int_0^t \partial_x F(s,X_{s-}) dX_s \\
+&\quad + \frac{1}{2} \int_0^t \partial^2_{xx} F(s,X_s) f_s^2 ds \\
+&\quad + \int_0^t (F(s,X_s) - F(s,X_{s-}) \\
+&\qquad - \partial_x F(s,X_{s-} g_s) dN_s
+\end{align*}
+Assumption: $F$ is a $C^{1,2}$ function on $\mathbb{R}^+ \times \mathbb{R}$, i.e. $\partial_t F, \partial_x F, \partial^2_{xx} F$ exist and are continuous.
+
+Note that:
+\begin{itemize}
+\item In case of a jump at $t$: $X_t = X_{t-} + g_t$ \\
+e.g. if $g_t = X_{t-} \phi$, then $X_t = (1+\phi) X_{t-}$
+\item $d[X]_t = f_t^2 dt$
+\item If $h_t = f_t = 0$ and $g_t = \phi$, \\
+then $S_t = S_0 (1 + \phi)^{N_t}$.
+\end{itemize}
+Example:
+\begin{align*}
+\frac{dS_t}{S_{t-}} &= b dt + \sigma dW_t + \phi dM_t \\
+d \log S_t &= \left( b - \frac{1}{2} \sigma^2 - \lambda \phi \right) dt \\
+& \qquad + \sigma dW_t + \log(1+\phi) dN_t \\
+S_t &= S_0 \underbrace{e^{b t}}_\text{drift} \underbrace{e^{\sigma W_t - \frac{1}{2} \sigma^2}}_\text{martingale} \underbrace{e^{\log(1+\phi) N_t - \lambda \phi t}}_\text{martingale}
+\end{align*}
+
+\paragraph{Girsanov's theorem for Poisson processes}
+Let $L_t$ be the positive exponential martingale solution of:
+\begin{align*}
+dL_t &= L_{t-} \phi dM_t, & L_t = e^{\log(1+\phi)N_t - \lambda \phi t}
+\end{align*}
+Let $\mathbb{Q}$ be the probability measure defined by:
+\begin{align*}
+\left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t} &= L_t
+\end{align*}
+Then it holds:
+\begin{itemize}
+\item under $\mathbb{P}$:
+\begin{itemize}
+\item $M_t$ is a $\mathbb{P}$-martingale
+\item $(N_t)_{t \geq 0}$ is a $\mathbb{P}$-Poisson process of intensity $\lambda$
+\end{itemize}
+\item under $\mathbb{Q}$:
+\begin{itemize}
+\item $M_t^\phi = M_t - \phi \lambda t = N_t - (1+\phi) \lambda t$ is a $\mathbb{Q}$-martingale
+\item $(N_t)_{t \geq 0}$ is a $\mathbb{Q}$-Poisson process of intensity $(1+\phi)\lambda$
+\end{itemize}
+\item for the RV $\xi$ that:
+\begin{align*}
+\mathbb{E}_\mathbb{Q}[\xi] = \mathbb{E}_\mathbb{P}\left[ \xi \cdot \left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t} \right]
+\end{align*}
+(i.e. as in the "normal" Girsanov theorem)
+\end{itemize}
+
+\subsection{Lévy processes}
+
+\paragraph{Lévy process}
+An $\mathbb{R}^d$-valued process $X$:
+\begin{itemize}
+\item s.t. $X_0 = 0$
+\item with \textit{independent increments} \\
+i.e. for every $s,t \geq 0$ the RV $X_{t+s} - X_t$ is independent of $\mathcal{F}_t^X$
+\item with \textit{stationary increments} \\
+i.e. for every $s,t \geq 0$ the RVs $X_{t+s} - X_t$ and $X_s$ have the same law
+\item that is \textit{continuous in probability} \\
+i.e. for fixed $t$, $\mathbb{P} \left[ | X_t - X_u | > \epsilon \right] \to 0$ when $u \to t$ for every $\epsilon > 0$.
+\end{itemize}
+
+\paragraph{Lévy exponent}
+If $\mathbb{E} \left[ \exp(k X_1) \right] < \infty$ for any $k$, then the Lévy exponent $\psi$ on $[0,\infty)$ of the Lévy process $X$ is defined as:
+\begin{align*}
+\mathbb{E} \left[ \exp(k X_1) \right] &= \exp (\psi(k))
+\end{align*}
+Note that the process $\left( e^{k X_t - t \psi(k)} \right)_{t \geq 0}$ is a martingale for any $k$ s.t. $\psi(k) = \log \mathbb{E} \left[ e^{k X_1} \right] < \infty$
+
+\paragraph{Put-Call symmetries}
+\begin{itemize}
+\item dynamics under the domestic risk-neutral probability $\mathbb{Q}$
+\begin{align*}
+\frac{dS_t}{S_{t-}} &= (r-\delta) dt + \sigma dW_t + \phi dM_t \\
+S_t &= S_0 e^{(r - \delta) t} e^{\sigma W_t - \frac{1}{2} \sigma^2} e^{\log(1+\phi) N_t - \lambda \phi t}
+\end{align*}
+\item European put-call symmetry
+\begin{align*}
+&P_E \left( x,K,r,\delta,\sigma,\phi,\lambda \right) \\
+&\qquad = C_E \left( K,x,\delta,r,\sigma,\frac{-\phi}{1+\phi},\lambda(1+\phi) \right)
+\end{align*}
+\item American put-call symmetry
+\begin{align*}
+&P_A \left( x,K,r,\delta,\sigma,\phi,\lambda \right) \\
+&\quad = K x \cdot C_A \left( \frac{1}{x},\frac{1}{K},\delta,r,\sigma,\frac{-\phi}{1+\phi},\lambda(1+\phi) \right)
+\end{align*}
+\item Symmetry for exercise boundaries
+\begin{align*}
+b_p \left( r,\delta,\phi,\lambda \right) \cdot b_c \left( \delta,r,\frac{-\phi}{1+\phi},\lambda(1+\phi) \right) = K^2
+\end{align*}
+\end{itemize}
+
+\paragraph{Hitting times}
+\begin{itemize}
+\item dynamics of the underlying
+\begin{align*}
+S_t &= S_0 e^{ \left( b - \phi \lambda - \frac{1}{2} \sigma^2 \right) t + \sigma W_t + \log(1+\phi) N_t} \\
+&= S_0 e^{X_t}
+\end{align*}
+\item passage times
+\begin{align*}
+T_L(S) &= \inf \lbrace t \geq 0 : S_t \geq L \rbrace \\
+T_\mathcal{L}(X) &= T_L(S) = \inf \lbrace t \geq 0 : X_t \geq \mathcal{L} \rbrace \\
+&\qquad \text{with } \mathcal{L} = \log \frac{L}{S_0}
+\end{align*}
+\item Laplace transform
+\begin{align*}
+\mathbb{E} \left[ e^{-u T_\mathcal{L}} \right] &=
+\begin{cases}
+e^{-\psi^{-1}(u) \mathcal{L}} & : \mathcal{L} > 0 \\
+1 & : \text{otherwise}
+\end{cases}
+\end{align*}
+with $e^{-\psi^{-1}(u) \mathcal{L}}$ the positive root of $\psi(k) = u$.
+\item Overshoot: if the jump size is strictly positive (i.e. $\phi > 0$), there is a non-zero probability that $X_{T_\mathcal{L}}$ is strictly greater than $\mathcal{L}$, i.e.
+\begin{align*}
+\mathbb{P}[X_{T_\mathcal{L}} > \mathcal{L}] > 0
+\end{align*}
+Then the overshoot is defined as
+\begin{align*}
+O_\mathcal{L} &= X_{T_\mathcal{L}} - \mathcal{L}
+\end{align*}
+If the the jump size is strictly negative (i.e. $-1 < \phi < 0$), then $O_\mathcal{L} = 0$, i.e. $X_t$ is continuous at the boundary.
+\end{itemize}
+
+\paragraph{Set of risk-neutral probability measures}
+\begin{itemize}
+\item dynamics of the underlying
+\begin{align*}
+\frac{dS_t}{S_{t-}} &= b dt + \sigma dW_t + \phi dM_t \\
+S_t &= S_0 e^{ \left( b - \phi \lambda - \frac{1}{2} \sigma^2 \right) t + \sigma W_t + \log(1+\phi) N_t} \\
+R(t) &= e^{-r t}
+\end{align*}
+\item martingale condition: \\
+$d(R S)_t$ is a $\mathbb{P}^{\psi, \gamma}$-martingale, i.e.
+\begin{align*}
+\frac{d(R S)_t}{R_t S_t^-} &= \sigma d \hat W_t  + \phi d \hat M_t
+\end{align*}
+\item \emph{set $\mathcal{Q}$ of EMMs} defined by:
+\begin{align*}
+\left. \frac{\mathbb{P}^{\psi, \gamma}}{\mathbb{P}} \right|_{\mathcal{F}_t} &= L_t^{\psi, \gamma} = L_t^\psi(W) L_t^\gamma(M)
+\end{align*}
+with
+\begin{align*}
+L_t^\psi(W) &= e^{\psi W_t - \frac{1}{2} \psi^2 t} = \mathcal{E}(\psi W)_t \\
+L_t^\gamma(M) &= e^{\log(1+\gamma) N_t - \lambda \gamma t}
+\end{align*}
+and the constraint
+\begin{align*}
+b - r + \sigma \psi + \lambda \psi \gamma = 0
+\end{align*}
+\item $\mathbb{P}^{\psi, \gamma}$-martingales:
+\begin{align*}
+\hat W_t &= W_t - \psi t \\
+\hat M_t &= M_t -  \lambda \gamma t = N_t - \lambda(1+\gamma) t
+\end{align*}
+\end{itemize}
+
+\section{Real Options}
+
+\subsection{Optimal entry}
+
+\paragraph{Setting}
+\begin{itemize}
+\item a firm can invest at any time $t$ the investment sum $K_t$ to install a project which generates the sum of expected discounted future net cash-flows $V_t$
+\item the investment is irreversible
+\item both $K_t$ and $V_t$ are stochastic
+\item the maturity is infinite
+\end{itemize}
+
+\paragraph{Dynamics}
+\begin{itemize}
+\item Historical probability $\mathbb{P}$:
+\begin{align*}
+\frac{dV_t}{V_t} &= \alpha_1 dt + \sigma_1 dW_t \\
+\frac{dK_t}{K_t} &= \alpha_2 dt + \sigma_2 dB_t
+\end{align*}
+where the two $\mathbb{P}$-BM $W_t,B_t$ are correlated with $\rho$.
+\item Risk-neutral probability $\mathbb{Q}$:
+\begin{align*}
+\frac{d(V_t/K_t)}{V_t/K_t} &= (\alpha_1 - \alpha_2) dt + \Sigma dZ_t \\
+&\text{with } \Sigma = \sqrt{\sigma_1^2 + \sigma_2^2 - 2 \rho \sigma_1 \sigma_2}
+\end{align*}
+where $Z_t$ a $\mathbb{Q}$-BM.
+\end{itemize}
+
+\paragraph{Real option}
+\begin{itemize}
+\item Supremum
+\begin{align*}
+C_\text{RO} &= \sup_{\tau \in \mathcal{T}} \mathbb{E}_\mathbb{P} \left[ e^{-r \tau} (V_\tau - K_\tau) \right] \\
+&= \sup_{\tau \in \mathcal{T}} \mathbb{E}_\mathbb{P} \left[ e^{-r \tau} K_\tau \left( \frac{V_\tau}{K_\tau} - 1 \right) \right] \\
+&= \sup_{\tau \in \mathcal{T}} K_0 \mathbb{E}_\mathbb{Q} \left[ e^{-(r - \alpha_2) \tau} (V_\tau - K_\tau) \right]
+\end{align*}
+\item Since this problem is in principle a perpetual American call option:
+\begin{align*}
+C_\text{RO}(V_0,K_0) &= K_0 (L^\ast - 1) \left( \frac{V_0/K_0}{L^\ast} \right)^\epsilon \\
+L^\ast &= \frac{\epsilon}{\epsilon - 1}
+\end{align*}
+with
+\begin{align*}
+\epsilon &= \sqrt{\left( \frac{\alpha_1 - \alpha_2}{\Sigma^2} - \frac{1}{2} \right)^2 + \frac{2(r-\alpha_2)}{\Sigma^2}} \\
+& \qquad - \left( \frac{\alpha_1 - \alpha_2}{\Sigma^2} - \frac{1}{2} \right)
+\end{align*}
+\end{itemize}
+
+\paragraph{Interpretation}
+In the neoclassical framework, it is optimal to invest if expected discounted earnings are higher than expected discounted costs, i.e. if $X_t > 1$. \\
+This framework, however, takes also the risk appropriately into account and thus the optimal time to invest is at $T_{L^\ast}$ with $L^\ast > 1$. In other words, this frameworks generally suggests a certain delay compared to the neoclassical framework IOT account for the risk taken.
+
+%\subsection{Optimal entry in presence of competition}
+
+\subsection{Optimal entry and optimal exit}
+
+\paragraph{Setting}
+\begin{itemize}
+\item no competition
+\item decision to \textit{invest} and irreversible decision to \textit{disinvest}
+\item decision to \textit{invest} (with entry cost $K_i$) and irreversible decision to \textit{disinvest} (with exit cost $K_d$)
+\item corresponds to embedded perpetual American options, i.e. first an American call (investment) and an American put (disinvestment)
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}[style=multiline,leftmargin=1cm,font=\textbf]
+\item[$K_i$] investment cost
+\item[$K_d$] disinvestment cost
+\item[$K$] sum of all future discounted costs
+\item[$\alpha < r$] drift strictly smaller than risk-free rate
+\end{description}
+
+\paragraph{Supremum}
+\begin{align*}
+& VF(S_0) = C_A(S_0) + P_A(S_0) \\
+&\quad = \sup_{L_i, L_d} \phi(L_i) \mathbb{E} \left[ e^{-r T_{L_i}} \right] + \psi(L_d) \mathbb{E} \left[ e^{-r T_{L_d}} \right]
+\end{align*}
+with
+\begin{align*}
+\phi(L_i) &= \frac{L_i}{r-\alpha} - K - K_i \\
+\psi(L_d) &= K - \frac{L_d}{r-\alpha} - K_d
+\end{align*}
+
+\paragraph{Laplace transforms}
+\begin{align*}
+\mathbb{E} \left[ e^{-r T_i} \right] &= \left( \frac{S_0}{L_i} \right)^{\gamma_1} \\
+\mathbb{E} \left[ e^{-r (T_d - T_i)} \right] &= \left( \frac{L_i}{L_d} \right)^{\gamma_2}
+\end{align*}
+with:
+\begin{align*}
+\gamma_{1,2} &= \frac{-\theta \pm \sqrt{2r + \theta^2}}{\sigma}, \quad \theta = \frac{\alpha - \frac{1}{2}\sigma^2}{\sigma}
+\end{align*}
+
+\paragraph{Interpretation}
+The possibility to disinvest gives the firm incentives to invest earlier than in the irreversible investment case.
+
+\columnbreak
+
+\section{Systemic Risk}
+
+\paragraph{Introduction}
+\begin{itemize}
+\item notional value of all derivatives (globally) corresponds to app. 12 times global GDP
+\item if derivatives were only used for hedging, notional value would amount to app. 30-40 \% of global GDP
+\item conflict of interest for rating agencies: companies pay for their ratings \ldots
+\end{itemize}
+
+\paragraph{CDS (Credit Default Swaps)}
+\begin{itemize}
+\item only half of the CDS in the USA actually covered risks, the other half served only speculative purposes
+\item thus, banks can actually benefit more from financial distress of their client companies
+\item \emph{ISDA} (International Swaps \& Derivatives Association): makes finally the decision whether a credit event takes place or not (which is relevant for CDS), but: members of the voting board of ISDA are the major banks who also purchased the CDS
+\end{itemize}
+
+\paragraph{Food speculation}
+\begin{itemize}
+\item \emph{Impact of food speculation on prices:}
+\begin{itemize}
+\item Paradox: usually, the futures prices converge to the spot price at maturity
+\item however: on the food market it is vice-versa, i.e. the spot prices converge to the futures prices
+\end{itemize}
+\item demand for commodities was (is) dominated by speculators (between 65--80 \%)
+\end{itemize}
+
+\paragraph{High-Frequency Trading (HFT)}
+\begin{itemize}
+\item the economy does not work in milliseconds, but takes days, weeks, years to adapt \ldots
+\item \emph{Front trading:}
+\begin{itemize}
+\item buying a stock just before an investor wants to buy it IOT sell the stock to the same investor for a slightly higher price
+\item this is a kind of a tax on investors who do not have access to HFT
+\item of course this is illegal (kind of insider trading)
+\end{itemize}
+\item counter-regulation: e.g. micro-tax on electronic payments
+\end{itemize}
+
+\paragraph{Fiscal arbitrage}
+\begin{itemize}
+\item e.g. Goldman Sachs created a structured product (basket) IOT allow Greece to convert debt in USD into EUR at an arbitrary higher exchange rate \\
+result: high commission for Goldman Sach and a mean for the Greek government to hide debt
+\end{itemize}
+
+\paragraph{Insider trading}
+\begin{itemize}
+\item criteria:
+\begin{enumerate}
+\item surprisingly high volume (and open interest)
+\item impressive profits within a short period (e.g. 200--500 \%)
+\item transactions without hedging
+\end{enumerate}
+\item insider trading for stocks: can be justified since private information is revealed
+\item insider trading for options: cannot be justified since no information is actually revealed (e.g. open interest is not considered in the BS formula)
+\end{itemize}
+
+\section{Environmental Finance}
+
+\paragraph{Environmental Finance}
+\begin{itemize}
+\item part of environmental economics, exploits financial instruments IOT deal with ecological issues \\
+e.g. land use planning, natural resource preservation, urban growth issues
+\item focuses on financial and quantitative issues, proposed by environmental economists
+\item quantitative analysis of the impact of market-based environmental policies \\
+e.g. European Emission Trading Scheme
+\end{itemize}
+
+\paragraph{Global warming}
+\begin{itemize}
+\item \emph{perspectives on how to tackle global warming:}
+\begin{itemize}
+\item economics: introduce taxes
+\item finance: introduce a market
+\end{itemize}
+\item \emph{ecological footprint:} measures how much land and water area a human population requires to produce the resources it consumes and to absorb its wastes, using prevailing technology \\
+e.g. in 2012: humanity used 1.8 planets (i.e. 2 yrs of regeneration)
+\item \emph{CO\textsubscript{2} concentration in the atmosphere:}
+\begin{itemize}
+\item since industrialisation, CO\textsubscript{2} concentration has been continuously increasing
+\item today's concentration is 400ppm, while the safe upper limit might rather be 350 ppm
+\end{itemize}
+\item \emph{CO\textsubscript{2} emissions}
+\begin{itemize}
+\item if all CO\textsubscript{2} emissions were globally stopped, it would take 1,000 yrs to decrease global temperature by 1 K
+\item biggest carbon emissioning states: USA and China
+\item average CO\textsubscript{2} emissions per capita, e.g. CHE 4.6 t (in 2011)
+\item goal: 1 t p.c. and p.a.
+\end{itemize}
+\item \emph{temperature increase:}
+\begin{itemize}
+\item current projection if no actions are taken: +4.5 K (catastrophic outcome \ldots)
+\item reconstruction of temeprature curves: data from ice layers, different models provide different reconstructions of temperature curves
+\end{itemize}
+\item \emph{consequences of global warming:}
+\item more extreme events (e.g. insurance industry)
+\item adaption costs (e.g. in developping countries IOT mitigate effects)
+\end{itemize}
+
+\paragraph{Kyoto protocol}
+\begin{itemize}
+\item Greenhouse gas emissions (GHG) of developed countries to be reduced by 5.2 \% from 1990 to 2012 (Europe: 8 \%) \\
+However, in 2011, global emissions were 42 \% higher than in 1990
+\item \emph{market-based mechanisms:} emission permits
+\item \emph{project-based mechanisms:} certificates of emission reduction
+\end{itemize}
+
+\paragraph{EU ETS}
+\begin{itemize}
+\item started in 2005 and covers 5 main sectors: pulp \& paper, steel, cement, energy production, ore \& mining
+\item each relevant company received a pre-specified amount of permits (emission allowances)
+\item \emph{price development:}
+\begin{itemize}
+\item start with a high price, decline after 2005, crashed by 2010 (partly also due to the financial crisis)
+\item Brussels had no clue about CO\textsubscript{2}-emissions, thus companies were polled, but they initially reported way too much
+\item Stiglitz: CO\textsubscript{2} price per t will increase to 100 EUR at some point \\
+(40 EUR per t is required as an incentive for sustainable development)
+\end{itemize}
+\item \emph{issues:}
+\begin{itemize}
+\item allocation criteria: grandfathering vs. auctioning
+\item windfall profits, e.g. energy sector can pass opportunity costs of emission permits on the end-consumer
+\item duration of the scheme: the longer, the better?
+\item relevant sectors to include, e.g. what about aviation, transportation, households?
+\end{itemize}
+\item \emph{emission allowance:}
+\begin{itemize}
+\item a limited, transferable right to emit one ton of an offending gas or carbon dioxide equivalent (CO\textsubscript{2}e)
+\item goal of the provisions: cost-efficiency
+\end{itemize}
+\item \emph{marginal cost theory:}
+\begin{itemize}
+\item price of a permit equal to the marginal cost of abatement, i.e.
+\begin{align*}
+S_t = MC_t
+\end{align*}
+i.e. if $S_t > MC_t$, sell permit \& adapt clean technology \\
+i.e. if $S_t < MC_t$, buy permit \& adapt clean technology
+\item companies should reduce their expected discounted costs:
+\begin{align*}
+\min_{X_0} \left\lbrace P_0 X_0 + (1 + \eta)^{-1} \mathbb{E} \left[ g(Q) \cdot (P_1 + P_2) \right] \right\rbrace
+\end{align*}
+\item but: marginal cost theory inconsistent with reality
+\item "special" stochastic process $S_t$: on $[0,T)$ a BM, but at $T$ either $0$ or $P$ \ldots
+\item unknowns: $X_1$ (emissions of company 1), $X_2$ (emissions of company 2), $S_T$ (price of CO\textsubscript{2}-certificates at $T$)
+\end{itemize}
+
+\end{itemize}
+
+\columnbreak
+\begin{center}
+\textit{intentionally left blank}
+\end{center}
+\vfill
+\section*{Notation}
+
+\begin{description}[style=multiline,leftmargin=1cm,font=\textbf]
+\item[$\varphi$] PDF of the standard normal distribution
+\item[$\Phi$] CDF of the standard normal distribution
+\end{description}
+
+\section*{Abbreviations}
+
+\begin{description}[style=multiline,leftmargin=1cm,font=\textbf]
+%\item[a.a.] almost all
+%\item[a.s.] almost surely
+\item[BM] Brownian motion
+\item[CDF] cumulative distribution function
+\item[e.g.] exempli gratia
+\item[EMM] equivalent martingale measure
+\item[i.e.] id est
+%\item[iff] if and only if
+\item[IOT] in order to
+\item[p.a.] per annum
+\item[p.c.] per capita
+\item[PDE] partial differential equation
+\item[PDF] probability density function
+%\item[RCLL] right-continuous with left limits
+\item[RV] random variable
+%\item[SDE] stochastic differential equation
+\item[s.t.] such that
+%\item[w.r.t.] with respect to
+\end{description}
+
+\section*{Disclaimer}
+
+\begin{itemize}
+\item This summary is work in progress, i.e. neither completeness nor correctness of the content are guaranteed by the author.
+\item This summary may be extended or modified at the discretion of the readers.
+\item Source: Lecture \SummaryTitle, \SummarySemester, UZH (lecture notes, script, exercises and literature). Copyright of the content is with the lecturers.
+\item The layout of this summary is based on the summaries of several courses of the BSc ETH ME from Jonas LIECHTI.
+\end{itemize}
+
+\end{multicols*}
+
+\end{document}

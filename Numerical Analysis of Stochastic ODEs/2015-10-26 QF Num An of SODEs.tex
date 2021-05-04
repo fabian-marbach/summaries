@@ -1,0 +1,721 @@
+\documentclass[a4paper,landscape,7pt,fleqn]{scrartcl}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[dvips]{geometry}
+\usepackage{latexsym}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{empheq}				% emphasize (box) equations
+%\usepackage{listings}			% source code listings
+\usepackage{algorithm2e}		% quote algorithms
+
+\pagestyle{plain}
+\typearea{16}
+\columnsep 30pt
+\columnseprule .4pt
+
+\setlength{\mathindent}{0.1cm}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}		% required for boxing several lines of equations at once
+
+\renewcommand*{\familydefault}{\sfdefault}		% set font to default sans-serif
+
+\renewcommand{\labelitemi}{\tiny$\blacksquare$}		% change symbol of itemized lists
+
+\renewcommand{\arraystretch}{1}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+\allowdisplaybreaks	% equations can be split on two pages/columns
+
+\usepackage{parskip}	% add no indentation to new paragraphs
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth1.5pt
+width0.25\columnwidth\vspace*{1.2em}\Large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth0.75pt
+width0.25\columnwidth\vspace*{1.2em}\large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\vspace*{1.2em}\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\Mx}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\dd}[2]{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand{\DD}[2]{\frac{\text{D}#1}{\text{D}#2}}
+\newcommand{\deidei}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\Lbrace}[1]{\left\{\begin{array}{ll}#1\end{array}\right.} % left brace with text
+
+% Declare mathematical operators
+\DeclareMathOperator{\erf}{erf}					% error function
+\DeclareMathOperator{\Var}{Var}				% variance
+\DeclareMathOperator{\Varn}{Varn}			% variation
+\DeclareMathOperator{\QV}{QV}				% quadratic variation
+\DeclareMathOperator{\Cov}{Cov}				% covariance
+\DeclareMathOperator{\Ber}{Ber}				% Bernoulli distribution
+\DeclareMathOperator{\Bin}{Bin}				% Binomial distribution
+\DeclareMathOperator{\Geom}{Geom}		% Geometric distribution
+\DeclareMathOperator{\Poi}{Poi}	% Poisson distribution
+\DeclareMathOperator{\Gammaa}{Gamma}	% Gamma distribution
+\DeclareMathOperator{\Cau}{Cau}				% Cauchy distribution
+\DeclareMathOperator{\Adj}{Adj}				% Adjoint
+\DeclareMathOperator{\Bias}{Bias}				% Bias of an estimator
+
+
+\begin{document}
+\part*{\LARGE{Summary: Numerical Analysis of Stochastic Ordinary Differential Equations (SODEs)}}
+Fabian MARBACH, October 2015
+\begin{multicols*}{3}
+%\tableofcontents
+%\end{multicols}
+%{\vspace*{0.3cm}}
+%{\hrule depth 0.2pt}
+%{\vspace*{0.3cm}}
+%\begin{multicols}{2}
+\newpage
+
+\section{Generation of random numbers}
+
+\paragraph{Pseudo random number generators}
+
+Let $\Omega, \mathcal{A}, \mathbb{P})$ be a probability space and let $U_n: \Omega \rightarrow \mathbb{R}, n \in \mathbb{N}$ be a sequence of $\mathbb{P}$-independent $\mathcal{U}_{(0,1)}$-distributed random variables. $\mathcal{U}_{(0,1)}$-pseudo random numbers are sequences of real number that are calculated by a deterministic algorithm and that have --- in an appropriate sense --- similar statistical properties as $(U_n)_{n \in \mathbb{N}}$.
+
+\subsection{Inversion method}
+
+\paragraph{Generalized inverse distribution function associated to a distribution function}
+
+Let $F: \mathbb{R} \rightarrow [0,1]$ be a distribution function. Then we denote by $I_F: (0,1) \rightarrow \mathbb{R}$ the function with the property that $\forall y \in (0,1$ it hold that
+\begin{align*}
+I_F(y) = \inf \lbrace x \in \mathbb{R} : F(x) \leq y \rbrace = \inf (F^{-1}([y,1]))
+\end{align*}
+and we call $I_F$ the generalized inverse distribution function associated to $F$.
+
+\paragraph{Inversion method}
+
+Let $F: \mathbb{R} \rightarrow [0,1]$ be a distribution function, let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probabilit yspace, and let $U: \Omega \rightarrow \mathbb{R}$ be an $\mathcal{U}_{(0,1)}$-distributed RV with $U(\Omega) \subseteq (0,1)$. Then $F$ is the distribution function of the $\mathcal{F}/\mathcal{B}(\mathbb{R})$-measurable mapping $I_F(U) = I_F \circ U : \Omega \rightarrow \mathbb{R}$, i.e. $\forall x \in \mathbb{R}$ it holds that
+\begin{align*}
+\mathbb{P}[I_F(U) \leq x] = F(x) 
+\end{align*}
+
+\subsection{Acceptance-rejection method}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \mathcal{U}_A$}
+Generate realization $y$ of $Y \sim \mathcal{U}_B$ \\
+\SetAlgoVlined
+\eIf{$y \in A$}{$x=y$ (ACCEPT)}{Restart the algorithm (REJECT)}
+\end{algorithm}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim X(P)_{\mathcal{B}(\mathbb{R}^d}$ (with unnormalized density $f$)}
+Generate realization $y$ of $Y \sim Y(P)_{\mathcal{B}(\mathbb{R}^d}$ (with unnormalized density $g$) \\
+Generate realization $u$ of $U \sim \mathcal{U}_{(0,1)}$ \\
+\SetAlgoVlined
+\eIf{$g(y) \cdot u \leq f(y)$ (resp. $u \leq \frac{f(y)}{g(y)}$}{$x=y$ (ACCEPT)}{Restart the algorithm (REJECT)}
+\end{algorithm}
+
+\subsection{Methods for the normal distribution}
+
+\paragraph{Box-Muller method}
+
+Let $(\Omega, \mathcal{A}, \mathbb{P})$ be a probability space and let $U_1,U_2:\Omega \rightarrow \mathbb{R}$ be two independent $\mathcal{U}_{(0,1)}$-distributed RVs with the property that $U_1(\Omega) \subseteq (0,1)$ and $U_1(\Omega) \subseteq (0,1)$. Then the function $X = (X_1,X_2) : \Omega \rightarrow \mathbb{R}^2$ with the property that
+\begin{align*}
+X_1 &= \sqrt{-2 \log(U_1)} \cos(2 \pi U_2) \\
+X_2 &= \sqrt{-2 \log(U_1)} \sin(2 \pi U_2)
+\end{align*}
+is $\mathcal{N}_{0,\mathcal{I}_{\mathbb{R}^2}}$-distributed.
+
+\begin{algorithm}[H]
+ \KwResult{Realization $(x_1,x_2)$ of $(X_1,X_2) \sim \mathcal{N}_{0,\mathcal{I}_{\mathbb{R}^2}}$}
+Generate realization $(u_1,u_2)$ of $(U_1,U_2) \sim \mathcal{U}_{(0,1)^2}$ \\
+$x_1 = \sqrt{-2 \log(u_1)} \cos(2 \pi u_2)$ \\
+$x_2 = \sqrt{-2 \log(u_1)} \sin(2 \pi u_2)$
+\end{algorithm}
+
+\paragraph{Marsaglia polar method}
+
+Let $(\Omega, \mathcal{A}, \mathbb{P})$ be a probability space, let $U: \Omega \rightarrow \mathbb{R}^2$ be an $\mathcal{U}_{(x,y) \in \mathbb{R}^2 : x^2 + y^2 \in (0,1)}$-distributed RV with $U(\Omega) \subseteq \lbrace (x,y) \in \mathbb{R}^2 : x^2 + y^2 \in (0,1) \rbrace$, and let $X: \Omega \rightarrow \mathbb{R}^2$ be the function given by
+\begin{align*}
+X = \frac{U \sqrt{-2 \log \left( \| U \|^2_{\mathbb{R}^2} \right)}}{\| U \|_{\mathbb{R}^2}}
+\end{align*}
+Then $X$ is $\mathcal{N}_{0,\mathcal{I}_{\mathbb{R}^2}}$-distributed.
+
+\begin{algorithm}[H]
+ \KwResult{Realization $(x_1,x_2)$ of $(X_1,X_2) \sim \mathcal{N}_{0,\mathcal{I}_{\mathbb{R}^2}}$}
+\Repeat{$q \in (0,1)$}{
+Generate realization $(v_1,v_2)$ of $(V_1,V_2) \sim \mathcal{U}_{(0,1)^2}$ \\
+$q = (2 v_1 - 1)^2 + (2 v_s - 1)$
+}
+$w = \sqrt{-2 \frac{\log(q)}{q}}$ \\
+$x_1 = (2 v_1 - 1) w$ \\
+$x_2 = (2 v_2 - 1) w$
+\end{algorithm}
+
+The \emph{acceptance probability} int eh acceptance-rejection algorithm in the Marsaglia polar method is $\frac{\pi}{4} \approx 0.78$. Thus on average the alogrithm in the Marsaglia polar method runs $\frac{4}{\pi} \approx 1.27$ times through the loop.
+
+\paragraph{Normally distributed RVs with general mean and covariance matrix}
+
+Let $\Omega, \mathcal{A}, \mathbb{P}$ be a probability space, let $d \in \mathbb{N}$ (dimension), $b \in \mathbb{R}^d$ (mean vector), $A \in \mathbb{R}^{d \times d}$ (covariance matrix), and let $X: \Omega \rightarrow \mathbb{R}^d$ be an $\mathcal{N}_{0,\mathcal{I}_{\mathbb{R}^d}}$-distributed RV. The the function
+\begin{align*}
+\Omega \ni \omega \rightarrow A X(\omega) + b \in \mathbb{R}^d
+\end{align*}
+is $\mathcal{N}_{b,A A^T}$-distributed.
+
+\section{Sampling}
+
+\subsection{Bias of an estimator}
+
+Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, let $c \in \mathbb{R}$ be a real number, and let $X \in \mathcal{L}^1(\mathbb{P}; | \cdot |_\mathbb{R})$.
+
+\paragraph{Bias}
+
+$\Bias_{\mathbb{P},c}(X)$ is the $\mathbb{P}$-bias of $X$ w.r.t. $c$, i.e.
+\begin{align*}
+\Bias_{\mathbb{P},c}(X) = \mathbb{E}_\mathbb{P}[X] - c
+\end{align*}
+
+\paragraph{Unbiased}
+
+If
+\begin{align*}
+\Bias_{\mathbb{P},c} = 0
+\end{align*}
+then $X$ is said to be $\mathbb{P}$-unbiased w.r.t. $c$.
+
+\paragraph{Biased}
+
+If
+\begin{align*}
+\Bias_{\mathbb{P},c} \neq 0
+\end{align*}
+then $X$ is said to be $\mathbb{P}$-biased w.r.t. $c$.
+
+\subsection{Approximations of the variance of a RV}
+
+\paragraph{Variance}
+
+\begin{align*}
+\Var_\mathbb{P}[X_1] = \mathbb{E}_\mathbb{P} \left[ (X_1 - \mathbb{E}_\mathbb{P}[X_1])^2 \right]
+\end{align*}
+
+\paragraph{Biased approximation of the variance}
+
+The approximation of the variance $\Var_\mathbb{P}[X_1]$
+\begin{align*}
+\frac{1}{N} \sum_{n=1}^N \left( X_n - \frac{X_1 + \ldots + X_N}{N} \right)^2
+\end{align*}
+is $\mathbb{P}$-biased w.r.t. $\Var_\mathbb{P}[X_1]$.
+
+\paragraph{Unbiased approximation of the variance}
+
+The approximation of the variance $\Var_\mathbb{P}[X_1]$
+\begin{align*}
+\frac{1}{N-1} \sum_{n=1}^N \left( X_n - \frac{X_1 + \ldots + X_N}{N} \right)^2
+\end{align*}
+is $\mathbb{P}$-unbiased w.r.t. $\Var_\mathbb{P}[X_1]$.
+
+\paragraph{Useful identity}
+
+\begin{align*}
+\sum_{n=1}^N \left( x_n - \frac{x_1 + \ldots + x_N}{N} \right)^2 = \left( \sum_{n=1}^N (x_n)^2 \right) - \frac{1}{N} \left( \sum_{n=1}^N x_n \right)^2
+\end{align*}
+
+\section{Deterministic numerical integration methods}
+
+\paragraph{Quadrature formula}
+
+Let $d \in \mathbb{N}$, $A \in \mathcal{B}(\mathbb{R}^2)$, let $I$ be a finite set, let $(x_i)_{i \in I} \subseteq A$, $(w_i)_{i \in I} \subseteq \mathbb{R}$, and let $Q: \mathcal{L}^1(B_A ; |\cdot|_\mathbb{R}) \rightarrow \mathbb{R}$ be the function with the property that $\forall f \in \mathcal{L}^1(B_A ; |\cdot|_\mathbb{R})$ it holds that
+\begin{align*}
+Q[f] = \sum_{i \in I} w_i f(x_i)
+\end{align*}
+Then we call $Q$ a quadrature formula (on $A$ with quadrature nodes $(x_i)_{i \in I}$ and quadrature weights $(w_i)_{i \in I}$).
+
+\subsection{Rectangle method}
+
+\paragraph{d-dimenstional left rectangle method}
+
+Let $d \in \mathbb{N}$, $a,b \in \mathbb{R}$ with $a < b$. Then we denote by
+\begin{align*}
+R^n_{[a,b]^d} : \mathcal{L}^1(B_{[a,b]^d}; | \cdot |_\mathbb{R}) \rightarrow \mathbb{R}, n \in \mathbb{N}
+\end{align*}
+the quadrature formulas with the property that $\forall n \in \mathbb{N}$, $f \in \mathcal{L}^1(B_{[a,b]^d}; | \cdot |_\mathbb{R})$ it holds that
+\begin{align*}
+& R^n_{[a,b]^d} = \frac{(b-a)^d}{n^d} \cdot \\
+& \sum_{i_i,\ldots,i_d \in \lbrace 0,1,\ldots,n-1 \rbrace} f \left( a + \frac{i_i}{n}(b-a), \ldots, \frac{i_d}{n} (b-a) \right)
+\end{align*}
+and we call the sequence $R^n_{[a,b]^d}$, $n \in \mathbb{N}$, the $d$-dimensional left rectangle method.
+
+\paragraph{Error estimate for the d-dimensional left rectangle method}
+
+Let $d,n \in \mathbb{N}$, $\alpha \in (0,1]$, $a,b \in \mathbb{R}$ with $a < b$ and let $f \in \mathcal{L}^1(B_{[a,b]^d}; | \cdot |_\mathbb{R})$. Then
+\begin{align*}
+& \left\lvert R^n_{[a,b]^d}[f] - \int_{[a,b]^d} f(x) dx \right\rvert \\
+& \quad \leq (b-a)^d w_f \left( \frac{(b-a) \sqrt{d}}{n} \right) \\
+& \quad \leq \frac{(b-a)^{d + \alpha} d^{\frac{\alpha}{2}} \| f \|_{C^{0,\alpha([a,b]^d, \mathbb{R})}}}{n^\alpha}
+\end{align*}
+
+\subsection{Trapezoidal rule}
+
+\paragraph{Trapezoidal method}
+
+Let $a,b \in \mathbb{R}$ with $a < b$. Then we denote by $T^n_{[a,b]} : \mathcal{L}^1(B_{[a,b]}; | \cdot |_\mathbb{R}) \rightarrow \mathbb{R}$, $n \in \mathbb{N}$, the quadrature formulas with the property that $\forall n \in \mathbb{N}$, $f \in \mathcal{L}^1(B_{[a,b]}; | \cdot |_\mathbb{R})$ it holds that
+\begin{align*}
+& T^n_{[a,b]}[f] = \frac{b-a}{n} \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f \left( a + \frac{i}{n} (b-a) \right) \\
+& \quad = \frac{b-a}{n} \sum_{i=0}^{n-1} \frac{f \left( a + \frac{i}{n} (b-a) \right) + f \left( a + \frac{i+1}{n} (b-a) \right)}{2}
+\end{align*}
+and we call the sequence $T^n_{[a,b]}$, $n \in \mathbb{N}$ the 1-dimensional trapezoidal method.
+
+\paragraph{Error estimate for the trapezoidal method}
+
+Let $n \in \mathbb{N}$, $\alpha \in (0,1]$, $a,b, \in \mathbb{R}$ with $a < b$. Then $\forall f \in \mathcal{L}^1(B_{[a,b]}; | \cdot |_\mathbb{R})$ it holds that
+\begin{align*}
+\left\lvert T^n_{[a,b]}[f] - \int_a^b f(x) dx \right\rvert &\leq (b-a) \cdot w_f \left( \frac{b-a}{2n} \right) \\
+& \leq \frac{(b-a)^{1+\alpha} \| f \|_{C^{0,\alpha}([a,b],\mathbb{R})}}{(2n)^\alpha}
+\end{align*}
+and $\forall f \in C^1([a,b],\mathbb{R})$ it holds that
+\begin{align*}
+\left\lvert T^n_{[a,b]}[f] - \int_a^b f(x) dx \right\rvert &\leq \frac{(b-a)^2}{n} \cdot w_{f'} \left( \frac{b-a}{2n} \right) \\
+& \leq \frac{(b-a)^{2+\alpha} \| f'' \|_{C^{0,\alpha}([a,b],\mathbb{R})}}{2^\alpha n^{1+\alpha}}
+\end{align*}
+
+\section{Monte Carlo methods}
+
+\paragraph{Monte Carlo approximation of the expected value}
+
+The Monte Carlo approximation of the expected value $\mathbb{E}_\mathbb{P}[X_1]$ is defined as
+\begin{align*}
+\frac{X_1 + \ldots + X_N}{N}
+\end{align*}
+and is $\mathbb{P}$-unbiased w.r.t. $\mathbb{E}_\mathbb{P}$, i.e. $\forall N \in \mathbb{N}$ it holds that $\mathbb{E}_\mathbb{P}\left[ \frac{1}{N}(X_1 + \ldots + X_N) \right] = \mathbb{E}_\mathbb{P}[X_1]$.
+
+\paragraph{Monte Carlo approximation of the variance}
+
+The Monte Carlo approximation of the variance $\Var_\mathbb{P}[X_1]$ is defined as
+\begin{align*}
+\frac{1}{N-1} \sum_{n=1}^N \left( X_n - \frac{X_1 + \ldots + X_N}{N} \right)^2
+\end{align*}
+for $N \in \lbrace 2,3,\ldots \rbrace$ and is $\mathbb{P}$-unbiased w.r.t. $\Var_\mathbb{P}[X_1]$.
+
+\subsection{Confidence intervals for Monte Carlo methods}
+
+\paragraph{Definitions}
+
+\begin{itemize}
+\item $\alpha \in [0,1)$
+\item $c,\beta, \gamma \in [0,\infty)$ \\
+with $\frac{1}{2 \pi} \int_{-\beta}^\gamma e^{\frac{-x^2}{2}} dx \geq \alpha$ \\
+and $\sqrt{\Var_\mathbb{P}(X_1)} \leq c$
+\item $E_N = \frac{X_1 + \ldots + X_N}{N}$
+\item $V_N = \frac{1}{N-1} \sum_{n=1}^{N-1} (X_n - E_N)^2$
+\end{itemize}
+
+\paragraph{$\alpha$-confidence intervals}
+
+\begin{align*}
+& \left[ E_N \pm \frac{\sqrt{\Var_P[X_1]}}{\sqrt{(1-\alpha) N}} \right] & \left[ E_N \pm \frac{c}{\sqrt{(1-\alpha) N}} \right]
+\end{align*}
+
+\paragraph{asymptotically valid $\alpha$-confidence intervals}
+
+\begin{align*}
+& \left[ E_N \pm \frac{\beta \sqrt{\Var_P[X_1]}}{\sqrt{N}} \right] & \left[ E_N \pm \frac{\beta c}{\sqrt{N}} \right]
+\end{align*}
+
+\paragraph{asymptotically valid $\alpha$-confidence intervals with variance approximation}
+
+\begin{align*}
+& \left[ E_N \pm \frac{\sqrt{V_N}}{\sqrt{(1-\alpha) N}} \right] & \left[ E_N \pm \frac{\beta \sqrt{V_N}}{\sqrt{N}} \right]
+\end{align*}
+
+\paragraph{Tails of the normal distribution}
+
+$\forall x \in (0,\infty)$ it holds that
+\begin{align*}
+\mathcal{N}_{0,1}([x,\infty)) = \int_x^\infty \frac{e^{-\frac{1}{2}y^2}}{x \sqrt{2 \pi}} < \frac{e^{-\frac{1}{2}x^2}}{x \sqrt{2 \pi}}
+\end{align*}
+$\forall \alpha \in [0,1)$ it holds that
+\begin{align*}
+\frac{1}{\sqrt{2 \pi}} \int_{\frac{-1}{\sqrt{1-\alpha}}}^{\frac{1}{\sqrt{1-\alpha}}} e^{-\frac{1}{2}x^2} dx > \alpha
+\end{align*}
+
+\subsection{Monte Carlo algorithms for numerical integration}
+
+\paragraph{Monte Carlo approximation I}
+
+Real number to be approximated:
+\begin{align*}
+\int_A f(x) dx = \mathbb{E}[\lambda_{\mathbb{R}^d}(A) \cdot f(Y_1)]
+\end{align*}
+
+Monte Carlo approximation:
+\begin{align*}
+\frac{\lambda_{\mathbb{R}^d}(A)}{N} (f(Y_1) + \ldots + f(Y_N))
+\end{align*}
+
+Algorithm:
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \mathbb{P}_{\frac{\lambda_{\mathbb{R}^d}(A)}{N}(f(Y_1) + \ldots + f(Y_N))} \approx \int_A f(x) dx$}
+$s = 0$ \\
+\For{$n = 1 \rightarrow N$}{
+Generate realization $y$ of $Y_n \sim \mathcal{U}_A$ \\
+$s = s + f(u)$
+}
+$x = \frac{\lambda_{\mathbb{R}^d}(A)}{N} \cdot s$
+\end{algorithm}
+
+\paragraph{Monte Carlo approximation II}
+
+Real number to be approximated:
+\begin{align*}
+\int_A f(x) dx = \mathbb{E}_\mathbb{P} \left[ \tilde f(U_1) \cdot \prod_{i=1}^d (b_i - a_i) \right]
+\end{align*}
+Properties:
+\begin{itemize}
+\item $a_1, \ldots, a_d, b_1, \ldots, b_d \in \mathbb{R}$ and $a_1 \leq b_1, \ldots, a_d \leq b_d$
+\item $A \subseteq [a_1,b_1] \times \ldots \times [a_d,b_d]$
+\item function $\tilde f: [a_1,b_1] \times \ldots [a_d,b_d] \rightarrow \mathbb{R}$ with $\tilde f(x) = f(x) \quad \forall x \in A$ and $\tilde f(x) = 0 \quad \text{else}$
+\item $U_n: \Omega \rightarrow [a_1,b_1] \times \ldots [a_d,b_d]$ are independent $\mathcal{U}_{[a_1,b_1] \times \ldots [a_d,b_d]}$-distributed RVs
+\end{itemize}
+
+Monte Carlo approximation:
+\begin{align*}
+\frac{\prod_{i=1}^d(b_i - a_i)}{N} \cdot \left( \tilde f(U_1) + \ldots + \tilde f(U_N) \right)
+\end{align*}
+
+Algorithm:
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \mathbb{P}_{\frac{(b_1 - a_1) \cdot \ldots \cdot (b_d - a_d)}{N}(\tilde f(Y_1) + \ldots + \tilde f(Y_N))} \approx \int_A f(x) dx$}
+$s = 0$ \\
+\For{$n = 1 \rightarrow N$}{
+Generate realization $u$ of $U_n \sim \mathcal{U}_{[a_1,b_1] \times \ldots \times [a_d,b_d]}$ \\
+\If{$u \in A$}{$s = s + f(u)$}
+}
+$x = \frac{(b_1 - a_1) \cdot \ldots \cdot (b_d - a_d)}{N} \cdot s$
+\end{algorithm}
+
+\paragraph{Confidence interval}
+
+Properties:
+\begin{itemize}
+\item $\alpha \in (0,1)$
+\item $c \in [0,\infty)$ s.t. \\
+$\left( \prod_{i=1}^d (b_i - a_i) \right) \sqrt{\Var_\mathbb{P}(\tilde f(U_1)} \leq c$
+\end{itemize}
+
+For the RVs $X_N^1, X_N^2: \Omega \rightarrow \mathbb{R}, N \in \mathbb{N}$ defined by
+\begin{align*}
+X_N^1 &= \frac{1}{N} \left( \prod_{i=1}^d (b_i - a_i \right) \left( \tilde f(U_1) + \ldots + \tilde f(U_N) \right) \\
+& \qquad - \frac{c}{\sqrt{(1-\alpha)N}} \\
+X_N^2 &= \frac{1}{N} \left( \prod_{i=1}^d (b_i - a_i \right) \left( \tilde f(U_1) + \ldots + \tilde f(U_N) \right) \\
+& \qquad + \frac{c}{\sqrt{(1-\alpha)N}}
+\end{align*}
+it holds that
+\begin{align*}
+\mathbb{P} \left[ \int_A f(x) dx \in [X_N^1, X_N^2] \right] \geq \alpha
+\end{align*}
+
+Algorithm:
+\begin{algorithm}[H]
+ \KwResult{Realization $(x_1,x_2$ of $X_N^1,X_N^2)$}
+$s = 0$ \\
+\For{$n = 1 \rightarrow N$}{
+Generate realization $u$ of $U_n \sim \mathcal{U}_{[a_1,b_1] \times \ldots \times [a_d,b_d]}$ \\
+\If{$u \in A$}{$s = s + f(u)$}
+}
+$x_1 = \frac{(b_1 - a_1) \cdot \ldots \cdot (b_d - a_d)}{N} \cdot s - \frac{c}{\sqrt{(1-\alpha) N}}$ \\
+$x_1 = \frac{(b_1 - a_1) \cdot \ldots \cdot (b_d - a_d)}{N} \cdot s + \frac{c}{\sqrt{(1-\alpha) N}}$
+\end{algorithm}
+
+\section{Stochastic Differential Equations (SDEs)}
+
+\paragraph{Geometric Brownian Motion}
+
+\begin{align*}
+dX_t &= \alpha X_t + \beta X_t dW_t, \qquad t \in [0,T], \qquad X_0 = \xi \\
+X_t &= \xi \cdot \exp \left( \left( \alpha - \frac{\beta^2}{2} \right) t + \beta W_t \right)
+\end{align*}
+Since $\frac{d}{dt} \mathbb{E}[X_t] = \alpha \mathbb{E}[X_t]$ and $\mathbb{E}[X_0] = \xi$,
+\begin{align*}
+\mathbb{E}[X_t] = \xi e^{\alpha t}
+\end{align*}
+
+\paragraph{Black-Scholes Model}
+
+\begin{align*}
+\mu(x) = \begin{pmatrix}
+r x_1 \\ \alpha x_2
+\end{pmatrix} \qquad
+\begin{pmatrix}
+0 \\ \beta x_2
+\end{pmatrix}
+\end{align*}
+
+\begin{align*}
+\begin{pmatrix}
+dX_t^1 \\ dX_t^2
+\end{pmatrix} &=
+\begin{pmatrix}
+r X_t^1 dt \\ \alpha X_t^2 dt + \beta X_t^2 dW_t
+\end{pmatrix}, \qquad t \in [0,T], \qquad X_0 = \xi \\
+\begin{pmatrix}
+X_t^1 \\ X_t^2
+\end{pmatrix} &=
+\begin{pmatrix}
+\xi^1 e^{r t} \\ \xi^2 \exp \left( \left( \alpha - \frac{\beta^2}{2} \right) t + \beta W_t \right)
+\end{pmatrix}
+\end{align*}
+
+\paragraph{Stochastic Ginzburg-Landau equation}
+
+\begin{align*}
+\mu(x) = \alpha x - \delta x^3 \qquad \sigma(x) = \beta x - \bar \beta
+\end{align*}
+
+\begin{align*}
+dX_t = (\alpha X_t - \delta X_t^3) dt + (\beta X_t + \bar \beta) dW_t, \quad t \in [0,T], X_0 = \xi
+\end{align*}
+
+\paragraph{Stochastic Verhulst equation}
+
+\begin{align*}
+\mu(x) = (\eta + \frac{c^2}{2}) x - \lambda x^2 \qquad \sigma(x) = c x
+\end{align*}
+
+\begin{align*}
+dX_t &= \left( \left( \eta + \frac{c^2}{2} X_t - \lambda X_t^2 \right) \right) dt + c X_t dW_t \\
+& \qquad t \in [0,T], \qquad X_0 = \xi
+\end{align*}
+
+\paragraph{Stochastic predator-prey model}
+
+\begin{align*}
+\mu \binom{x_1}{x_2} = \begin{pmatrix}
+x_1 (\alpha - \beta x_2) \\ x_2 (\gamma x_1 - \delta)
+\end{pmatrix} \qquad
+\sigma \binom{x_1}{x_2} = \begin{pmatrix}
+c_1 x_1 & 0 \\ 0 & c_2 x_2
+\end{pmatrix}
+\end{align*}
+
+\begin{align*}
+dX_t &= \begin{pmatrix}
+X_t^1 (\alpha - \beta X_t^2) \\ X_t^2 (\gamma X_t^1 - \delta
+\end{pmatrix} dt +
+\begin{pmatrix}
+c_1 X_t^1 & 0 \\ 0 & c_2 X_t^2
+\end{pmatrix} dW_t \\
+& \qquad t \in [0,T], \qquad X_0 = \xi
+\end{align*}
+
+Deterministic case: $c_1 = c_2 = 0$.
+
+\paragraph{Cox-Ingersoll-Ross process}
+
+\begin{align*}
+dX_t = (\delta - \alpha X_t) dt + \beta \sqrt{X_t} dW_t, \qquad t \in [0,T], X_0 = \xi
+\end{align*}
+
+\paragraph{Simplified Ait-Sahalia interest rate model}
+
+\begin{align*}
+dX_t = (\delta + \gamma X_t - \alpha X_t^2) dt + \beta X_t^b dW_t, \qquad t \in [0,T], X_0 = \xi
+\end{align*}
+
+\paragraph{Volatility process in the Lewis stochastic volatility model}
+
+\begin{align*}
+dX_t = (\gamma X_t - \alpha X_t^2) dt + \beta X_t^{\frac{3}{2}} dW_t, \qquad t \in [0,T], X_0 = \xi
+\end{align*}
+
+\section{Strong Approximations for SDEs}
+
+\subsection{Convergence}
+
+\subsection{Euler-Maruyama scheme}
+
+\paragraph{SDE}
+
+\begin{align*}
+X_t &= \xi + \int_0^t \mu(X_s) ds + \int_0^t \sigma(X_s) dW_s
+\end{align*}
+For $t - t_0$ ''sufficiently small" it holds $\mathbb{P}-a.s.$ that
+\begin{align*}
+X_t \approx X_{t_0} + \mu(X_{t_0} (t-t_0) + \sigma(X_{t_0} (W_t - W_{t_0})
+\end{align*}
+
+\paragraph{Euler-Maruyama scheme}
+
+\begin{align*}
+Y_{n+1} &= Y_n + \mu(Y_n) \frac{T}{N} + \sigma(Y_n) \left( W_\frac{(n+1)T}{N} - W_\frac{n T}{N} \right)
+\end{align*}
+
+\paragraph{Linearly interpolated Euler-Maruyama approximation}
+
+\begin{align*}
+Y_t &= Y_\frac{n T}{N} + \left( \frac{t N}{T} - n \right) \left( \mu\left( Y_\frac{nT}{N} \right) \frac{T}{N} \right. \\
+& \left. + \sigma\left( Y_\frac{n T}{N} \right) \left( W_\frac{(n+1) T}{N} - W_\frac{n T}{N} \right) \right)
+\end{align*}
+
+\section{Distributions}
+
+\subsection{Discrete distributions}
+
+\paragraph{Bernoulli distribution}
+
+Let $p \in [0,1]$ be a real number and let $F: \mathbb{R} \rightarrow [0,1]$ be the distribution function of the Bernoulli distribution with paramet $p \in [0,1]$, i.e. assume that $\forall x \in \mathbb{R}$ it holds that
+\begin{align*}
+F(x) &= \Ber_p(-\infty,x]) \\
+&= (1-p) \delta_0((-\infty,x]) + p \delta_1((-\infty,x]) \\
+&= \begin{cases}
+0 & : x < 0 \\
+1-p & : 0 \leq x < 1 \\
+1 & : x \geq 1
+\end{cases}
+\end{align*}
+Then the generalized inverse distribution function $I_F : (0,1) \rightarrow \mathbb{R}$ associated to $F$ satisfies that $\forall y \in (0,1)$ it holds that
+\begin{align*}
+I_F(y) &= \inf \lbrace x \in [x, \infty) : F(x) \geq y \rbrace \\
+&= \begin{cases}
+0 & : 0 < y \leq 1-p \\
+1 & : 1-p < y < 1
+\end{cases}
+\end{align*}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \Ber_p$}
+Generate realization $u$ of $U \sim \mathcal{U}_{(0,1)}$ \\
+\SetAlgoVlined
+\eIf{$u \leq 1-p$}{$x=0$}{$x=1$}
+%\If{$u \leq 1-p$}{$x=0$}\Else{$x=1$}\;
+%\caption{How to write algorithms}
+\end{algorithm}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \Ber_p$}
+Generate realization $u$ of $U \sim \mathcal{U}_{(0,1)}$ \\
+\SetAlgoVlined
+\eIf{$u < p$}{$x=1$}{$x=0$}
+\end{algorithm}
+
+\paragraph{Binomial distribution}
+
+Let $n \in \mathbb{N}$ and $p \in (0,1)$ be real numbers and assume that $X$ is $\Bin_{n,p}$-distributed. The it holds $\forall k \in \lbrace 0,1,\ldots,n \rbrace$ that
+\begin{align*}
+p_k = \binom{n}{k} p^k (1-p)^{n-k}
+\end{align*}
+and it holds $\forall k \in \lbrace n+1,n+2,\ldots \rbrace$ that $p_k=0$. Furthermore it holds that
+\begin{align*}
+p_{k+1} = \frac{p}{1-p} \frac{n-k}{k+1} p_k
+\end{align*}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \Bin_{n,p}$}
+Generate realization $u$ of $U \sim \mathcal{U}_{(0,1)}$ \\
+$k=0$ \\
+$r = \frac{p}{1-p}$ \\
+$q = (1-p)^n$ \\
+$F = q$ \\
+\While{$u>F$}{
+$q = r \cdot q \cdot \frac{n-k}{k+1}$ \\
+$F = F+q$ \\
+$k = k+1$
+}
+$x = k$
+\end{algorithm}
+
+\paragraph{Geometric distribution}
+
+Let $p \in (0,1)$ be a real number and assume that $X$ is $\Geom_p$-distributed. Then it holds $\forall n \in \mathbb{N}_0$ that
+\begin{align*}
+p_n = p (1-p)^n
+\end{align*}
+This implies $\forall n \in \lbrace -1,0,1,2,\ldots \rbrace$ that
+\begin{align*}
+F(n) = 1 - (1-p)^{n+1}
+\end{align*}
+This shows $\forall u \in (0,1)$ that
+\begin{align*}
+I_F(u) = \left\lceil \frac{\log (1-u)}{\log (1-p)} \right\rceil - 1
+\end{align*}
+Hence
+\begin{align*}
+X = \left\lfloor \frac{\log(U)}{\log(1-p)} \right\rfloor
+\end{align*}
+
+\paragraph{Poisson distribution}
+
+Let $\lambda \in (0,\infty)$ be a real number and assume that $X$ is $\Poi_\lambda$-distributed. Then it holds $\forall x \in \mathbb{N}_0$ that $p_n = \frac{\lambda^n}{n! e^\lambda}$. Hence, we obtain $\forall n \in \mathbb{N}_0$ that
+\begin{align*}
+p_{n+1} = \frac{\lambda^{n+1}}{(n+1)! e^\lambda} = \frac{\lambda}{n+1} p_n
+\end{align*}
+
+\begin{algorithm}[H]
+ \KwResult{Realization $x$ of $X \sim \Poi_\lambda$}
+Generate realization $u$ of $U \sim \mathcal{U}_{(0,1)}$ \\
+$n=0$ \\
+$p = e^{-\lambda}$ \\
+$F = p$ \\
+\While{$u>F$}{
+$p = \frac{p \cdot \lambda}{n+1}$ \\
+$F = F+p$ \\
+$n = n+1$
+}
+$x = n$
+\end{algorithm}
+
+\subsection{Continuous distributions}
+
+\paragraph{Exponential distribution}
+
+Let $\lambda \in (0,\infty)$ be a real number and assume that $X$ is $\exp_\lambda$-distributed. Then it holds $\forall x \in \mathbb{R}$ and $\forall y \in (0,1)$, respectively, that
+\begin{align*}
+F(x) &= \exp_\lambda((-\infty,x]) =
+\begin{cases}
+0 & : x < 0 \\
+1-e^{-\lambda x} & : x \geq 0
+\end{cases} \\
+I_F(y) = \frac{-\log(1-y)}{\lambda}
+\end{align*}
+hence
+\begin{align*}
+X = \frac{-\log(U)}{\lambda}
+\end{align*}
+
+\paragraph{Cauchy distribution}
+
+Let $\mu \in \mathbb{R}$ and $\lambda \in (0,\infty)$ be real numbers and assume that $X$ is $\Cau_{\mu,\lambda}$-distributed. Then it holds $\forall x \in \mathbb{R}$ and $\forall y \in (0,1)$, respectively, that
+\begin{align*}
+F(x) &= \Cau_{\mu,\lambda}((-\infty,x]) = \frac{\arctan \left( \frac{x - \mu}{\lambda} \right)}{\pi} + \frac{1}{2} \\
+I_F(y) &= \lambda \tan \left( \pi \left( y - \frac{1}{2} \right) \right) + \mu
+\end{align*}
+Hence
+\begin{align*}
+X = \lambda \tan \left( \pi \left( U - \frac{1}{2} \right) \right) + \mu
+\end{align*}
+
+\paragraph{Laplace distribution}
+
+\section{MATLAB commands}
+
+\begin{tabular}{l l}
+rand			&		text		\\
+rand(1,4)	&		text		\\
+\end{tabular}
+
+\end{multicols*}
+
+\end{document}
