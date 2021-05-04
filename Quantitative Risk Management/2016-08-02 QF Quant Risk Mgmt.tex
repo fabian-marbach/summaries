@@ -1,0 +1,2109 @@
+\documentclass[a4paper,landscape,8pt,fleqn]{scrartcl}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, landscape, margin=1.1cm]{geometry}
+\usepackage{latexsym}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{empheq}			% emphasize (box) equations
+\usepackage{float}				% add H as an option for floats
+\usepackage{parskip}			% add no indentation to new paragraphs
+\usepackage{enumitem}		% description lists
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{framed}
+\usepackage{bm}					% bold math symbols
+
+\newcommand{\SummaryTitle}{Quantitative Risk Management}
+\newcommand{\SummaryAuthor}{Fabian MARBACH}
+\newcommand{\SummarySemester}{Spring Semester 2016}
+
+\pagestyle{plain}
+\columnsep 30pt
+\columnseprule .4pt
+
+\setlength{\mathindent}{0.1cm}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}		% required for boxing several lines of equations at once
+
+\renewcommand*{\familydefault}{\sfdefault}		% set font to default sans-serif
+
+\renewcommand{\labelitemi}{\tiny$\blacksquare$}		% change symbol of itemized lists
+\setlist[itemize]{leftmargin=0.4cm}								% reduce indentation of itemized lists
+\renewcommand{\labelenumi}{(\roman{enumi})}			% change counter of enumerated lists
+\setlist[enumerate]{leftmargin=0.4cm}							% reduce indentation of enumerated lists
+
+\renewcommand{\arraystretch}{1}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+%\allowdisplaybreaks	% equations can be split on two pages/columns
+
+\graphicspath{{images/}}
+
+\pagestyle{fancy}
+\fancyhead{}
+\setlength{\headheight}{0pt}
+\setlength{\footheight}{14pt}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\lfoot{\SummaryAuthor}
+\cfoot{p \thepage\ / \pageref{LastPage}}
+\rfoot{\SummaryTitle}
+
+\usepackage{parskip}	% add no indentation to new paragraphs
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth1.5pt
+width0.25\columnwidth\vspace*{1.2em}\Large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\hrule depth0.75pt
+width0.25\columnwidth\vspace*{1.2em}\large\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}%
+{-2\baselineskip}{0.8\baselineskip}%
+{\hrule depth 0.2pt width\columnwidth\vspace*{1.2em}\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\Mx}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\dd}[2]{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand{\DD}[2]{\frac{\text{D}#1}{\text{D}#2}}
+\newcommand{\deidei}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\Lbrace}[1]{\left\{\begin{array}{ll}#1\end{array}\right.} % left brace with text
+
+% command for column vector
+\newcount\colveccount
+\newcommand*\colvec[1]{
+        \global\colveccount#1
+        \begin{pmatrix}
+        \colvecnext
+}
+\def\colvecnext#1{
+        #1
+        \global\advance\colveccount-1
+        \ifnum\colveccount>0
+                \\
+                \expandafter\colvecnext
+        \else
+                \end{pmatrix}
+        \fi
+}
+
+% Declare mathematical operators
+\DeclareMathOperator{\erf}{erf}					% error function
+\DeclareMathOperator{\Var}{Var}				% variance
+\DeclareMathOperator{\Varn}{Varn}			% variation
+\DeclareMathOperator{\QV}{QV}				% quadratic variation
+\DeclareMathOperator{\Cov}{Cov}				% covariance
+\DeclareMathOperator{\Corr}{Corr}				% covariance
+\DeclareMathOperator{\Ber}{Ber}				% Bernoulli distribution
+\DeclareMathOperator{\Bin}{Bin}				% Binomial distribution
+\DeclareMathOperator{\Geom}{Geom}		% Geometric distribution
+\DeclareMathOperator{\Exp}{Exp}				% Exponential distribution
+\DeclareMathOperator{\Pareto}{Pareto}		% Pareto distribution
+\DeclareMathOperator{\Poi}{Poi}					% Poisson distribution
+\DeclareMathOperator{\Gammaa}{Gamma}	% Gamma distribution
+\DeclareMathOperator{\Ig}{Ig}					% Inverse Gamma distribution
+\DeclareMathOperator{\Cau}{Cau}				% Cauchy distribution
+\DeclareMathOperator{\IG}{IG}					% inverse gamma
+\DeclareMathOperator{\Adj}{Adj}				% Adjoint
+\DeclareMathOperator{\Bias}{Bias}				% Bias of an estimator
+\DeclareMathOperator{\rank}{rank}				% rank
+\DeclareMathOperator{\VaR}{VaR}				% VaR
+\DeclareMathOperator{\ES}{ES}					% ES
+\DeclareMathOperator{\ran}{ran}				% random
+\DeclareMathOperator{\MDA}{MDA}			% MDA
+\DeclareMathOperator{\sign}{sign}				% signum
+\DeclareMathOperator{\supp}{supp}			% support
+
+\begin{document}
+\part*{Summary: \SummaryTitle}
+\SummaryAuthor, \SummarySemester
+\begin{multicols*}{3}
+%\tableofcontents
+%\end{multicols}
+%{\vspace*{0.3cm}}
+%{\hrule depth 0.2pt}
+%{\vspace*{0.3cm}}
+%\begin{multicols}{2}
+\raggedcolumns
+\newpage
+
+\section{Risk in perspective}
+
+\paragraph{Definition of risk}
+\begin{itemize}
+\item hazard, a chance of bad consequences, loss or exposure to mischance
+\item any event or action that may adversely affect an organization's ability to achieve its objectives and execute its strategies
+\end{itemize}
+
+\paragraph{Financial risks}
+Good risk management has to follow a holistic approach, i.e. all of the following types of risks and their interactions should be considered.
+\begin{itemize}
+\item \emph{Market risk:} risk of loss in a financial position due to changes in the \textit{underlying} components, e.g. stocks, bonds, commodity prices
+\item \emph{Credit risk:} risk of a \textit{counterparty} failing to meets its obligations \textit{(default)}, i.e. the risk of not receiving promised repayments, e.g. loans, bonds
+\item \emph{Operational risk:} risk of loss resulting from inadequate or \textit{failed internal processes, people and systems} or from \textit{external events}, e.g. fraud, earthquakes
+\item \emph{ Liquidity risk:}
+\begin{itemize}
+\item \textit{Market liquidity risk:} lack of marketability of an investment that cannot be bought or sold quickly enough to prevent/minimize a loss
+\item \textit{Funding liquidity risk:} refers to the ease with which institutions can raise funding
+\end{itemize}
+\item \emph{Underwriting risk:} in insurance, the risk inherent to \textit{insurance policies sold}, e.g. natural catastrophes, political changes, etc.
+\item \emph{Model risk:} using a \textit{misspecified (inappropriate)  model} for measuring risk
+\end{itemize}
+
+\paragraph{Risk measurement}
+Assume a portfolio of $d$ investments with weights $w_1,\ldots,w_d$. Denote by $X_j$ the change in value of the $j^\text{th}$ investment. Then the change in value (profit and loss, P\&L) of the portfolio is:
+\begin{align*}
+X &= \sum_{j=1}^d w_j X_j
+\end{align*}
+Measuring risk consists then of determining the distribution function $F$ for the joint model of $\bm X = (X_1,\ldots,X_d)$. \\
+\textit{Interpretation:} A risk measure can be interpreted as the amount of capital that needs to be added to a position so that it becomes acceptable to the regulator.
+
+\paragraph{Risk management}
+is a discipline for living with the possiblity that future events may cause adverse effects. It is about ensuring \textit{resilience to future events.} It involves:
+\begin{itemize}
+\item Determine \textit{capital to hold to absorb losses} (due to regulatory and economic capital purposes).
+\item Ensure portfolios to be \textit{well diversified}.
+\item \textit{Optimize portfolios} according to risk-return considerations.
+\end{itemize}
+
+\paragraph{Three-pillar concept}
+\begin{itemize}
+\item \emph{Minimal capital charge:} calculate minimum regulatory capital to ensure that a bank holds \textit{sufficient capital} for its \textit{market risk} in the trading book, \textit{credit risk} in the banking book and \textit{operational risk}.
+\item \emph{Supervisory review process:} local regulators conduct capital adequacy assessments (reviews, stress tests).
+\item \emph{Market discipline:} better public disclosure of risk measures and other relevant information.
+\end{itemize}
+
+\section{Basic concepts in risk management}
+
+\subsection{Modelling value and value change}
+
+\paragraph{Value and loss}
+\begin{itemize}
+\item $V_t$: value of a portfolio of assets and possibly liabilities
+\item $\Delta t$: time horizon
+\begin{itemize}
+\item portfolio composition remains fixed during $\Delta t$
+\item no intermediate payments during $\Delta t$
+\end{itemize}
+$\leadsto$ fine for small $\Delta t$ but unlikely to hold for large $\Delta t$
+\item $\bm Z = (Z_{t,1}, \ldots, Z_{t,d}) \in \mathbb{R}^d$: \emph{risk factors}
+\item $\bm X_{t+1} = \bm Z_{t+1} - \bm Z_t$: \emph{risk-factor changes}
+\item \emph{value} (mapping of risks) and change in value:
+\begin{align*}
+V_t &= f(t,\bm Z_t) \qquad
+\Delta V_{t+1} = V_{t+1} - V_t
+\end{align*}
+For longer time intervals: $\Delta V_{t+1} = V_{t+1}/(1+r) - V_t$ with $r$ the risk-free interest rate.
+\item \emph{Loss}:
+\begin{align*}
+L_{t+1} &= -\Delta V_{t+1} \\
+&= -(f(t+1, \bm Z_{t+1}) - f(t, \bm Z_t)) \\
+&= -(f(t+1, \bm Z_t + \bm X_{t+1}) - f(t, \bm Z_t))
+\end{align*}
+The distribution of $L_{t+1}$ is called \textit{loss distribution} and is determined by the loss distribution of risk-factor changes $\bm X_{t+1}$. \\
+The \textit{profit-and-loss (P\&L) distribution} is the distribution of $-L_{t+1} = \Delta V_{t+1}$.
+\item \emph{Linearized loss}:
+\begin{empheq}[box=\widefbox]{align*}
+L_{t+1}^\Delta &= - \left( \underbrace{f_t(t,\bm Z_t)}_{=: c_t} + \sum_{j=1}^d \underbrace{f_{z_j}(t, \bm Z_t)}_{=: b_{t,j}} \cdot X_{t+1,j} \right) \\
+&= -(c_t + \bm b_t' \bm X_{t+1})
+\end{empheq}
+The approximation is best if the \textit{risk-factor changes are small in absolute value}. \\
+\textit{Remark:} The Taylor approximation presumes that no sudden large movements occur in the risk-factor changes $\bm X_{t+1}$ within a short time-period $\Delta t=1$, which of course does not always hold in reality.
+\end{itemize}
+
+\paragraph{Examples}
+\begin{itemize}
+\item \emph{Stock portfolio}
+\begin{itemize}
+\item portfolio of stocks $S_{t,1}, \ldots S_{t,d}$ with $\lambda_j$ the number of shares in stock $j$
+\item risk factors: log-prices $Z_{t,j} = \log S_{t,j}$
+\item value: $V_t = \sum_{j=1}^d \lambda_j e^{Z_{t,j}}$
+\item one-period ahead loss: $L_{t+1} = -\sum_{j=1}^d \underbrace{\lambda_j S_{t,j}}_{:= w_{t,j}} (e^{X_{t+1,j}}-1)$
+\item linearized loss: $L_{t+1}^\Delta = - \bm w_t' \bm X_{t+1}$
+\item with $\bm \mu = \mathbb{E}[\bm X_{t+1}]$ and $\bm \Sigma = \Cov[\bm X_{t+1}]$, the \textit{expectation} and \textit{variance} of the one-period ahead loss are given by:
+\begin{align*}
+\mathbb{E}[L_{t+1}^\Delta] = \bm w_t' \bm \mu \qquad \Var[L_{t+1}^\Delta] = \bm w_t' \bm \Sigma \bm w_t
+\end{align*}
+\end{itemize}
+\item \emph{European call option}
+\begin{itemize}
+\item risk factors: $\bm Z_t = (\log S_t, r_t, \sigma_t)$
+\item risk-factor changes: \\
+$\bm X_{t+1} = (\log(S_{t+1}/S_t), r_{t+1}-r_t, \sigma_{t+1}-\sigma_t)$
+\item value:
+\begin{align*}
+V_t &= C^\text{BS}(t, S_t, r, \sigma, K, T) \\
+&= C^{BS}(t,e^{Z_{t,1}}, Z_{t,2}, Z_{t,3}, K, T) = f(t, \bm Z_t)
+\end{align*}
+\item linearized loss:
+\begin{align*}
+L_{t+1}^\Delta &= -(C_t^\text{BS} \Delta t + C_{S_t}^\text{BS} S_t X_{t+1,1} + C_{r_t}^\text{BS} X_{t+1,2} + C_{\sigma_t}^\text{BS} X_{t+1,3})
+\end{align*}
+Note that the \textit{Greeks} enter here.
+\item For portfolios of derivates, $L_{t+1}^\Delta$ can be a rather poor approximation to $L_{t+1}$, and thus higher-order (second-order Taylor) approximations might be needed (e.g. delta-gamma approximation).
+\end{itemize}
+\end{itemize}
+
+\paragraph{Fair value accounting}
+\begin{description}[style=multiline,leftmargin=1.1cm,font=\textbf]
+\item[Level 1] \emph{Mark-to-market:} use \textit{quoted prices} for the \textit{same} instrument
+\item[Level 2] \emph{Mark-to-model w/ objective inputs:} use \textit{quoted prices} for \textit{similar} instruments or use valuation techniques/models with inputs based on \textit{observable market data}
+\item[Level 3] \emph{Mark-to-model w/ subjective inputs:} use valuation techniques/models for which some inputs are \textit{not observable} in the market (e.g. loans to companies for which no CDS spreads are available)
+\end{description}
+
+\paragraph{Risk-neutral valuation}
+\begin{itemize}
+\item value of a financial instrument today = expected discounted values of future cash flows w.r.t. the \textit{risk-neutral pricing measure $\mathbb{Q}$} (as opposed to the \textit{real world/historical measure $\mathbb{P}$})
+\item \emph{risk-neutral pricing rule:}
+\begin{align*}
+V_t^H = \mathbb{E}_\mathbb{Q} [e^{-r(T-t)} H | \mathcal{F}_t], \quad t < T
+\end{align*}
+\item $\mathbb{Q}$ is calibrated to market prices, while $\mathbb{P}$ is estimated from historical data.
+\end{itemize}
+
+\paragraph{Key statistical tasks of QRM}
+\begin{enumerate}
+\item Find a \textit{statistical model} for $\bm X_{t+1}$ (i.e. a model for forecasting $\bm X_{t+1}$ based on historical data).
+\item Compute/derive the \textit{PDF/CDF} $F_{L_{t+1}}$ (requires the PDF/CDF of $f(t+1, \bm Z_t + \bm X_{t+1})$).
+\item Compute a \textit{risk measure} from $F_{L_{t+1}}$.
+\end{enumerate}
+
+\paragraph{Methods}
+\begin{itemize}
+\item \emph{Analytical method} ($\leadsto$ \textit{variance-covariance method})
+\begin{itemize}
+\item \textit{Idea:} choose $F_{\bm X_{t+1}}$ and $f$ s.t. $F_{L_{t+1}}$ can be determined explicitly. \\
+prime example: variance-covariance method
+\item \textit{Assumption 1:} $\bm X_{t+1} \sim \mathcal{N}(\bm \mu, \bm \Sigma)$ \\
+(e.g. if $\bm Z_t$ is a Brownian motion, $\bm S_t$ is a geometric Brownian motion)
+\item \textit{Assumption 2:} $F_{L_{t+1}^\Delta}$ is a good approximation to $F_{L_{t+1}}$ \\
+implies: $L_{t+1}^\Delta = -(c_t + \bm b_t' \bm X_{t+1})$ \\
+$\Rightarrow L_{t+1}^\Delta \sim \mathcal{N}(-c_t - \bm b_t' \mu, \bm b_t' \bm \Sigma \bm b_t)$
+\item \textit{Advantages/Drawbacks:}
+\begin{description}[style=multiline,leftmargin=0.4cm,font=\textbf]
+\item[+] $F_{L_{t+1}^\Delta}$ \textit{explicit} (typcially risk measures)
+\item[+] easy to implement
+\item[--] \textit{linear loss operator} might be a bad approximation
+\item[--] assumption of \textit{i.i.d.} distribution might not hold
+\item[--] assumption of a \textit{multivariate normal} distribution might be too crude (since it underestimates the tail of $F_{L_{t+1}}$)
+\end{description}
+\end{itemize}
+\item \emph{Historical simulation}
+\begin{itemize}
+\item \textit{Idea:} estimate $F_{L_{t+1}}$ by its \textit{empirical distribution function (EDF)}, i.e.
+\begin{align*}
+\tilde F_{L_{t+1}}(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{I}_{\lbrace \tilde L_{t-i+1} \leq x \rbrace}
+\end{align*}
+based on $\tilde L_k = -(f(t+1, \bm Z_t + \bm X_k) - f(t,\bm Z_t))$. \\
+$\tilde L_{t-n+1}, \ldots \tilde L_t$ show what would happen to the current portfolio if the past $n$ risk-factor changes were to recur.
+\item \textit{Advantages/Drawbacks:}
+\begin{description}[style=multiline,leftmargin=0.4cm,font=\textbf]
+\item[+] does not require a \textit{joint model} of the risk factors $\bm X_{t+1}$ \\
+$\leadsto$ no estimation of the distribution of $\bm X_{t+1}$ required (estimating the dependencies is usually the most challenging)
+\item[+] easy to implement
+\item[--] sufficient relevant and synchronized \textit{data} for all risk-factor changes required $\leadsto$ sample size might be too small
+\item[--] historical data may not contain (sufficient) examples of \textit{extreme scenarios}
+\item[--] considers only past losses ($\leadsto$ "driving a car by looking in the back mirror")
+\end{description}
+\end{itemize}
+\item \emph{Monte Carlo method}
+\begin{itemize}
+\item \textit{Idea:} take any model for $\bm X_{t+1}$, simulate from it, compute the corresponding simulated losses and estimate $F_{L_{t+1}}$ (typcially the EDF)
+\item \textit{Advantages/Drawbacks:}
+\begin{description}[style=multiline,leftmargin=0.4cm,font=\textbf]
+\item[+] sample size and number of repetitions can be increased freely ($\Rightarrow$ risk measures can be estimated with greater accuracy)
+\item[+] quite general, i.e. applicable to any model of $\bm X_{t+1}$ which is easy to sample
+\item[--] does not solve the \textit{problem of finding a joint distribution} of the risk factors (i.e. it is still unclear how to find an appropriate model for $\bm X_{t+1}$) $\leadsto$ any result is only as good as the chosen $F_{X_{t+1}}$
+\item[--] \textit{computational cost}, i.e. every simulation requires to evalute the portfolio, (e.g. \textit{Nested Monte Carlo simulations:} especially expensive if the portfolio contains derivatives which are priced via Monte Carlo themselves)
+\end{description}
+\end{itemize}
+\end{itemize}
+
+\subsection{Risk measurement}
+
+\paragraph{Approaches to risk measurement}
+\begin{itemize}
+\item \emph{Notional-amount approach}
+\begin{itemize}
+\item \textit{risk of a portfolio} = summed notional values of the securites $\times$ their riskiness factor
+\item \textit{Advantages:} simplicity
+\item \textit{Drawbacks:} no differentiation between long and short positions, no netting (eg. risk of a hedged position is twice the risk of an unhedged position)
+\end{itemize}
+\item \emph{Risk measures based on loss distributions}
+\begin{itemize}
+\item \textit{risk of a portfolio:} a characteristic of the underlying \textit{loss distribution} over some time horizon $\Delta t$
+\item e.g. variance, VaR, ES
+\item \textit{Advantages:} this concept makes sense on all levels, e.g. reflects netting and diversification effects (if estimated properly)
+\item \textit{Drawbacks:} estimates of loss distributions based on \textit{past data} (backward-looking), loss distributions are difficult to estimate \\
+$\leadsto$ could be completed by information from \textit{scenarios} (forward-looking)
+\end{itemize}
+\item \emph{Scenario-based risk measures}
+\begin{itemize}
+\item \textit{risk of a portfolio:} maximum weighted loss under all relevant scenarios \\
+If $\chi = \lbrace \bm x_1, \ldots, \bm x_n \rbrace$ denote the risk-factor changes (scenarios) with corresponding weights $\bm w = (w_1, \ldots, w_n)$, the risk is:
+\begin{align*}
+\psi_{\chi,\bm w} &= \max_{1 \leq i \leq n} \lbrace w_i L(\bm x_i) \rbrace \\
+&= \max_{1 \leq i \leq n} \left\lbrace \mathbb{E}_{\mathbb{P}_i} [ L(\bm X) ] : \quad \bm X \sim \mathbb{P} \in \lbrace \mathbb{P}_1, \ldots, \mathbb{P}_n \rbrace \right\rbrace
+\end{align*}
+where $L(\bm x)$ denotes the loss the portfolio would suffer if the hypothetical scenario $\bm x$ were to occur and where $\bm X_i \sim \mathbb{P}_i = w_i \delta_{\bm x_i} + (1-w_i) \delta_{\bm 0}$ is a probability measure on $\mathbb{R}^d$. \\
+Such a risk measure is known as a \textit{generalized scenario}.
+\item \textit{Advantages:} useful for portfolios with \textit{few risk factors}, usefull \textit{complementary information} to risk measures based on loss distributions (past data)
+\item \textit{Drawbacks:} determining scenarios and weights
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Risk measures}
+
+\paragraph{Coherent risk measure}
+Assume $L, L_1, L_2 \in \mathcal{M}$, where $\mathcal{M}$ a linear space of random variables.
+\begin{description}[style=multiline,leftmargin=1.3cm,font=\textbf]
+\item[Axiom 1] \emph{Monotonicity} \\
+$L_1 \leq L_2  \quad \Rightarrow \rho(L_1) \leq \rho(L_2)$
+\begin{itemize}
+\item \textit{Interpretation:} positions which lead to a higher loss in every state of the world require more risk capital.
+\end{itemize}
+\item[Axiom 2] \emph{Translation invariance} \\
+$\rho(L + l) = \rho(L) + l, \quad \forall l \in \mathbb{R}$
+\begin{itemize}
+\item \textit{Interpretation:} by adding a (cash position) $l$ to a position with loss $L$, we alter the capital requirements accordingly.
+\item \textit{Criticism:} most people believe this to be reasonable.
+\end{itemize}
+\item[Axiom 3] \emph{Subadditivity} \\
+$\rho(L_1 + L_2) \leq \rho(L_1) + \rho(L_2)$
+\begin{itemize}
+\item \textit{Interpretation:} reflects the idea of \textit{diversification}, using a non-subadditive $\rho$ encourages institutions to legally break up into subsidiaries to reduce regulatory capital requirements, subadditivity makes decentralization possible.
+\item \textit{Criticism:} $\VaR$ is ruled out under certain scenarios.
+\end{itemize}
+\item[Axiom 4] \emph{Positive homogeneity} \\
+$\rho(\lambda L) = \lambda \rho(L), \quad \forall \lambda > 0$
+\begin{itemize}
+\item \textit{Interpretation:} $n$ times the same loss means no diversification, so equality should hold.
+\item \textit{Criticism:} if $\lambda$ is large, \textit{liquidity risk} plays a role and one should rather have $\rho(\lambda L) > \lambda \rho(L)$ (also to penalize concentration of risk), but this contradicts subadditivity ($\leadsto$ convex risk measures).
+\end{itemize}
+\end{description}
+One can show that all coherent risk measures can be represented as \emph{generalized scenarios} via:
+\begin{align*}
+\rho(L) = \sup \lbrace \mathbb{E}_\mathbb{P}[L] : \quad \mathbb{P} \in \mathcal{P} \rbrace
+\end{align*}
+for a suitable set $\mathcal{P}$ of probability measures.
+
+\paragraph{Convex risk measures}
+A risk measure $\rho$ that is \textit{monotone}, \textit{translation invariant} and \textit{convex} is called a convex risk measure.
+\begin{itemize}
+\item Any coherent risk measure is also a convex risk measure, while the converse is in general not true.
+\end{itemize}
+
+\paragraph{Value-at-risk (VaR)}
+\begin{itemize}
+\item For a loss $L \sim F_L$, \emph{value-at-risk (VaR)} at \textit{confidence level $\alpha \in (0,1)$} is defined by:
+\begin{empheq}[box=\widefbox]{align*}
+\VaR_\alpha(L) = F_L^\leftarrow(\alpha) = \inf \lbrace x \in \mathbb{R} : \quad F_L(x) \geq \alpha \rbrace
+\end{empheq}
+\item $\VaR_\alpha$ is the \textit{$\alpha$-quantile of $F_L$}. It thus holds:
+\begin{align*}
+&F_L(x) < \alpha \quad \forall x < \VaR_\alpha(L) \\
+&F_L(\VaR_\alpha(L)) = F_L(F_L^\leftarrow(\alpha)) \geq \alpha
+\end{align*}
+\item $\VaR_\alpha$ under some distributions:
+\begin{itemize}
+\item Exponential distribution ($X \sim \Exp(\lambda)$, $F(x) = 1-e^{-\lambda x}$): \\
+$\VaR_\alpha(X) = -\frac{1}{\lambda} \log(1-\alpha)$
+\item Pareto distribution ($X \sim \Pareto(\lambda)$, $F(x) = 1-x^{-\lambda}$): \\
+$\VaR_\alpha(X) = (1-\alpha)^{-\frac{1}{\lambda}}$
+\end{itemize}
+\item $\VaR_\alpha$ as a \emph{coherent risk measure:}
+\begin{itemize}
+\item $\VaR$ is \emph{in general not a coherent risk measure} since it is \textit{in general not subadditive} (but it fulfills the other three requirements of a coherent risk measure). \\
+\textit{Examples:}
+\begin{enumerate}
+\item If $X_i$ are \textit{highly skewed} \\
+E.g. let $X_i$ for $i = 1, \ldots, 100$ be i.i.d. RVs s.t.
+\begin{align*}
+X_i &=
+\begin{cases}
+-2 & \text{with probability } 0.99 \\
+100 & \text{with probability } 0.01
+\end{cases}
+\end{align*}
+\item If $X_i$ have \textit{infinite mean} \\
+E.g. let $X_1, X_2$ be independent RVs with $\mathbb{P}[X_i \leq x] = 1-x^{-1/2}$, $\forall x \geq 1$, for $i=1,2$.
+\end{enumerate}
+\item $\VaR_\alpha(X,Y)$ is subadditive and thus a \textit{coherent risk measure} in the following cases:
+\begin{enumerate}
+\item if $X, Y$ are \textit{comonotonic} \\
+then $\VaR_\alpha(X,Y)$ is \textit{additive}. \\
+Thus, $\VaR_\alpha$ is \textit{comonotone additive}. \\
+(i.e. $\VaR_\alpha(X+Y) = \VaR_\alpha(X) + \VaR_\alpha(Y)$)
+\item for $\alpha \geq 0.5$: if $X,Y$ are \textit{elliptically distributed} \\
+(e.g. normal distribution)
+\end{enumerate}
+\item It holds in general for two RVs $X,Y$ that:
+\begin{align*}
+\VaR_\alpha(X,Y) &\leq ES_\alpha(X) + \ES_\alpha(Y)
+\end{align*}
+\item Fallacy w.r.t. $\VaR$ and linear correlation: \\
+For two RVs $X,Y$ with finite second moment, $\VaR_\alpha(X+Y)$ is \textit{not} maximal if the linear correlation between $X,Y$ (i.e. $\Corr[X,Y])$ is maximal since $\VaR$ is in general not a coherent risk measure (i.e. some $X,Y$ can be found s.t. $\VaR_\alpha(X+Y) > \VaR_\alpha(X) + \VaR_\alpha(Y)$).
+\end{itemize}
+\item \textit{Remarks:}
+\begin{itemize}
+\item $\VaR$ is the most widely used risk measure (e.g. by Basel II or Solvency II).
+\item $\VaR_\alpha(L)$ is \textit{not} a \textit{what-if} risk measure, i.e. it does not provide information about the severity of losses which occur with probability $\leq 1-\alpha$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Expected shortfall (ES)}
+\begin{itemize}
+\item For a loss $L \sim F_L$ with $\mathbb{E}[|L|] < \infty$, \emph{expected shortfall (ES)} at \textit{confidence level $\alpha \in (0,1)$} is defined by:
+\begin{empheq}[box=\widefbox]{align*}
+\ES_\alpha(L) &= \frac{1}{1-\alpha} \int_\alpha^1 \VaR_u(L) du \\
+&= \mathbb{E}[L | L \geq \VaR_\alpha(L)] = \frac{1}{1-\alpha} \int_{\VaR_\alpha(L)}^\infty x f_L(x) dx
+\end{empheq}
+where $f_L$ denotes the PDF of $L$ (if it exists!).
+\item $\ES_\alpha$ is the \emph{average over $\VaR_u, \forall u \geq \alpha$}. If $F_L$ is continuous, $\ES_\alpha$ is the average loss beyond $\VaR_\alpha$. Thus: $\ES_\alpha \geq \VaR_\alpha$.
+\item $\ES_\alpha$ looks further into the tail of $F_L$. It is a \textit{what-if} risk measure, i.e. $\VaR_\alpha$ is \textit{frequency}-based, $\ES_\alpha$ is \textit{severity}-based.
+\item $\ES_\alpha$ is a \textit{coherent risk measure} (for continuous RVs!). \\
+$\ES_\alpha$ is \textit{comonotone additive}.
+\item \textit{In practice:} \\
+Besides $\VaR$, $\ES$ is the most important risk measure. \\
+$\ES_\alpha$ is more difficult to estimate and backtest than $\VaR_\alpha$ since a larger sample size is required and the variance of estimators is typically larger.
+\end{itemize}
+
+\paragraph{Risk measures under the normal distribution $\mathcal{N}$}
+\begin{itemize}
+\item Value-at-Risk $\VaR_\alpha$
+\begin{itemize}
+\item For $X \sim \mathcal{N}_1(\mu, \sigma^2)$: $\VaR_\alpha(X) = \mu + \sigma \Phi^{-1}(\alpha)$
+\item For $X_1, \ldots, X_n \overset{\text{i.i.d.}}{\sim} \mathcal{N}_1(\mu, \sigma^2)$, it follows that \\
+$X_1 + \ldots + X_n \sim \mathcal{N}(n \mu, n \sigma^2)$ and thus:
+\begin{align*}
+\VaR_\alpha(X_1 + \ldots X_n) = n \mu + \sqrt{n} \sigma^2 \Phi^{-1}(\alpha)
+\end{align*}
+\item For $Y \sim \mathcal{N}_1(\bm a^\top \bm \mu, \bm a^\top \Sigma \bm a)$:
+\begin{align*}
+\VaR_\alpha(Y) = \bm a^\top \bm \mu + \sqrt{\bm a^\top \Sigma \bm a} \Phi^{-1}(\alpha)
+\end{align*}
+\end{itemize}
+\item Expected Shortfall $\ES_\alpha$
+\begin{itemize}
+\item For $X \sim \mathcal{N}_1(\mu, \sigma^2)$:
+\begin{align*}
+\ES_\alpha(X) &= \mu + \sigma \frac{\varphi \left( \Phi^{-1}(\alpha) \right)}{1-\alpha}
+\end{align*}
+and it holds that:
+\begin{align*}
+\lim_{\alpha \uparrow 1} \frac{\ES_\alpha(X)}{\VaR_\alpha(X)} = 1, \qquad \VaR_\alpha(X) \leq \ES_\alpha(X)
+\end{align*}
+\item For $Y \sim \mathcal{N}_1(\bm a^\top \bm \mu, \bm a^\top \Sigma \bm a) \Leftrightarrow \bm Y = \bm a^\top \bm X, \bm X \sim \mathcal{N}_d(\bm \mu, \Sigma)$:
+\begin{align*}
+\ES_\alpha(Y) = \bm a^\top \bm \mu + \sqrt{\bm a^\top \Sigma \bm a} \frac{\varphi \left( \Phi^{-1}(\alpha) \right)}{1-\alpha}
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+%\columnbreak
+
+\section{Empirical properties of financial data}
+
+\paragraph{Stylized facts about univariate financial return series}
+\begin{description}[style=multiline,leftmargin=0.8cm,font=\textbf]
+\item[(U1)] Return series are \textit{not i.i.d.} although they show \textit{little serial correlation}.
+\item[(U2)] Series of \textit{absolute} or squared returns show \textit{profound serial correlation}.
+\item[(U3)] Conditional \textit{expected returns} are close to zero.
+\item[(U4)] \textit{Volatility} (conditional standard deviation) appears to \textit{vary over time}.
+\item[(U5)] \textit{Extreme returns} appear in \textit{clusters} (volatility clustering).
+\item[(U6)] Return series are \textit{leptokurtic} or \textit{heavy-tailed} (power-like tail).
+\end{description}
+
+\paragraph{Stylized facts about multivariate financial return series}
+\begin{description}[style=multiline,leftmargin=0.8cm,font=\textbf]
+\item[(M1)] Multivariate return series show little evidence of \textit{cross-correlation}, except for \textit{contemporaneous returns} (i.e. at the same $t$).
+\item[(M2)] Multivariate series of \textit{absolute returns} show \textit{profound cross-correlation}.
+\item[(M3)] \textit{Correlations} between contemporaneous returns \textit{vary over time}.
+\item[(M4)] \textit{Extreme returns} in one series often \textit{coincide with extreme returns} in several other series (e.g. tail dependence).
+\end{description}
+
+\section{Financial time series}
+
+\textit{Remark: not part of the exam.}
+
+\columnbreak
+
+\section{Extreme value theory}
+
+\subsection{Maxima (GEV)}
+
+\paragraph{Convergence of sums}
+\begin{itemize}
+\item Let $(X_k)_{k \in \mathbb{N}}$ be i.i.d. with $\mathbb{E}[X_1^2] < \infty$ (mean $\mu$, variance $\sigma^2$). Define $S_n = \sum_{k=1}^n X_k$.
+\item As $n \to \infty$, $\bar X_n \to^\text{a.s.} \mu$ by the Strong Law of Large Numbers, so $\frac{\bar X_n - \mu}{\sigma} \to^\text{a.s.} 0$.
+\item By the central limit theorem (CLT):
+\begin{align*}
+& \sqrt{n} \frac{\bar X_n - \mu}{\sigma} = \frac{S_n - n \mu}{\sqrt{n} \sigma} \to_{n \uparrow \infty} \mathcal{N}(0,1) \\
+& \lim_{n \to \infty} \mathbb{P} \left[ \frac{S_n - b_n}{a_n} \leq x \right] = \Phi(x)
+\end{align*}
+where the sequences $a_n = \sqrt{n} \sigma$ and $b_n = n \mu$ give normalization.
+\end{itemize}
+
+\paragraph{Block maxima}
+\begin{itemize}
+\item Let $(X_i)_{i \in \mathbb{N}} \sim F$ and $F$ continuous. Then the \emph{block maximum} is given by:
+\begin{align*}
+M_n = \max \lbrace X_1, \ldots, X_n \rbrace
+\end{align*}
+\item For $n \to \infty$, $M_n \to x_F$ a.s. where:
+\begin{align*}
+x_F := \sup \lbrace x \in \mathbb{R} \quad : F(x) < 1 \rbrace = F^\leftarrow(1) \leq \infty
+\end{align*}
+denotes the \textit{right endpoint of $F$}.
+\item \emph{Block-maxima method} to compute estimates $\hat \mu, \hat \sigma, \hat \xi$:
+\begin{enumerate}
+\item Divide the sample into $m$ blocks of size $n$;
+\item compute the maximum $M_i$ for each block;
+\item fit the GEV distribution $H_\xi\left( \frac{x-\mu}{\sigma} \right)$ to the sample of block maxima $M_1, \ldots, M_m$ (e.g. MLE, method of moments).
+\end{enumerate}
+\item If $X_1, \ldots, X_n \overset{\text{i.i.d.}}{\sim} F$ and $M_n = \max \lbrace X_1, \ldots, X_n \rbrace$ or $M_n \sim H$, the \emph{$k$ $n$-block return level} is:
+\begin{empheq}[box=\widefbox]{align*}
+r_{n,k} = H^\leftarrow \left( 1-\frac{1}{k} \right) &= (F^n)^\leftarrow \left( 1-\frac{1}{k} \right) \\
+\text{thus:} \qquad \qquad \mathbb{P} \left[ M_n > r_{n,k} \right] &= \frac{1}{k}
+\end{empheq}
+\begin{itemize}
+\item $r_{n,k}$ is the level which is expected to be exceeded in one out of every $k$ blocks of size $n$.
+\item $r_{n,k}$ is the $\left( 1-\frac{1}{k} \right)$ quantile of the distribution of $M_n$.
+\item \textit{Parametric estimation:} \\
+Approximate $F^n(x) \approx H_\xi \left( \frac{x-\mu}{\sigma} \right) =: H_{\xi, \mu, \sigma}$ for some $\mu \in \mathbb{R}$, $\sigma > 0$. Then:
+\begin{align*}
+\hat r_{n,k} &= H^\leftarrow_{\hat \xi, \hat \mu, \hat \sigma} \left(1-\frac{1}{k} \right) = \hat \mu + \frac{\hat \sigma}{\hat \xi} \left( \left( -\log\left( 1 - \frac{1}{k} \right) \right)^{- \hat \xi} - 1 \right)
+\end{align*}
+The estimates for $\hat \xi, \hat \mu, \hat \sigma$ can be obtained e.g. using MLE.
+\end{itemize}
+\item For $M_n \sim H$, the \emph{return-period} of the event $\lbrace M_n > u \rbrace$ is $k_{n,u} = \frac{1}{\bar H(u)}$.
+\begin{itemize}
+\item $k_{n,u}$ is the number of $n$-blocks for which we expect to see a single $n$-block exceeding $u$.
+\item Thus, $k_{n,u}$ solves $r_{n,k_{n,u}} = u$.
+\item \textit{Parametric estimation:} \\
+As above, approximate $F^n(x) \approx H_\xi \left( \frac{x-\mu}{\sigma} \right) =: H_{\xi, \mu, \sigma}$. Then: $\hat k_{n,u} = 1/\bar H_{\hat \xi, \hat \mu, \hat \sigma}(u)$.
+\end{itemize}
+\item \emph{Bias-variance trade-off:} \\
+The mean-squared error (MSE) of the estimator $\hat r_{n,k}$ can be split into a bias part and a variance part. \\
+Now, IOT determine a reasonable block size, one has to find a compromise between large blocks (which increase the variance of estimates) and small blocks (which induce bias). The fixed relation $N = m \cdot n$ then explains the trade-off. \\
+\textit{Remark:} The larger the return period $r_{n,k}$, the larger the uncertainty, and thus the wider the confidence interval.
+\end{itemize}
+
+\paragraph{Maximum domain of attraction (MDA)}
+\begin{itemize}
+\item $F$ is in the \emph{maximum domain of attraction (MDA)} of $H$ ($F \in \MDA(H)$) if $\exists$ \textit{normalizing sequences} of real numbers $(a_n) > 0$ and $(b_n) \in \mathbb{R}$ s.t. $\frac{M_n - b_n}{a_n}$ converges in distribution to $H$, i.e.
+\begin{empheq}[box=\widefbox]{align*}
+\lim_{n \to \infty} \mathbb{P} \left[ \frac{M_n - b_n}{a_n} \leq x \right] = \lim_{n \to \infty} F^n(a_n x + b_n) &= H(x) \\
+\text{i.e.} \qquad F^n(x) &\simeq H \left( \frac{x-b_n}{a_n} \right)
+\end{empheq}
+for some \textit{non-degenerate density $H$} (i.e. not a unit jump) and large $n$.
+\item \textit{Remarks:}
+\begin{itemize}
+\item In other words, the properly normalized term $(M_n - b_n)/a_n$ converges in distribution to some RV $Z \sim H$.
+\item One can show that $H$ is determined up to location/scale, i.e. $H$ specifies a unique type of distribution. \\
+This is guaranteed by the convergence to types theorem.
+\item All commonly applied continuous $F$ belong to $\MDA(H_\xi)$ for some $\xi \in \mathbb{R}$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Slowly/regularly varying function}
+\begin{itemize}
+\item A positive, Lebesgue-measurable function $L$ on $(0,\infty)$ is \emph{slowly varying} at $\infty$ if:
+\begin{align*}
+\lim_{x \to \infty} \frac{L(tx)}{L(x)} = 1, \qquad t > 0
+\end{align*}
+The class of all such functions is denoted by $\mathcal{R}_0$.
+\begin{itemize}
+\item \textit{Examples:} $c, \log \in \mathcal{R}_0$
+\end{itemize}
+\item A positive, Lebesgue-measurable function $h$ on $(0,\infty)$ is \emph{regularly varying} at $\infty$ with index $\alpha \in \mathbb{R}$ if:
+\begin{align*}
+\lim_{x \to \infty} \frac{h(tx)}{h(x)} = t^\alpha, \qquad t > 0
+\end{align*}
+The class of all such functions is denoted by $\mathcal{R}_\alpha$.
+\begin{itemize}
+\item \textit{Examples:} $x^\alpha L(x) \in \mathcal{R}_\alpha$
+\item \textit{Remark:} If $\bar F \in \mathcal{R}_{-\alpha}$, $\alpha > 0$, the tail of $F$ decays like a power function (Pareto like).
+\end{itemize}
+\end{itemize}
+
+\paragraph{Generalized extreme value (GEV) distribution}
+\begin{itemize}
+\item The (standard) \emph{generalized extreme value (GEV) distribution} (CDF) is given by:
+\begin{empheq}[box=\widefbox]{align*}
+H_\xi(x) &=
+\begin{cases}
+\exp \left( -(1 + \xi x)^{-1/\xi} \right) & : \xi \neq 0 \\
+\exp \left( -e^{-x} \right) & : \xi = 0
+\end{cases}
+\end{empheq}
+where $1 + \xi x > 0$ (MLE).
+\item A \emph{three-parameter family} is obtained by the following \textit{location-scale} transform:
+\begin{align*}
+H_{\xi, \mu, \sigma}(x) = H_\xi \left( \frac{x-\mu}{\sigma} \right), \qquad \mu \in \mathbb{R}, \sigma > 0
+\end{align*}
+\item \emph{Shape parameter:} $\xi$ \\
+\emph{Tail index:} $\alpha = \frac{1}{\xi}$ \\
+The smaller $\alpha$ (the larger $\xi$), the more heavy-tailed $H_\xi$ and vice-versa.
+\item A \emph{fitted GEV model} can be used to estimate the:
+\begin{itemize}
+\item size of an event with prescribed frequency \textit{(return-level problem)}
+\item frequency of an event with prescribed size \textit{(return-period problem)}
+\end{itemize}
+\item \textit{Remark:}
+\begin{itemize}
+\item The parameterization is continuous in $\xi$ (simplifies statistical modelling).
+\end{itemize}
+\end{itemize}
+
+\paragraph{MDAs for different GEV distribution cases}
+\begin{itemize}
+\item $\xi > 0$: \emph{Fréchet MDA} ($\leadsto$ heavy-tailed)
+\begin{enumerate}
+\item For $\xi > 0$:
+\begin{align*}
+F \in \MDA(H_\xi) \quad \iff \quad \bar F(x) = x^{-\frac{1}{\xi}} L(x)
+\end{align*}
+for some $L \in \mathcal{R}_0$ (i.e. $L$ a slowly varying function at $\infty$). \\
+Thus, $\bar F(x)$ has to be regularly varying at $\infty$.
+\item \textit{Fréchet CDF:}
+\begin{empheq}[box=\widefbox]{align*}
+\Phi_\alpha(x) &=
+\begin{cases}
+\exp(-x^{-\alpha}) & : x > 0 \\
+0 & : x \leq 0
+\end{cases}
+\quad \alpha > 0
+\end{empheq}
+with shape parameter $\xi = \frac{1}{\alpha}$.
+\item \textit{Normalizing sequences:} $a_n = F^\leftarrow(1-\frac{1}{n})$ and $b_n = 0$.
+\item \textit{Right endpoint of $F$:} $x_{H_\xi} = \infty$
+\item \textit{Moments:} If $X \sim F \in \MDA(H_\xi), \xi > 0, X \geq 0$, then:
+\begin{align*}
+k < \alpha = \frac{1}{\xi} \quad \Rightarrow \quad \mathbb{E}[X^k] < \infty
+\end{align*}
+\item \textit{Remarks:}
+\begin{itemize}
+\item Distributions in the Fréchet MDA have tails that decay like power functions.
+\item Survival function (approximation): $\bar H_\xi(x) \approx (\xi x)^{-1/\xi}$
+\item The Fréchet MDA is the most important in practice.
+\item \textit{Examples:} inverse gamma, Student-t, log-gamma, Cauchy, Pareto
+\end{itemize}
+\end{enumerate}
+\item $\xi = 0$: \emph{Gumbel MDA} \\
+($\leadsto$ rather light-tailed, decays exponentially)
+\begin{enumerate}
+\item Suppose that $F$ is twice differentiable on some interval $(c,x_F)$ and further that $F'>0$ and $F''<0$ on that interval. Then if:
+\begin{align*}
+\lim_{x \to x_F} \frac{\left( 1-F(x) \right) F''(x)}{(F'(x))^2} = -1
+\end{align*}
+it holds that $F \in \MDA(H_{\xi=0})$. \\
+\item \textit{Gumbel CDF:}
+\begin{empheq}[box=\widefbox]{align*}
+\Gamma(x) &= \exp \left( -e^{-x} \right), \quad x \in \mathbb{R}
+\end{empheq}
+\item \textit{Right endpoint of $F$:} both $x_{H_0} < \infty$ and $x_{H_0} = \infty$ possible
+\item \textit{Moments:} All moments exist, and if $X \sim F$ is non-negative, then all moments are finite.
+\item \textit{Remarks:}
+\begin{itemize}
+\item $\MDA(H_0)$ contains all densities whose tails decay roughly exponentially (light-tailed), but the tails can be quite different (up to moderately heavy).
+\item \textit{Examples:} normal, log-normal, exponential, gamma, standard Weibull, generalized hyperbolic (except Student-t)
+\end{itemize}
+\end{enumerate}
+\item $\xi < 0$: \emph{Weibull MDA} ($\leadsto$ short-tailed)
+\begin{enumerate}
+\item For $\xi < 0$:
+\begin{align*}
+F \in \MDA(H_\xi) \quad \iff \quad &\bar F \left( x_F - \frac{1}{x} \right) = x^{\frac{1}{\xi}} L(x) \\
+& \text{and } x_F < \infty
+\end{align*}
+for some $L \in \mathcal{R}_0$ (i.e. $L$ a slowly varying function at $\infty$).
+\item \textit{Weibull CDF:}
+\begin{empheq}[box=\widefbox]{align*}
+\Psi_\alpha(x) &=
+\begin{cases}
+1 & : x > 0 \\
+\exp \left( -(-x)^\alpha \right) & : x \leq 0
+\end{cases}
+\quad \alpha > 0
+\end{empheq}
+with shape parameter $\xi = \frac{1}{\alpha}$.
+\item \textit{Normalizing sequences:} $a_n = x_F - F^\leftarrow(1-\frac{1}{n})$ and $b_n = x_F$.
+\item \textit{Right endpoint of $F$:} $x_{H_\xi} < \infty$
+\item \textit{Moments:} All moments exist, and if $X \sim F$ is non-negative, then all moments are finite.
+\item \textit{Examples:} beta, uniform (with $\alpha = \beta = 1$)
+\end{enumerate}
+\end{itemize}
+
+\paragraph{Fisher-Tippett-Gnedenko Theorem}
+\begin{itemize}
+\item If $F \in \MDA(H)$ for some non-degenarte $H$, then $H$ must be of GEV type, i.e. $H = H_\xi$ for some $\xi \in \mathbb{R}$. Thus:
+\begin{align*}
+F \in \MDA(H) \quad \Rightarrow \quad H \overset{\text{type}}{\sim} H_\xi
+\end{align*}
+\item \textit{Remarks:}
+\begin{itemize}
+\item Two CDFs $F$ and $G$ are of the same type if $\exists$ $a>0$ and $b \in \mathbb{R}$ s.t. $F(x) = G \left( \frac{x-b}{a} \right)$.
+\item \textit{Interpretation:} If location-scale transformed maxima converge in distribution to a non-degenerate limit, the limiting distribution must be GEV distribution.
+\item We can always choose normalizing sequences $(a_n) > 0$, $(b_n)$ s.t. $H_\xi$ appears in canonical form.
+\item All commonly encountered continuous distributions are in the MDA of a GEV distribution.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Examples of distributions per MDA}
+Consider: \\
+\begin{tabular}{l l l}
+\toprule
+Fréchet MDA $\xi > 0$	& Gumbel MDA $\xi = 0$	& Weibull MDA $\xi < 0$ \\ \midrule
+Student-t						 	& normal $\mathcal{N}$	& beta \\
+Pareto								& log-normal						& (uniform $\mathcal{U}$) \\
+inverse gamma					& exponential \\
+log-gamma						& gamma \\
+Cauchy								& standard Weibull \\
+$F$ distribution				& generalized hyperbol. \\ \bottomrule
+\end{tabular}
+
+\subsection{Threshold exceedances/Peaks-over-threshold}
+
+\paragraph{Generalized Pareto distribution (GPD)}
+\begin{itemize}
+\item The CDF of the \emph{generalized Pareto distribution (GPD)} is:
+\begin{empheq}[box=\widefbox]{align*}
+G_{\xi, \beta}(x) &=
+\begin{cases}
+1 - \left( 1 + \frac{\xi x}{\beta} \right)^{-\frac{1}{\xi}} & \text{if } \xi \neq 0 \\
+1 - \exp \left( -\frac{x}{\beta} \right) & \text{if } \xi = 0
+\end{cases}
+\end{empheq}
+where $\beta > 0$ is the \textit{scale parameter}, $\xi$ is the \textit{shape parameter}, and the support is:
+\begin{itemize}
+\item $x \geq 0$ when $\xi \geq 0$,
+\item and $x \in \left[ 0, -\frac{\beta}{\xi} \right]$ when $\xi < 0$.
+\end{itemize}
+\item The PDF of the GDP is given by:
+\begin{align*}
+g_{\xi, \beta}(x) &=
+\begin{cases}
+\frac{1}{\beta} \left( 1 + \frac{\xi x}{\beta} \right)^{-\frac{1}{\xi} -1} & \text{if } \xi \neq 0 \\
+\frac{1}{\beta} \exp \left( -\frac{x}{\beta} \right) & \text{if } \xi = 0
+\end{cases}
+\end{align*}
+and the support is defined as for the CDF.
+\item Special cases of the \textit{shape parameter} $\xi$:
+\begin{itemize}
+\item $\xi>0$: $\Pareto \left( \frac{1}{\xi}, \frac{\beta}{\xi} \right)$
+\item $\xi=0$: $\Exp \left( \frac{1}{\beta} \right)$
+\item $\xi<0$: short-tailed Pareto type II distribution
+\end{itemize}
+\item \textit{Remarks:}
+\begin{itemize}
+\item The larger $\xi$, the heavier tailed is $G_{\xi, \beta}$.
+\item \textit{Maximum domain of attraction:} $G_{\xi, \beta} \in \MDA(H_\xi)$
+\item The GPD is the canonical CDF for modelling excess losses over high $u$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Excess distribution over $u$, mean excess function}
+\begin{itemize}
+\item Let $X \sim F$. The \emph{excess distribution over the threshold $u$} is:
+\begin{align*}
+F_u(x) &= \mathbb{P}[X-u \leq x | X > u] \\
+&= \frac{F(x+u) - F(u)}{1-F(u)}, & x \in [0, x_F-u)
+\end{align*}
+$F_u$ describes the distribution of the excess loss over $u$, given that $u$ is exceeded.
+\item If $\mathbb{E}[|X|] < \infty$, the \emph{mean excess function} is the mean w.r.t. $F_u$:
+\begin{empheq}[box=\widefbox]{align*}
+e(u) = \mathbb{E}[X-u | X > u] &= \frac{1}{\mathbb{P}[X > u]} \int_u^{x_F} (x-u) f(x) dx \\
+&= \frac{1}{1 - F(u)} \int_u^{x_F} \left( 1 - F(x) \right) dx
+\end{empheq}
+\item The \emph{sample mean excess function} is given by:
+\begin{align*}
+e_n(u) = \frac{\sum_{i=1}^n (x_i - u) \mathbb{I}_{\lbrace x_i > u \rbrace}}{\sum_{i=1}^n \mathbb{I}_{\lbrace x_i > u \rbrace}}
+\end{align*}
+\item The \emph{sample mean excess plot} consists of the points $\left\lbrace x_{(i)}, e_n \left( x_{(i)} \right) : 2 \leq i \leq n \right\rbrace$, where $x_{(i)}$ denotes the $i^\text{th}$ order statistic.
+\begin{itemize}
+\item If a distribution $F \in \MDA(H_\xi)$, then its mean excess plot has a slope equal to $\frac{\xi}{1-\xi}$.
+\item The mean excess plot of the Pareto distribution is expected to be \textit{fast linear}.
+\end{itemize}
+\item For the \emph{GPD}, i.e. if $F = G_{\xi, \beta}$, it holds that:
+\begin{empheq}[box=\widefbox]{align*}
+F_u(x) &= G_{\xi, \beta(u)}(x), \qquad \beta(u) = \beta + \xi u \\
+e(u) &= \frac{\beta(u)}{1-\xi} = \frac{\beta + \xi u}{1-\xi} \\
+\text{where } \supp u &=
+\begin{cases}
+0 \leq u < \infty &\text{if } 0 \leq \xi < 1 \\
+0 \leq u \leq -\frac{\beta}{\xi} &\text{if } \xi < 0
+\end{cases}
+\end{empheq}
+Note that the mean excess function $e(u)$ is linear in the threshold $u$, which is a characterizing property of the GPD.
+\item For continuous $X \sim F$ with $\mathbb{E}[|X|] < \infty$, the following formula holds for \textit{expected shortfall}:
+\begin{align*}
+\ES_\alpha(X) = \VaR_\alpha(X) + e(\VaR_\alpha(X)), \qquad \alpha \in (0,1)
+\end{align*}
+\end{itemize}
+
+\paragraph{Pickhands-Balkema-de Haan Theorem}
+\begin{itemize}
+\item Let $F$ be a general distribution function and denote by $x_F$ the right endpoint of $F$.
+\item Then we can find a (positive-measurable) function $\beta(u) > 0$ s.t.
+\begin{align*}
+&\lim_{x \to x_F} \sup_{0 \leq x < x_F-u} \left| F_u(x) - G_{\xi, \beta(u)}(x) \right| = 0 \\
+&\quad \iff \quad F \in \MDA(H_\xi), \xi \in \mathbb{R}
+\end{align*}
+\end{itemize}
+
+\paragraph{Peaks-over-threshold (POT) approach}
+\begin{itemize}
+\item Since the block-maxima-methods (BMM) is wasteful of data (i.e. only the maxima of large blocks are used), it has been largely superseded in practice by methods based on \textit{thresold exceedances}.
+\item The \emph{peaks-over-threshold (POT) approach} (threshold exceedances) uses all data above a designated high threshold $u$.
+\end{itemize}
+The method is as follows:
+\begin{itemize}
+\item Given losses $X_1, \ldots, X_n \sim F \in \MDA(H_\xi)$, $\xi \in \mathbb{R}$, let:
+\begin{itemize}
+\item $N_u = \left| \lbrace i \in \lbrace 1, \ldots, n \rbrace : X_i > u \rbrace \right|$: number of exceedances over the (given) threshold $u$
+\item $\tilde X_1, \ldots, \tilde X_{N_u}$: exceedances
+\item $Y_k = \tilde X_k - u$, $k \in \lbrace 1, \ldots, N_u \rbrace$, the corresponding excesses
+\end{itemize}
+\item If $Y_1, \ldots, Y_{N_u}$ are i.i.d. and (roughly) distributed as $G_{\xi, \beta}$, then the \textit{log-likelihood} is given by:
+\begin{align*}
+\ell (\xi, \beta; Y_1, \ldots, Y_{N_u}) &= \sum_{k=1}^{N_u} \log g_{\xi, \beta}(Y_k) \\
+&= -N_u \log(\beta) - \left( 1+\frac{1}{\xi} \right) \sum_{k=1}^{N_u} \log \left( 1 + \frac{\xi Y_k}{\beta} \right)
+\end{align*}
+Then, maximize w.r.t. $\beta > 0$ and $1 + \frac{\xi Y_k}{\beta} > 0$, $\forall k \in \lbrace 1, \ldots, N_u \rbrace$.
+\end{itemize}
+
+\paragraph{Methods for choosing the threshold $u$}
+\begin{enumerate}
+\item Plot the mean excess function $e(u) := \mathbb{E}[X-u | X > u]$ against $u$. \\
+Then look for the lowest value $u_0$ of $u$ s.t. $e(u)$ is linear for $u > u_0$.
+\item Fix $u$ and estimate the shape parameter $\xi = \xi(u)$. Do this for various values of $u$. \\
+Plot $\xi(u)$ against $u$ and look for the lowest value $u_0$ of $u$ s.t. $\xi(u)$ is approximately constant for $u > u_0$.
+\end{enumerate}
+
+\paragraph{Smith estimator}
+\begin{itemize}
+\item The \emph{Smith estimator} is the \textit{tail estimator} defined as:
+\begin{align*}
+\hat{\bar F}(x) &= \frac{N_u}{n} \left( 1 + \hat \xi \frac{x-u}{\hat \beta} \right)^{-\frac{1}{\hat \xi}}, & x \geq u \\
+&= \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{I}_{\lbrace X_i > u \rbrace}}_{\bar F_u(u)} \underbrace{\left( 1 + \hat \xi \frac{x-u}{\hat \beta} \right)^{-\frac{1}{\hat \xi}}}_{\bar F(x-u) \approx 1-G_{\xi, \beta}(x-u)}
+\end{align*}
+\item The Smith estimator faces a \textit{bias-variance tradeoff:} \\
+If $u$ is increased, the bias of parametrically estimating $\bar F_u(x-u)$ decreases, but the variance of it and the nonparametrically estimated $\bar F(u)$ increases.
+\end{itemize}
+
+\paragraph{Hill estimator}
+\begin{itemize}
+\item Assume $F \in \MDA(H_\xi), \xi > 0$, so that $\bar F(x) = x^{-\alpha} L(x), \alpha > 0$.
+\item The standard form of the \emph{Hill estimator} of the \textit{tail index $\alpha$} is:
+\begin{align*}
+\hat \alpha_{k,n}^{(H)} = \left( \frac{1}{k} \sum_{i=1}^k \log X_{i,n} - \log X_{k,n} \right)^{-1}, \qquad 2 \leq k \leq n
+\end{align*}
+with $k$ sufficiently small.
+\item Choosing $k$: Find a small $k$ where the \textit{Hill plot} stabilizes.
+\item \emph{Semi-parametric Hill tail estimator}
+\begin{align*}
+\hat{\bar F}(x) &= \frac{k}{n} \left( \frac{x}{X_{k,n}} \right)^{-\hat \alpha_{k,n}^\text{(H)}}, \qquad x \geq X_{k,n}
+\end{align*}
+\item Semi-parametric \emph{Hill VaR estimator}
+\begin{align*}
+\widehat \VaR_\alpha(X) &= \left( \frac{n}{k} (1-\alpha) \right)^{-\frac{1}{\hat \alpha_{k,n}^\text{(H)}}} X_{k,n}, \qquad \alpha \geq F(u) \approx 1 - \frac{k}{n}
+\end{align*}
+\item The semi-parametric \emph{Hill ES estimator} is for $\alpha_{k,n}^\text{(H)} > 1$, $\alpha \geq F(u) \approx 1 - \frac{k}{n}$:
+\begin{align*}
+\widehat \ES_\alpha(X) &= \frac{\left( \frac{n}{k} \right)^{-\frac{1}{\hat \alpha_{k,n}^\text{(H)}}} X_{k,n}}{1-\alpha} \int_\alpha^1 (1-z)^{-\frac{1}{\hat \alpha_{k,n}^\text{(H)}}} dz \\
+&= \frac{\hat \alpha_{k,n}^\text{(H)}}{\hat \alpha_{k,n}^\text{(H)} - 1} \widehat \VaR_\alpha(X)
+\end{align*}
+\item \textit{Observations from simulation study:}
+\begin{itemize}
+\item The empirical $\VaR_{0.99}$ estimator has a negative bias.
+\item The Hill $\VaR_{0.99}$ estimator has a negative bias for small $k$ but a rapidly growing positive bias for larger $k$.
+\item The GDP $\VaR_{0.99}$ estimator has a positive bias which grows much more slowly.
+\item The GDP $\VaR_{0.99}$ estimator attains lowest MSE for a value of $k$ around 100, but the MSE is a very robust choice of $k$ (because of the slow growth of the bias) $\rightarrow$ choice of $u$ is less critical.
+\item The Hill $\VaR_{0.99}$ estimator performs well for $20 \leq k \leq 75$ but then deteriorates rapidly.
+\item Both EVT methods outperform the empirical quantile estimator.
+\end{itemize}
+\end{itemize}
+
+\section{Multivariate models}
+
+\subsection{Basics of multivariate modelling}
+
+\paragraph{Joint and marginal distributions}
+\begin{itemize}
+\item Let $\bm X = (X_1, \ldots, X_d): \Omega \to \mathbb{R}^d$ be a $d$-dimensional \textit{random vector}.
+\item The \emph{(joint) distribution function (CDF) $F$ of $\bm X$} is:
+\begin{empheq}[box=\widefbox]{align*}
+F_{\bm X}(\bm x) &= \mathbb{P}[\bm X \leq \bm x] = \mathbb{P}[X_1 \leq x_1, \ldots, X_d \leq x_d]
+\end{empheq}
+\item The \emph{$j^\text{th}$ marginal} or \emph{marginal CDF $F_j$} of $\bm X$ is:
+\begin{align*}
+F_j(x_j) &= \mathbb{P}[X_j \leq x_j] = F(\infty, \ldots, \infty, x_j, \infty, \ldots, \infty)
+\end{align*}
+(interpreted as limit). \\
+\emph{$k$-dimensional margins:} For $\bm X_1 = (X_1, \ldots, X_k)^\top$ and $\bm X_2 = (X_{k+1}, \ldots, X_d)^\top$, the marginal CDF of $\bm X_1$ is:
+\begin{align*}
+F_{\bm X_1}(\bm x_1) &= \mathbb{P}(\bm X_1 \leq \bm x_1) = F(x_1, \ldots, x_k, \infty, \ldots, \infty)
+\end{align*}
+\item $F$ is \emph{absolutely continuous} if:
+\begin{align*}
+F(\bm x) &= \int_{(-\bm \infty, \bm x]} f(\bm z) d\bm z
+\end{align*}
+for some $f \geq 0$ known as the \emph{(joint) density of $\bm X$ (or $F$)}. \\
+The $j^\text{th}$ marginal CDF $F_j$ is absolutely continuous if $F_j(x) = \int_{-\infty}^x f_j(z) dz$ for some $f_j \geq 0$ known as the density of $X_j$ (or $F_j$).
+\item \emph{Survival function $\bar F$ of $\bm X$:}
+\begin{align*}
+\bar F_{\bm X}(\bm x) &= \mathbb{P}[\bm X > \bm x] = \mathbb{P}[X_1 > x_1, \ldots, X_d > x_d]
+\end{align*}
+with corresponding \textit{$j^\text{th}$ marginal survival function $\bar F_j$}:
+\begin{align*}
+\bar F_j(x_j) = \mathbb{P}[X_j > x_j] = \bar F(\infty, \ldots, \infty, x_j, \infty, \ldots, \infty)
+\end{align*}
+Note that in general: $\bar F(\bm x) \neq 1-F(\bar x)$ (unless $d=1$, i.e. in the univariate case).
+\item \textit{Remarks:}
+\begin{itemize}
+\item Existence of a \textit{joint density} $\rightarrow$ existence of \textit{marginal densities} for all $k$-dimensional marginals, $1 \leq k \leq d-1$. \\
+The converse is false in general.
+\item \emph{Discrete case:} replace integrals by sums IOT obtain similar formulas (the notion of densities is then replaced by \textit{probability mass functions})
+\end{itemize}
+\end{itemize}
+
+\paragraph{Conditional distributions and independence}
+\begin{itemize}
+\item Let $\bm X = (\bm X_1^\top, \bm X_2^\top)^\top \sim F$.
+\item The \emph{conditional CDF of $\bm X_2$ given $\bm X_1 = \bm x_1$} is:
+\begin{align*}
+F_{\bm X_2 | \bm X_1}(\bm x_2 | \bm x_1) &= \mathbb{P}[\bm X_2 \leq \bm x_2 | \bm X_1 = \bm x_1] \\
+&= \mathbb{E}[\mathbb{I}_{\lbrace \bm X_2 \leq \bm x_2 \rbrace} | \bm X_1 = \bm x_1]
+\end{align*}
+\item The \emph{conditional PDF of $\bm X_2$ given $\bm X_1 = \bm x_1$} is:
+\begin{align*}
+f_{\bm X_2 | \bm X_1}(\bm x_2 | \bm x_1) = \frac{f(\bm x_1, \bm x_2)}{f_{\bm X_1}(\bm x_1)}
+\end{align*}
+\item Useful identities:
+\begin{align*}
+F(\bm x) &= \int_{(-\infty, \bm x_1]} F_{\bm X_2 | \bm X_1}(\bm x_2 | \bm z) dF_{\bm X_1}(\bm z) \\
+F_{\bm X_2 | \bm X_1}(\bm x_2 | \bm x_1) &= \\
+\int_{-\infty}^{x_{k+1}} &\ldots \int_{-\infty}^{x_d} f_{\bm X_2 | \bm X_1}(z_{k+1}, \ldots, z_d | \bm x_1) dz_{k+1} \ldots dz_d
+\end{align*}
+\item \emph{Characteristic function (CF)}
+\begin{empheq}[box=\widefbox]{align*}
+\varphi_{\bm X} &= \mathbb{E}\left[e^{i \bm t^\top \bm X} \right], \qquad \bm t \in \mathbb{R}^d
+\end{empheq}
+\item \emph{Independence:}
+\begin{itemize}
+\item $\bm X, \bm Y$ are \textit{independent}
+\begin{description}[style=multiline,leftmargin=0.7cm,font=\textbf]
+\item[$\iff$] (CDFs) \\
+$F(\bm X, \bm Y) = F_{\bm X}(\bm x) F_{\bm Y}(\bm y)$, $\forall \bm x, \bm y$
+\item[$\iff$] (PDFs) \\
+$f(\bm x, \bm y) = f_{\bm X}(\bm x) f_{\bm Y}(\bm y)$, $\forall \bm x, \bm y$ (if PDFs exist!) \\
+(in this case: $f_{\bm Y | \bm X}(\bm y | \bm x) = f_{\bm Y}(\bm y)$)
+\item[$\iff$] (Characteristic functions) \\
+$\varphi_{(X,Y)}(x,y) = \varphi_X(x) \cdot \varphi_Y(y)$ \\
+(in this case: $\varphi_{X+Y}(z) = \varphi_X(z) \cdot \varphi_Y(z)$)
+\end{description}
+If two RVs $X, Y$ are independent, then:
+\begin{align*}
+\mathbb{E}[X Y] = \mathbb{E}[X] \mathbb{E}[Y], \qquad \Cov[X Y] = \mathbb{E}[X Y] - \mathbb{E}[X] \mathbb{E}[Y]
+\end{align*}
+\textit{Remark:} The converse does not hold in general. But independence can be rejected if it can be shown that one of these properties does not hold.
+\item Similarly, the components $X_1, \ldots, X_d$ of $\bm X$ are \textit{mutually independent}
+\begin{align*}
+\iff F(\bm x) &= \prod_{j=1}^d F_j(x_j) \quad \iff \quad f(\bm x) = \prod_{j=1}^d f_j(x_j) \\
+\iff \varphi_{\bm X}(\bm t) &= \prod_{j=1}^d \phi_{X_j}(t_j)
+\end{align*}
+$\forall \bm x$ or $\forall \bm t$, respectively, and if the PDF $f$ exists.
+\end{itemize}
+\item Two RVs $\bm X, \bm Y \in \mathbb{R}^d$ are \emph{equal in distribution} $\iff$
+\begin{align*}
+\bm a^\top \bm X \overset{d}{=} \bm a^\top \bm Y, \qquad \forall \bm a \in \mathbb{R}^d
+\end{align*}
+\end{itemize}
+
+\paragraph{Moments and characteristic function}
+\begin{itemize}
+\item If $\mathbb{E}[|X_j|] < \infty, \forall j$, the \emph{mean vector} of $\bm X$ is:
+\begin{align*}
+\mathbb{E}[\bm X] &= (\mathbb{E}[X_1], \ldots, \mathbb{E}[X_d])^\top
+\end{align*}
+It holds that: \\
+$X_1, \ldots, X_d$ independent $\Rightarrow$ $\mathbb{E}[X_1 \cdot \ldots \cdot X_d] = \prod_{j=1}^d \mathbb{E}[X_j]$
+\item If $\mathbb{E}[X_j^2] < \infty, \forall j$, the \emph{covariance matrix} of $\bm X$ is:
+\begin{align*}
+\Sigma &:= \Cov[\bm X] = \mathbb{E} \left[ (\bm X - \mathbb{E}[\bm X]) (\bm X - \mathbb{E}[\bm X])^\top \right]
+\end{align*}
+The $(i,j)^\text{th}$ element of $\Sigma$ is:
+\begin{align*}
+\sigma_{ij} &= \Sigma_{ij} = \Cov[X_i, X_j] \\
+&= \mathbb{E}[(X_i - \mathbb{E}[X_i]) (X_j - \mathbb{E}[X_j])] = \mathbb{E}[X_i X_j] - \mathbb{E}[X_i] \mathbb{E}[X_j] \\
+\sigma_{ii} &= \Var[X_i]
+\end{align*}
+Note that: $\bm X_1, \bm X_2$ independent $\underset{\not\Leftarrow}{\Rightarrow}$ $\Cov[X_1, X_2] = 0$. \\
+$\Cov[X_1, X_2] = 0 \Rightarrow \text{independence}$ holds true only for the bivariate normal distribution. \\
+A counter-example is the bivariate Student-t distribution with $\nu > 2$ degrees of freedom.
+\item If $\mathbb{E}[X_j^2] < \infty, \forall j$, the \emph{correlation matrix} of $\bm X$ is given by $\Corr[\bm X]$ with the $(i,j)^\text{th}$ element:
+\begin{align*}
+\Corr[X_i, X_j] &= \frac{\Cov[X_i, X_j]}{\sqrt{\Var[X_i] \Var[X_j]}}
+\end{align*}
+which is in $[-1,1]$. \\
+Note that: $\Corr[X_i, X_j] = \pm 1$ iff $X_j = a X_i + b$.
+\item \textit{Properties:} ($\forall A \in \mathbb{R}^{k \times d}, \bm b \in \mathbb{R}^k, \bm a \in \mathbb{R}^d$)
+\begin{itemize}
+\item $\mathbb{E}[A \bm X + \bm b] = A \mathbb{E}[X] + \bm b = A \bm \mu + \bm b$
+\item $\Cov[A \bm X + \bm b] = A \Cov[\bm X] A^\top$ \\
+If $k=1$ ($A = \bm a^\top$), then:
+\begin{align*}
+\bm a^\top \Sigma \bm a = \Cov[\bm a^\top \bm X] = \Var[\bm a^\top \bm X] \geq 0
+\end{align*}
+\item It holds that: \\
+A symmetric matrix $\Sigma$ is a covariance matrix \\
+$\iff$ $\Sigma$ is \textit{positive semidefinite}. \\ \\
+If $\Sigma$ is a positive definite matrix, then $\Sigma$ is \textit{invertible}.
+\item The \emph{Colesky decomposition} is:
+\begin{align*}
+\Sigma = A A^\top
+\end{align*}
+for a lower triangular matrix (\textit{Cholesky factor}) $A$ with $A_{ii} > 0$, $\forall j$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Standard estimators of covariance and correlation}
+\begin{itemize}
+\item Assume: \\
+$\bm X_1, \ldots, \bm X_n \sim F$, serially uncorrelated and with:
+\begin{align*}
+\bm \mu := \mathbb{E}[\bm X_1], \qquad \Sigma := \Cov[\bm X_1], \qquad P := \Corr[\bm X_1]
+\end{align*}
+\item \emph{Non-parametric method-of-moments-like estimators:}
+\begin{itemize}
+\item \textit{sample mean:}
+\begin{align*}
+\bar{\bm X} &= \frac{1}{n} \sum_{i=1}^n \bm X_i
+\end{align*}
+with $\Cov[\bar{\bm X}] = \frac{1}{n} \Sigma$ and which is clearly unbiased.
+\item \textit{sample covariance matrix:}
+\begin{align*}
+S &= \frac{1}{n} \sum_{i=1}^n (\bm X_i - \bar{\bm X}) (\bm X_i - \bar{\bm X})^\top &\text{(biased)} \\
+S_n &= \frac{1}{n-1} \sum_{i=1}^n (\bm X_i - \bar{\bm X}) (\bm X_i - \bar{\bm X})^\top &\text{(unbiased)} \\
+&= \frac{n}{n-1} S
+\end{align*}
+$S_n$ is unbiased since it can be shown that $\mathbb{E}[S_n] = \Sigma$.
+\item \textit{sample correlation matrix:}
+\begin{align*}
+R &= (R_{ij}), \qquad R_{ij} = \frac{S_{ij}}{\sqrt{S_{ii} S_{jj}}}
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+\paragraph{Multivariate normal distribution}
+\begin{itemize}
+\item $\bm X = (X_1, \ldots, X_d)$ has a \emph{multivariate normal (or Gaussian) distribution} if:
+\begin{empheq}[box=\widefbox]{align*}
+\bm X = \mu + A \bm Z
+\end{empheq}
+where $\bm Z = (Z_1, \ldots, Z_k)$, $Z_l \sim \mathcal{N}(0,1)$, $A \in \mathbb{R}^{d \times k}$, $\bm \mu \in \mathbb{R}^d$. \\
+Its \textit{mean} and \textit{covariance} are:
+\begin{align*}
+\mathbb{E}[\bm X] = \bm \mu, \qquad \Cov[\bm X] = A A^\top =: \Sigma
+\end{align*}
+\item \emph{Characteristic function:}
+\begin{align*}
+\varphi_{\bm X}(\bm t) &= \mathbb{E} \left[ e^{i \bm t^\top \bm X} \right] = \exp \left( i \bm t^\top \bm \mu - \frac{1}{2} \bm t^\top \Sigma \bm t \right)
+\end{align*}
+\item For $\bm X \sim \mathcal{N}_d(\bm \mu, \Sigma)$ with $\rank A = d = k$ ($\Rightarrow \Sigma$ positive definite, invertible), the \emph{density} of $\bm X$ is:
+\begin{align*}
+f_{\bm X}(\bm x) &= \frac{1}{(2\pi)^{d/2} \sqrt{\det \Sigma}} \exp \left( -\frac{1}{2} (\bm x - \bm \mu)^\top \Sigma^{-1} (\bm x - \bm \mu) \right)
+\end{align*}
+\item \emph{Independence of components:} The following statements are equivalent:
+\begin{description}[style=multiline,leftmargin=0.8cm,font=\textbf]
+\item[$\iff$] The components of $\bm X \sim \mathcal{N}_d(\bm \mu, \Sigma)$ are \textit{mutually independent}.
+\item[$\iff$] $\Sigma$ is \textit{diagonal}.
+\item[$\iff$] The components of $\bm X$ are \textit{uncorrelated} (and joint normally distributed).
+\end{description}
+\item \emph{Transformations} for $\bm X \sim \mathcal{N}_d(\bm \mu, \Sigma)$:
+\begin{itemize}
+\item In general: $\bm a^\top \bm X \sim \mathcal{N}(\bm a^\top \bm \mu, \bm a^\top \Sigma \bm a)$, $\forall \bm a \in \mathbb{R}^d$
+\item \textit{Margins:} $X_j \sim \mathcal{N}(\mu_j, \sigma_jj^2)$
+\item \textit{Sums:} $\sum_{j=1}^d X_j \sim \mathcal{N}(\sum_{j=1}^d \mu_j, \sum_{i,j} \sigma_{ij})$
+\item \textit{Linear combinations:} for $B \in \mathbb{R}^{k \times d}$, $\bm b \in \mathbb{R}^k$, it holds:
+\begin{align*}
+B \bm X + \bm b \sim \mathcal{N}_k (B \bm \mu + \bm b, B \Sigma B^\top)
+\end{align*}
+\item \textit{Convolutions:} for an independent $\bm Y \sim \mathcal{N}_d(\tilde{ \bm \mu}, \tilde \Sigma)$, it holds:
+\begin{align*}
+\bm X + \bm Y \sim \mathcal{N}_d(\bm \mu + \tilde{\bm \mu}, \Sigma + \tilde \Sigma)
+\end{align*}
+\item Convolution for dependent $\bm X_1, \bm X_2$: \\
+Assume the following known joint distribution:
+\begin{align*}
+\bm X &=  \colvec{2}{\bm X_1}{\bm X_2} \sim \mathcal{N}_{2d} \left( \bm \mu = \colvec{2}{\bm \mu_1}{\bm \mu_2}, \bm \Sigma = \begin{pmatrix} \Sigma_1 & \Sigma_{12} \\ \Sigma_{12} & \Sigma_2 \end{pmatrix} \right)
+\end{align*}
+Note that $\bm X$ has margins $\bm X_i \sim \mathcal{N}_d(\bm \mu_i, \Sigma_i), i=1,2$ and that $\Sigma_{12}$ describes the dependence structure between $\bm X_1, \bm X_2$. \\
+Then the sum $\bm X_1 + \bm X_2$ can be expressed as:
+\begin{align*}
+\bm X_1 + \bm X_2 &= A^\top \bm X, \qquad A = \colvec{2}{\mathbb{I}_d}{\mathbb{I}_d}, \mathbb{I}_d \in \mathbb{R}^{d \times d}
+\end{align*}
+which has the following distribution:
+\begin{align*}
+\bm X_1 + \bm X_2 &\sim \mathcal{N}_d \left( A^\top \bm \mu, A^\top \Sigma A \right) \\
+&\sim \mathcal{N}_d \left( \bm \mu_1 + \bm \mu_2, \Sigma_1 + 2 \Sigma_{12} + \Sigma_2 \right) \\
+&\overset{\text{in general}}{\not\sim} \mathcal{N}_d(\bm \mu_1 + \bm \mu_2, \Sigma_1 + \Sigma_2)
+\end{align*}
+\end{itemize}
+\item \emph{Sampling of $\mathcal{N}_d(\bm \mu, \Sigma)$}
+\begin{enumerate}
+\item Compute the \textit{Cholesky factor $A$} of $\Sigma$.
+\item Generate $\bm Z = (Z_1, \ldots, Z_d)$ with independent $Z_j \sim \mathcal{N}(0,1)$.
+\item Return $\bm X = \mu + A \bm Z$.
+\end{enumerate}
+\end{itemize}
+
+\subsection{Normal mixture distributions}
+
+\paragraph{Multivariate normal variance mixtures}
+\begin{itemize}
+\item The random vector $\bm X$ has a \emph{(multivariate) normal variance mixture distribution} if:
+\begin{empheq}[box=\widefbox]{align*}
+\bm X &\overset{d}{=} \bm \mu + \sqrt{W} A \bm Z
+\end{empheq}
+where $\bm Z \sim \mathcal{N}_k(\bm 0, \mathbb{I}_k)$, $W \geq 0$ is a RV independent of $\bm Z$, $A \in \mathbb{R}^{d \times k}$ with the \textit{scale matrix} $\Sigma = A A^\top$, and $\bm \mu \in \mathbb{R}^d$ the \textit{location vector}. \\
+Notation: $\bm X \sim M_k(\bm \mu, \Sigma, \hat F_W)$
+\item \textit{Remarks:}
+\begin{itemize}
+\item Note that: \\
+$(\bm X | W = w) = \mu + \sqrt{w} A \bm Z \sim N_d(\bm \mu, w \Sigma)$
+\item $W$ can be interpreted as a shock affecting the variances of all risk factors.
+\end{itemize}
+\item \textit{Properties:} \\
+Let $\bm X = \bm \mu + \sqrt{W} A \bm Z$ and $\bm Y = \bm \mu + A \bm Z$. Assume that $\rank(A) = d \leq k$ and that $\Sigma$ is positive definite.
+\begin{itemize}
+\item If $\mathbb{E}[\sqrt{W}] < \infty$, then $\mathbb{E}[\bm X] = \bm \mu = \mathbb{E}[\bm Y]$.
+\item If $\mathbb{E}[W] < \infty$, then: \\
+$\Cov[\bm X] = \mathbb{E}[W] \Sigma = \mathbb{E}[W] A A^\top \underset{\text{in general}}{\neq} \Sigma = \Cov[\bm Y]$.
+\item \textit{Linear combinations:} \\
+For $\bm X \sim M_d(\bm \mu, \Sigma, \hat F_W)$ and $\bm Y = B \bm X + \bm b$, where $B \in \mathbb{R}^{k \times d}$ and $\bm b \in \mathbb{R}^k$, we have: \\
+$\bm Y \sim M_k(B \bm \mu + \bm b, B \Sigma B^\top, \hat F_W)$ \\
+If $\bm a \in \mathbb{R}^d$, then $\bm a^\top \bm X \sim M_1(\bm a^\top \bm \mu, \bm a^\top \Sigma \bm a, \hat F_W)$.
+\item If $\mathbb{E}[W] < \infty$, then $\Corr[\bm X] = \Corr[\bm Y]$.
+\end{itemize}
+\item \emph{Independence:} \\
+Let $\bm X = \bm \mu + \sqrt{W} \bm Z$ with $\mathbb{E}[W] < \infty$ (uncorrelated normal variance mixture). Then: \\
+$X_i$ and $X_j$ are \textit{independent} $\iff$ $W$ is a.s. constant (i.e. $\bm X \sim \mathcal{N}_d(\bm \mu, W \mathbb{I}_k)$)
+\item \emph{Characteristic function (CF):} \\
+The CF of a multivariate normal variance mixture is:
+\begin{align*}
+\varphi_{\bm X}(\bm t) = \exp(i \bm t^\top \bm \mu) \mathbb{E} \left[ \exp \left( -W \frac{1}{2} \bm t^\top \Sigma \bm t \right) \right]
+\end{align*}
+\item \emph{Density:} \\
+If $\Sigma$ is positive definite and $\mathbb{P}[W=0] = 0$, the density of $\bm X$ is:
+\begin{align*}
+f_{\bm X}(\bm x) = \int_0^\infty &\frac{1}{(2 \pi)^{d/2} w^{d/2} |\Sigma|^{1/2}} \\
+&\cdot \exp \left( -\frac{(\bm x - \bm \mu)^\top \Sigma^{-1} (\bm x - \bm \mu)}{2w} \right) dF_W(w)
+\end{align*}
+\item The \emph{Laplace-Stieltjes (LS) transform of $F_W$} is:
+\begin{align*}
+\hat F_W(\theta) &:= \mathbb{E}[\exp(-\theta W)] = \int_0^\infty e^{-\theta w} dF_W(w)
+\end{align*}
+\item \emph{Sampling:}
+\begin{enumerate}
+\item Generate $\bm Z \sim \mathcal{N}_d(\bm 0, \mathbb{I}_d)$.
+\item Generate $W \sim F_W$, independent of $\bm Z$.
+\item Compute the Cholesky factor $A$ (s.t. $A A^\top = \Sigma$).
+\item Return $\bm X = \bm \mu + \sqrt{W} A \bm Z$.
+\end{enumerate}
+\item \textit{Examples:}
+\begin{itemize}
+\item Student-t distribution: \\
+The stochastic representation of a RV $\bm X = t_d(\nu, \bm \mu, \Sigma)$ is:
+\begin{align*}
+\bm X \overset{d}{=} \bm \mu + \Sigma^{1/2} \bm Y
+\end{align*}
+where $\bm Y \sim t_d(\nu, \bm 0, \mathbb{I}_d)$ and $\Sigma^{1/2}$ the Cholesky factor of $\Sigma$.
+This can also be written in terms of a normal variance mixture:
+\begin{align*}
+\bm X \overset{d}{=} \bm \mu + \sqrt{W} \Sigma^{1/2} \bm Z \overset{d}{=} \bm \mu + \sqrt{\frac{\nu}{V}} \Sigma^{1/2} \bm Z 
+\end{align*}
+where $\bm Z \sim \mathcal{N}_d(\bm 0, \mathbb{I}_d)$, $W \sim \Ig(\frac{\nu}{2}, \frac{\nu}{2})$ (inverse gamma distribution) and $V \sim \chi_\nu^2$ independent of $Z$. \\
+Then: $\Cov[\bm X] = \mathbb{E}[W] \Sigma$.
+\end{itemize}
+\item \textit{Remark:} Since normal variance mixtures are elliptical distributions, $\VaR$ is subadditive and thus a coherent risk measure for normal variance mixtures.
+\end{itemize}
+
+\paragraph{Normal mean-variance mixtures}
+\begin{itemize}
+\item $\bm X$ has \emph{(multivariate) normal mean-variance mixture distribution} if
+\begin{empheq}[box=\widefbox]{align*}
+\bm X &= \bm m(W) + \sqrt{W} A \bm Z
+\end{empheq}
+where $\bm Z \sim \mathcal{N}_k(\bm 0, \mathbb{I}_k)$, $W \geq 0$ a scalar random variable (independent of $\bm Z$), $A \in \mathbb{R}^{d \times k}$ a matrix of constants, $\bm m: [0, \infty) \to \mathbb{R}^d$ a measurable function.
+\item \textit{Remark:} Normal mean-variance mixtures add \textit{skewness}. In general, these distributions are no longer elliptical.
+\item \textit{Examples:}
+\begin{itemize}
+\item Let $\bm m(W) = \bm \mu + W \gamma$. It then holds that $\mathbb{E}[\bm X | W] = \bm \mu + W \gamma$ and $\Cov[\bm X | W] = W \Sigma$. \\
+We then have:
+\begin{align*}
+\mathbb{E}[\bm X] &= \bm \mu + \mathbb{E}[W] \bm \gamma &\text{if } \mathbb{E}[W] < \infty \\
+\Cov[\bm X] &= \mathbb{E}[W] \Sigma + \Var[W]\bm \gamma \bm \gamma^\top &\text{if } \mathbb{E}[W^2] < \infty
+\end{align*}
+\item Let $\bm X \overset{d}{=} \bm \mu + \sqrt{W} \bm Z$ in $d=2$. \\
+Then $\Cov[X_1, X_2] = \mathbb{E}[W Z_1 Z_2]$. \\
+In this case, if $Z_1, Z_2$ are uncorrelated and $W$ is a constant, then $X_1, X_2$ are independent. If $W$ is not a constant, then $X_1, X_2$ are dependent through $W$.
+\end{itemize}
+\end{itemize}
+
+\subsection{Spherical and elliptical distributions}
+
+\paragraph{Spherical distribution}
+\begin{itemize}
+\item A random vector $\bm Y = (Y_1, \ldots, Y_d)$ has a \emph{spherical distribution} if for every \textit{orthogonal $U \in \mathbb{R}^{d \times d}$} (i.e. with $U U^\top = U^\top U = \mathbb{I}_d$):
+\begin{empheq}[box=\widefbox]{align*}
+\bm Y &\overset{d}{=} U \bm Y \qquad \text{(distr. invariant under rotations and reflections)}
+\end{empheq}
+\item \emph{Characterisation of spherical distributions:} \\
+Let $|| \bm t || = || \bm t ||_{L^2}, \bm t \in \mathbb{R}^d$. The following are equivalent:
+\begin{description}[style=multiline,leftmargin=0.8cm,font=\textbf]
+\item[$\iff$] $\bm Y$ is \textit{spherical} (notation: $\bm Y \sim S_d(\psi)$).
+\item[$\iff$] $\exists$ a \emph{characteristic generator} $\psi: [0, \infty) \to \mathbb{R}$, s.t. \\
+$\varphi_{\bm Y}(\bm t) = \mathbb{E}[e^{i \bm t^\top \bm Y}] = \psi(|| \bm t ||^2)$, $\forall \bm t \in \mathbb{R}^d$.
+\item[$\iff$] For every $\bm a \in \mathbb{R}^d$, $\bm a^\top \bm Y = || \bm a || \bm Y_1$ \\
+(linear combination of the same type).
+\end{description}
+\textit{Remark:} The third statement implies that there is \textit{subadditivity of $\VaR_\alpha$} for jointly elliptical losses.
+\item \emph{Stochastic representation:} \\
+$\bm Y \sim S_d(\psi)$ iff $\bm Y \overset{d}{=} R \bm S$ for an independent \textit{radial part $R \geq 0$} and $\bm S \sim \mathcal{U}(\lbrace \bm x \in \mathbb{R}^d : || \bm x || = 1 \rbrace)$.
+\end{itemize}
+
+\paragraph{Elliptical distribution}
+\begin{itemize}
+\item A random vector $\bm X = (X_1, \ldots, X_d)$ has an \emph{elliptical distribution} if:
+\begin{empheq}[box=\widefbox]{align*}
+\bm X &\overset{d}{=} \bm \mu + A \bm Y, \qquad \text{(multivariate affine transformation)}
+\end{empheq}
+where $\bm Y \sim S_k(\psi)$, $A \in \mathbb{R}^{d \times k}$ (\textit{scale matrix $\Sigma = A A^\top$}), and \textit{location vector} $\bm \mu \in \mathbb{R}^d$. \\
+If $\Sigma$ is positive definite with Cholesky factor $A$, then $\bm X \sim E_d(\bm \mu, \Sigma, \psi)$ iff $\bm Y = A^{-1} (\bm X - \bm \mu) \sim S_d(\psi)$. \\
+\textit{Remark:} normal variance mixture distributions are (all) elliptical.
+\item \emph{Characteristic function:} \\
+$\varphi_{\bm X}(\bm t) = \mathbb{E}[e^{i \bm t^\top \bm X}] =  e^{i \bm t^\top \bm \mu} \psi(\bm t^\top \Sigma \bm t)$. \\
+Notation: $\bm X \sim E_d(\bm \mu, \Sigma, \psi)$.
+\item \emph{Stochastic representation:} \\
+$\bm X \overset{d}{=} \bm \mu + R A \bm S$, with $R$ and $\bm S$ as above.
+\item \textit{Properties:}
+\begin{itemize}
+\item \emph{Density:} \\
+Let $\Sigma$ be positive definite and $\bm Y \sim S_d(\psi)$ have density generator $g$. \\
+Then $\bm X = \mu + A \bm Y$ has density:
+\begin{align*}
+f_{\bm X}(\bm x) &= \frac{1}{\sqrt{\det \Sigma}} g((\bm x - \bm \mu)^\top \Sigma^{-1} (\bm x - \bm \mu))
+\end{align*}
+This density is constant on ellipsoids, i.e. on the sets:
+\begin{align*}
+\left\lbrace \bm x \in \mathbb{R}^d: \quad (\bm x - \bm \mu)^\top \Sigma (\bm x - \bm \mu) = \text{const.} \right\rbrace
+\end{align*}
+\item \emph{Linear combinations:} \\
+For $\bm X \sim E_d(\mu, \Sigma, \psi)$, $B \in \mathbb{R}^{k \times d}$ and $\bm b \in \mathbb{R}^k$:
+\begin{align*}
+B \bm X + \bm b \sim E_k(B \bm \mu + \bm b, B \Sigma B^\top, \psi)
+\end{align*}
+For $\bm a \in \mathbb{R}^d$:
+\begin{align*}
+\bm a^\top \bm X \sim E_1(\bm a^\top \bm \mu, \bm a^\top \Sigma \bm a, \psi)
+\end{align*}
+Thus, all \textit{marginal distributions} are of the same type.
+\item \emph{Marginal densities:} \\
+Margins of elliptical distributions are elliptical since for $\bm X = (\bm X_1^\top, \bm X_2^\top)^\top \sim E_d(\bm \mu, \Sigma, \psi)$ satisfies $\bm X_1 \sim E_k(\bm \mu_1, \Sigma_{11}, \psi)$ and $\bm X_2 \sim E_{d-k}(\bm \mu_2, \Sigma_{22}, \psi)$.
+\item \emph{Conditional distributions:} \\
+Conditional distributions of elliptical distributions are elliptical. \\
+\textit{Conditional correlations} remain invariant.
+\item \emph{Quadratic forms:} \\
+It holds that $(\bm X - \bm \mu)^\top \Sigma^{-1} (\bm X - \bm \mu) = R^2$. \\
+If $\bm X \sim \mathcal{N}_d(\bm \mu, \Sigma)$, then $R^2 \sim \chi_d^2$. \\
+If $\bm X \sim t_d(\nu, \bm \mu, \Sigma)$, then $\frac{R^2}{d} \sim F(d, \nu)$.
+\item \emph{Convolutions:} \\
+Let $\bm X \sim E_d(\bm \mu, \Sigma, \psi)$ and $\bm Y \sim E_d(\tilde{\bm \mu}, c \Sigma, \tilde \psi)$ be independent. \\
+Then $a \bm X + b \bm Y$ is elliptically distributed for $a,b \in \mathbb{R}, c > 0$.
+\end{itemize}
+\item \textit{Remark:} $\VaR$ is subadditive and thus a coherent risk measure for elliptical distributions.
+\end{itemize}
+
+\subsection{Dimension reduction techniques}
+
+\textit{Remark: not part of the exam.}
+
+\columnbreak
+
+\section{Copulas and dependence}
+
+\subsection{Copulas}
+
+\paragraph{Copulas}
+\begin{itemize}
+\item \textit{Reasoning/Motivation:} \\
+$F$ "=" marginal dfs $F_1, \ldots, F_d$ "+" dependence structure $C$ \\
+\textit{Advantages:}
+\begin{itemize}
+\item Most natural in a \textit{static distributional context} (i.e. no time dependence, e.g. on residuals of an ARMA-GARCH model).
+\item Copulas allow us to understand and study \textit{dependence independently of the margins}.
+\item Copulas allow for a \textit{bottom-up approach} to multivariate model building (e.g. to construct tailored $F$).
+\end{itemize}
+\item \emph{Copulas:} \\
+A copula $C$ is a CDF with $\mathcal{U}(0,1)$ margins. \\
+$C: [0,1]^d \to [0,1]$ is a copula iff:
+\begin{itemize}
+\item $C$ is \textit{grounded}, i.e. \\
+$C(u_1, \ldots, u_d) = 0$ if $u_j = 0$ for at least one $j \in \lbrace 1, \ldots, d \rbrace$.
+\item $C$ has \textit{standard uniform univariate margins}, i.e. \\
+$C(1, \ldots, 1, u_j, 1, \ldots, 1) = u_j$ for all $u_j \in [0,1]$ and $j \in \lbrace 1, \ldots, d \rbrace$.
+\item $C$ is \textit{$d$-increasing}, i.e. \\
+$C$ assigns non-negative mass to all non-empty hypercubes in $[0,1]^d$. \\
+Equivalently (if existent): density $c(\bm u) \geq 0$ for all $\bm u \in (0,1)^d$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Transformations}
+\begin{itemize}
+\item \emph{Probability transformation} \\
+Let $X \sim F$, $F$ continuous. Then $F(X) \sim \mathcal{U}(0,1)$.
+\item \emph{Quantile transformation} \\
+Let $U \sim \mathcal{U}(0,1)$ and $F$ be any CDF. Then $X = F^\leftarrow(U) \sim F$.
+\item \textit{Remark:} Probability and quantile transformations are the key to all applications involving copulas. They allow us to go from $\mathbb{R}^d$ to $[0,1]^d$ and back.
+\end{itemize}
+
+\paragraph{Sklar's Theorem}
+\begin{itemize}
+\item \emph{CDFs of copulas}
+\begin{itemize}
+\item For any CDF $F$ with margins $F_1, \ldots, F_d$, there exists a copula $C$ s.t.
+\begin{empheq}[box=\widefbox]{align*}
+F(x_1, \ldots, x_d) &= C(F_1(x_1), \ldots, F_d(x_d)), \quad \bm x \in \mathbb{R}^d
+\end{empheq}
+$C$ is uniquely defined on $\prod_{j=1}^d \ran F_j$.
+\item Define the RV $\bm X = (X_1, \ldots, F_d)$ s.t. $\bm X \sim F$ (with margins $F_i$). Then $C$ is given by:
+\begin{empheq}[box=\widefbox]{align*}
+C(u_1, \ldots, u_d) &= F(F_1^\leftarrow(u_1), \ldots, F_d^\leftarrow(u_d)), \quad \bm u \in \prod_{j=1}^d \ran F_j \\
+&= \mathbb{P} \left[ F_1(X_1) \leq u_1, \ldots, F_d(X_d) \leq u_d \right]
+\end{empheq}
+\item Conversely, given any copula $C$ and univariate CDFs $F_1, \ldots, F_d$, $F$ as defined above is a CDF with margins $F_1, \ldots, F_d$.
+\item \textit{Interpretation:} \\
+The \textit{first part} allows one to decompose any CDF $F$ into its margins and a copula. \\
+This (together with the invariance principle) allows one to study dependence independently of the margins via the margin-free $\bm U = (F_1(X_1), \ldots, F_d(X_d))$ instead of $\bm X = (X_1, \ldots, X_d)$ (since they both have the same copula). \\
+$\leadsto$ statistical applications, e.g. parameter estimation or goodness-of-fit. \\
+The \textit{second part} allows one to construct flexible multivariate distributions for particular applications.
+\end{itemize}
+\item \emph{PDFs of copulas}
+\begin{itemize}
+\item If the CDF $F_j$ has PDF $f_j$, $j \in \lbrace1, \ldots, d \rbrace$, and the CDF $C$ has PDF $c$, then the PDF $f$ of $F$ satisfies:
+\begin{align*}
+f(\bm x) &= c(F_1(x_1), \ldots, F_d(x_d)) \prod_{j=1}^d f_j(x_j) \\
+\log f(\bm x) &= \log c(F_1(x_1), \ldots, F_d(x_d)) + \sum_{j=1}^d \log f_j(x_j)
+\end{align*}
+and we can recover the copula's PDF $c$ via:
+\begin{align*}
+c(\bm u) &= \frac{f(F_1^{-1}(u_1), \ldots, F_d^{-1}(u_d))}{f_1(F_1^{-1}(u_1)) \cdot \ldots \cdot f_d(F_d^{-1}(u_d))}
+\end{align*}
+\item Note that \textit{not} all copulas have a PDF.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Invariance principle}
+\begin{itemize}
+\item Let $X_j \sim F_j$, $F_j$ continuous, $j \in \lbrace 1, \ldots, d \rbrace$. Then:
+\begin{align*}
+\bm X \sim F \text{ has copula } C \quad \iff \quad  (F_1(X_1), \ldots, F_d(X_d)) \sim C
+\end{align*}
+\item Let $\bm X \sim F$ with continuous margins $F_1, \ldots, F_d$ and copula $C$. \\
+If $T_j$ is strictly increasing ($T_j \uparrow$) on $\ran X_j$ for all $j$, then $(T_1(X_1), \ldots, T_d(X_d))$ has again copula $C$.
+\end{itemize}
+
+\paragraph{Fréchet-Hoeffding bounds}
+\begin{itemize}
+\item Define the copulas $W$ and $M$ as follows:
+\begin{empheq}[box=\widefbox]{align*}
+W(\bm u) &= \left( \sum_{j=1}^d u_j - d + 1 \right)^+ &\text{(countermonotone)} \\
+M(\bm u) &= \min_{1 \leq j \leq d} \lbrace u_j \rbrace &\text{(comonotone)}
+\end{empheq}
+Then the following holds:
+\begin{enumerate}
+\item \emph{(Fréchet-Hoeffding bounds)} \\
+For any $d$-dimensional copula $C$:
+\begin{align*}
+W(\bm u) \leq C(\bm u) \leq M(\bm u), \qquad \bm u \in [0,1]^d
+\end{align*}
+\item $W$ is a copula iff $d = 2$.
+\item $M$ is a copula $\forall d \geq 2$.
+\end{enumerate}
+\item The following \emph{bounds for any CDF $F$} can be derived from the Fréchet-Hoeffding bounds:
+\begin{align*}
+\left( \sum_{j=1}^d F_j(x_j) - d + 1 \right)^+ \leq F(\bm x) \leq \min_{1 \leq j \leq d} \left\lbrace F_j(x_j) \right\rbrace
+\end{align*}
+\item \textit{Remarks:}
+\begin{itemize}
+\item It holds for the uniform distribution $U \sim \mathcal{U}(0,1)$:
+\begin{align*}
+(U, \ldots, U) \sim M, \qquad (U, 1-U) \sim W
+\end{align*}
+\item The Fréchet-Hoeffding bounds correspond to \textit{perfect dependence}, i.e. negative for $W$, positive for $M$.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Examples of copulas}
+\begin{itemize}
+\item \emph{Fundamental copulas} \\
+The \emph{independence copula} is $\Pi(\bm u) = \prod_{j=1}^d u_j$ since:
+\begin{empheq}[box=\widefbox]{align*}
+&C(F_1(x_1), \ldots, F_d(x_d)) = F(\bm x) = \prod_{j=1}^d F_j(x_j) \\
+&\iff \quad C(\bm u) = \Pi(\bm u)
+\end{empheq}
+Therefore, $X_1, \ldots, X_d$ are independent iff their copula is $\Pi$.
+\begin{itemize}
+\item The Fréchet-Hoeffding bound $W$ is the \textit{countermonotonicity copula}, which is the CDF of $(U, 1-U)$. \\
+If $X_1, X_2$ are perfectly \textit{negatively} dependent (i.e. $X_2$ is a.s. a strictly decreasing function in $X_1$), then their copula is $W$.
+\item The Fréchet-Hoeffding bound $M$ is the \textit{comonotonicity copula}, which is the CDF of $(U, \ldots, U)$. \\
+If $X_1, \ldots, X_d$ are perfectly \textit{positively} dependent (i.e. $X_2, \ldots, X_d$ are a.s. a strictly increasing functions in $X_1$), then their copula is $M$.
+\end{itemize}
+\item \emph{Implicit copulas (elliptical copulas)} \\
+The \emph{elliptical copulas} are implicit copulas arising from elliptical distributions via Sklar's Theorem.
+\begin{itemize}
+\item \emph{Gauss copulas}
+\begin{enumerate}
+\item Consider (w.l.o.g.) $\bm X \sim \mathcal{N}_d(\bm 0, P)$. The \emph{Gauss copula} (family) is:
+\begin{align*}
+C_P^\text{Ga}(\bm u) &= \mathbb{P}[\Phi(X_1) \leq u_1, \ldots, \Phi(X_d) \leq u_d] \\
+&= \Phi_P(\Phi^{-1}(u_1), \ldots, \Phi^{-1}(u_d))
+\end{align*}
+where $\Phi_P$ is the CDF of $\mathcal{N}_d(\bm 0, P)$ and $\Phi$ the CDF of $\mathcal{N}(0,1)$.
+\item The \textit{PDF} of $C(\bm u)$ is:
+\begin{align*}
+c(\bm u) &= \frac{f(F_1^\leftarrow(u_1), \ldots, F_d^\leftarrow(u_d))}{\prod_{j=1}^d f_j(F_j^\leftarrow(u_j))}
+\end{align*}
+In particular, the PDF of $C_P^\text{Ga}$ is:
+\begin{align*}
+c_P^\text{Ga} &= \frac{1}{\sqrt{\det P}} \exp \left( -\frac{1}{2} \bm x^\top (P^{-1} - \mathbb{I}_d) \bm x \right)
+\end{align*}
+where $\bm x = (\Phi^{-1}(u_1), \ldots, \Phi^{-1}(u_d))$.
+\item \textit{Special cases:}
+\begin{align*}
+&P = \mathbb{I}_d \Rightarrow C = \Pi, \qquad P = \mathbb{J}_d = \bm 1 \bm 1^\top \Rightarrow C = M \\
+&d=2 \text{ and } \rho = P_{12} = -1 \Rightarrow C = W
+\end{align*}
+\end{enumerate}
+\item \emph{$t$ copulas}
+\begin{enumerate}
+\item Consider (w.l.o.g.) $\bm X \sim t_d(\nu, \bm 0, P)$. The \emph{$t$ copula} (family) is:
+\begin{align*}
+C_{\nu, P}^t(\bm u) &= \mathbb{P}[t_\nu(X_1) \leq u_1, \ldots, t_\nu(X_d) \leq u_d] \\
+&= t_{\nu, P}(t_\nu^{-1}(u_1), \ldots, t_\nu^{-1}(u_d))
+\end{align*}
+where $t_{\nu, P}$ is the CDF of $t_d(\nu, \bm 0, P)$ and $t_\nu$ the CDF of the univariate $t$ distribution with $\nu$ degrees of freedom.
+\item The \textit{PDF} of $C_{\nu,P}^t(\bm u)$ is:
+\begin{align*}
+c_{\nu, P}^t(\bm u) &= \frac{\Gamma((\nu+d)/2)}{\Gamma(\nu/2) \sqrt{\det P}} \left( \frac{\Gamma(\nu/2)}{\Gamma((\nu+1)/2)} \right)^d \\
+&\qquad \qquad \qquad \cdot \frac{(1 + \bm x^\top P^{-1} \bm x / \nu)^{-(\nu+d)/2}}{\prod_{j=1}^d(1 + x_j^2/\nu)^{-(\nu+1)/2}}
+\end{align*}
+\item \textit{Special cases:}
+\begin{align*}
+&P = \mathbb{J}_d = \bm 1 \bm 1^\top \Rightarrow C = M \\
+&d=2 \text{ and } \rho = P_{12} = -1 \Rightarrow C = W \\
+&\text{However: } P = \mathbb{I}_d \Rightarrow C \neq \Pi \text{ (unless } \nu=\infty \Rightarrow C_{\nu,P}^t = C_P^\text{Ga} \text{)}
+\end{align*}
+\end{enumerate}
+\item \textit{Remark:} Elliptical copulas are symmetric/exchangeable.
+\item \emph{Sampling of implicit copulas:}
+\begin{enumerate}
+\item Sample $\bm X \sim F$, where $F$ is a density function with continuous margins $F_1, \ldots, F_d$
+\item Return $\bm U = (F_1(X_1), \ldots, F_d(X_d))$ \\
+(probability transformation)
+\end{enumerate}
+\end{itemize}
+\item \emph{Explicit copulas (Archimedean copulas)}
+\begin{itemize}
+\item The \emph{Archimedean copulas} are copulas of the form:
+\begin{empheq}[box=\widefbox]{align*}
+C(\bm u) &= \psi(\psi^{-1}(u_1) + \ldots + \psi^{-1}(u_d)), \qquad \bm u \in [0,1]^d
+\end{empheq}
+with the \emph{Archimedean generator} $\psi$ where:
+\begin{enumerate}
+\item $\psi: [0, \infty) \to [0,1]$;
+\item $\psi(0) = 1$ and $\psi(\infty) = \lim_{t \to \infty} \psi(t) = 0$;
+\item $\psi$ is continuous and strictly decreasing on: \\
+$(0, \inf \lbrace x: \psi(x) = 0 \rbrace)$;
+\item $\psi^{-1}(0) = \inf \lbrace t: \psi(t) = 0 \rbrace$ by convention.
+\end{enumerate}
+The set of all generators $\psi$ is denoted by $\Psi$. If $\psi(t) > 0$, $t \in [0, \infty)$, then we call $\psi$ \textit{strict}. \\
+$\psi$ can be interpreted as the \textit{Laplace transform} of a non-negative RV $V \sim G$.
+\item \textit{Examples:}
+\begin{enumerate}
+\item \emph{Clayton copula}
+\begin{align*}
+\psi(t) &= (1+t)^{-1/\theta}, \qquad t \in [0, \infty), \quad \theta \in (0, \infty) \\
+\Rightarrow C_\theta^C(\bm u) &= (u_1^{-\theta} + \ldots + u_d^{-\theta} - d + 1)^{-1/\theta}
+\end{align*}
+\textit{Limits:} For $\theta \downarrow 0$, $C \to \Pi$, and for $\theta \uparrow \infty$, $C \to M$.
+\item \emph{Gumbel copula}
+\begin{align*}
+\psi(t) &= \exp(-t^{1/\theta}), \qquad t \in [0, \infty), \quad \theta \in [1, \infty) \\
+\Rightarrow C_\theta^G(\bm u) &= \exp \left( -\left( (-\log u_1)^\theta + \ldots + (-\log u_d)^\theta \right)^{1/\theta} \right)
+\end{align*}
+\textit{Limits:} For $\theta=1$, $C \to \Pi$, and for $\theta \to \infty$, $C \to M$.
+\end{enumerate}
+\item \textit{Remark:} Archimedean copulas are symmetric/exchangeable.
+\item \emph{Simulation of Archimedean copulas (Marshall and Olkin):} \\
+If $\psi$ is the Laplace transform of a non-negative RV $V \sim G$:
+\begin{enumerate}
+\item Generate $V \sim G$ (CDF corresponding to $\psi$);
+\item generate $E_1, \ldots, E_d \overset{\text{i.i.d.}}{\sim} \Exp(1)$, independent of $V$;
+\item return:
+\begin{align*}
+\bm U = \left( \psi \left( \frac{E_1}{V} \right), \ldots, \psi \left( \frac{E_d}{V} \right) \right)^\top
+\end{align*}
+(conditional independence)
+\end{enumerate}
+\item \emph{Simulation of Archimedean copulas (using $\mathcal{U}$):} \\
+If $\psi$ is the Laplace transform of a non-negative RV $V \sim G$:
+\begin{enumerate}
+\item Generate $V \sim G$;
+\item generate $X_1, \ldots, X_d \overset{\text{i.i.d.}}{\sim} \mathcal{U}(0,1)$;
+\item return:
+\begin{align*}
+\bm U = \left( \hat G \left( -\log \frac{X_1}{V} \right), \ldots, \hat G \left( -\log \frac{X_d}{V} \right) \right)^\top
+\end{align*}
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\paragraph{Survival copulas}
+\begin{itemize}
+\item If $\bm U \sim C$, then the \emph{survival copula} of $C$ is given by $\bm 1 - \bm U \sim \hat C$. \\
+The survival copula $\hat C$ can be expressed as:
+\begin{align*}
+\hat C(\bm u) &= \sum_{J \subseteq \lbrace 1, \ldots, d \rbrace} (-1)^{|J|} C \left( (1-u_1)^{\mathbb{I}_J(1)}, \ldots, (1-u_d)^{\mathbb{I}_J(d)} \right)
+\end{align*}
+For $d=2$:
+\begin{empheq}[box=\widefbox]{align*}
+\hat C(u_1, u_2) &= u_1 + u_2 - 1 + C(1-u_1, 1-u_2)
+% &= 1 - u_1 - u_2 + C(u_1, u_2)
+\end{empheq}
+If $C$ admits a \textit{PDF}, then $\hat c(\bm u) = c(\bm 1 - \bm u)$. \\
+It holds for the \textit{tail dependence coefficients:}
+\begin{align*}
+\lambda_u^{\hat C} &= \lambda_l^C, \qquad \lambda_l^{\hat C} = \lambda_u^C
+\end{align*}
+\item \emph{Sklar's theorem} for survival copulas:
+\begin{align*}
+\bar F(\bm x) &= \hat C(\bar F_1(x_1), \ldots, \bar F_d(x_d)), \quad \bm x \in \mathbb{R}^d
+\end{align*}
+where $F(\bm x) = \mathbb{P}[\bm X > x]$ with corresponding marginal survival functions $\bar F_1, \ldots, \bar F_d$ (with $\bar F_j(x) = \mathbb{P}[X_j > x]$).
+\item \emph{Radially symmetric} copulas
+\begin{itemize}
+\item If $\hat C = C$, then $C$ is called \emph{radially symmetric}. \\
+radially symmetric copulas: e.g. $W, \Pi, M$, Gauss copulas and $t$-copulas \\
+radially symmetric copula family: e.g. elliptical copulas
+\item \textit{Tail dependence coefficients:} $\lambda_u = \lambda_l =: \lambda$
+\item If $X_j$ is symmetrically distributed about $a_j$, $j \in \lbrace 1, \ldots, d \rbrace$, then $\bm X$ is radially symmetric about $\bm a$ iff $C = \hat C$.
+\end{itemize}
+\item \textit{Remark:} Survival copulas combine marginal survival functions to joint survival functions. \\
+Note that while $\hat C$ is a CDF, $\bar F$ and $\bar F_1, \ldots, \bar F_d$ are \textit{not} CDFs!.
+\end{itemize}
+
+\paragraph{Exchangeability}
+\begin{itemize}
+\item $\bm X$ is \emph{exchangeable} if:
+\begin{align*}
+(X_1, \ldots, X_d) &= (X_{\pi(1)}, \ldots, X_{\pi(d)})
+\end{align*}
+for any permutation $(\pi(1), \ldots, \pi(d))$ of $(1, \ldots, d)$.
+\item A \textit{copula $C$} is \textit{exchangeable} if it is the CDF of an exchangeable $\bm U$ with $\mathcal{U}(0,1)$ margins. \\
+This holds iff $C(u_1, \ldots, u_d) = C(u_{\pi(1)}, \ldots, u_{\pi(d)})$, i.e. if $c$ is \textit{symmetric}.
+\item \textit{Remarks:}
+\begin{itemize}
+\item Exchangeable/symmetric copulas are useful for approximate modelling of homogeneous portfolios.
+\item Examples: Archimedean copulas, elliptical copulas (e.g. Gauss, $t$) for equicorrelated $P$ (i.e. $P = \rho \mathbb{J}_d + (1-\rho) \mathbb{I}_d$ for $\rho \geq \frac{-1}{d-1}$, in particular $d=2$).
+\end{itemize}
+\end{itemize}
+
+\subsection{Dependence concepts and measures}
+
+Measures of association/dependence are scalar measures which summarize the dependence in terms of a single number.
+
+\paragraph{Perfect dependence}
+\begin{itemize}
+\item \emph{Counter/comonotonicity}
+\begin{itemize}
+\item $X_1, X_2$ are \emph{countermonotone} if $(X_1, X_2)$ has copula $W$.
+\item $X_1, \ldots, X_d$ are \emph{comonotone} if $(X_1, \ldots, X_d)$ has copula $M$. \\
+\textit{equivalently:} $X_1, \ldots, X_d$ are comonotone if $(L_1, \ldots, L_d) \overset{d}{=} (f_1(Z), \ldots, f_d(Z))$ for some RV $Z$ and non-decreasing transformations $f_1, \ldots, f_d$.
+\end{itemize}
+\item \emph{Perfect dependence}
+\begin{itemize}
+\item $X_2 = T(X_1)$ a.s. with decreasing $T(x) = F_2^\leftarrow(1-F_1(x))$ (countermonotone) \\
+$\iff$ $C(u_1, u_2) = W(u_1, u_2)$, $u_1, u_2 \in [0,1]$.
+\item $X_j = T_j(X_1)$ a.s. with increasing $T_j(x) = F_j^\leftarrow(F_1(x))$, $j \in \lbrace2, \ldots, d \rbrace$ (comonotone) \\
+$\iff$ $C(\bm u) = M(\bm u)$, $\bm u \in [0,1]^2$.
+\end{itemize}
+\item \textit{Comonotone additivity} \\
+Let $\alpha \in (0,1)$ and $X_j \sim F_j$, $j \in \lbrace 1, \ldots, d \rbrace$, be \textit{comonotone}. \\
+Then $F_{X_1 + \ldots + X_d}^\leftarrow(\alpha) = F_1^\leftarrow(\alpha) + \ldots + F_d^\leftarrow(\alpha)$.
+\end{itemize}
+
+\paragraph{Linear correlation}
+\begin{itemize}
+\item The linear correlation coefficient $\rho(X_1, X_2)$ does not always exist, i.e. if the second moment does not exist ($\mathbb{E}[X_i^2] = \infty$ or not defined). \\
+$\rho$ is \textit{not} an exclusive copula property, i.e. $\rho$ depends on both the copula and the marginals.
+\item For two RVs $X_1, X_2$ with $\mathbb{E}[X_j^2] < \infty$, $j \in \lbrace 1,2 \rbrace$, the \emph{linear (or Pearson's) correlation coefficient $\rho = \Corr[X_1, X_2]$} is:
+\begin{empheq}[box=\widefbox]{align*}
+\rho(X_1, X_2) &= \frac{\Cov[X_1, X_2]}{\sqrt{\Var[X_1] \Var[X_2]}} \\
+&= \frac{\mathbb{E}[X_1 X_2] - \mathbb{E}[X_1] \mathbb{E}[X_2]}{\sqrt{\mathbb{E}[(X_1 - \mathbb{E}[X_1])^2] \mathbb{E}[(X_2 - \mathbb{E}[X_2])^2]}} \\
+&= \frac{\mathbb{E} \left[ (X_1 - \mathbb{E}[X_1])(X_2 - \mathbb{E}[X_2]) \right]}{\sqrt{\mathbb{E}[(X_1 - \mathbb{E}[X_1])^2] \mathbb{E}[(X_2 - \mathbb{E}[X_2])^2]}}
+\end{empheq}
+\textit{Remarks:} For two RVs $X,Y$:
+\begin{itemize}
+\item $\Var[X,Y]$ is maximal if the linear correlation $\Corr[X,Y]$ is maximal. \\
+(since $\Var[X+Y] = \Var[X] + \Var[Y] + 2 \Corr[X,Y] \sqrt{\Var[X] \Var[Y]}$ and variance is always nonnegative)
+\item $\VaR_\alpha(X,Y)$ is \textit{not} maximal if the linear correlation $\Corr[X,Y]$ is maximal (see previous example).
+\item $\rho(X,Y)$ is maximal if $X,Y$ are \textit{comonotone}, i.e. if $X,Y$ have copula $M(u,v) = \min(u,v)$.
+\end{itemize}
+\item The \textit{Hoeffding's identity} is:
+\begin{align*}
+\Cov[X, Y] &= \int_{-\infty}^\infty \int_{-\infty}^\infty F(x,y) - F_X(x) F_Y(y) dx dx
+\end{align*}
+\item \textit{Properties:} \\
+Let $X_1, X_2$ be two RVs with $\mathbb{E}[X_j^2] < \infty$, $j \in \lbrace 1,2 \rbrace$.
+\begin{itemize}
+\item It always holds that $|\rho| \leq 1$. \\
+$|\rho| = 1$ $\iff$ $\exists a \in \mathbb{R} \setminus \lbrace 0 \rbrace, b \in \mathbb{R}$ with $X_2 = a X_1 + b$. \\
+It holds that $a > 0 \Rightarrow \rho = +1$ and $a < 0 \Rightarrow \rho = -1$.
+\item $X_1$ and $X_2$ are \textit{independent} $\underset{\not \Leftarrow}{\Rightarrow}$ $\rho = 0$. \\
+The converse is in general \textit{not} true. \\
+An example where zero linear correlation also implies independence is the \textit{multivariate normal distribution}.
+\item $\rho$ is \textit{invariant} under strictly increasing \textit{linear} transformations on $\ran X_1 \times \ran X_2$ but \textit{not invariant} under strictly increasing functions in general.
+\end{itemize}
+\item \emph{Correlation fallacies}
+\begin{itemize}
+\item \textit{Fallacy 1:} $F_1, F_2$ and $\rho$ uniquely determine $F$. \\
+This is true for \textit{bivariate elliptical distributions}, but wrong in general.
+\item \textit{Fallacy 2:} Given $F_1, F_2$, any $\rho \in [-1,1]$ is attainable. \\
+This is true for \textit{elliptically distributed} $(X_1, X_2)$ with $\mathbb{E}[R^2] < \infty$ (since then $\Corr[\bm X] = P$), but wrong in general. \\
+I.e. if $F_1$ and $F_2$ are not of the same type (no linearity), $\rho(X_1, X_2) = 1$ is not attainable.
+\item \textit{Fallacy 3:} $\rho$ maximal (i.e. $C = M$) $\Rightarrow$ $\VaR_\alpha(X_1 + X_2)$ maximal. \\
+This is true if $(X_1, X_2)$ are \textit{elliptically distributed}.
+\end{itemize}
+\item \textit{Remark:} Increasing linear transformations of margins keep linear correlation unaffected.
+\end{itemize}
+
+\paragraph{Rank correlation coefficients}
+\begin{itemize}
+\item Both rank correlation coefficients $\rho_\tau, \rho_S$ are \textit{copula properties}, and are thus invariant under strictly increasing transformations of the underlying RVs. \\
+$\rho_\tau, \rho_S$ always exist for two continuous RVs $X, Y$.
+\item \emph{Kendall's tau} \\
+Let $X \sim F_X$, $Y \sim F_Y$ with $F_X, F_Y$ continuous. Let $(X', Y')$ be an independent copy of $(X, X)$. Then \emph{Kendall's tau} is:
+\begin{align*}
+\rho_\tau(X,Y) &= \mathbb{E}[\sign((X - X')(Y - Y')] \\
+&= \mathbb{P}[(X - X')(Y - Y') > 0] - \mathbb{P}[(X - X')(Y - Y') < 0]
+\end{align*}
+If $(X,Y)$ has copula $C(u,v)$, then:
+\begin{empheq}[box=\widefbox]{align*}
+\rho_\tau(X,Y) &= 4 \int_0^1 \int_0^1 C(u, v) dC(u, v) - 1
+\end{empheq}
+\textit{Remarks:}
+\begin{itemize}
+\item Kendall's tau is the the probability of \textit{concordance} minus the probability of \textit{discordance}.
+\item For any given marginal distributions, Kendall's tau can reach any value in $[-1,1]$, depending on the chosen copula. \\
+The \textit{bounds} are given by:
+\begin{enumerate}
+\item comonotone copula $M$: $\rho_\tau(M) = 1$
+\item countermonotone copula $W$: $\rho_\tau(W) = -1$
+\end{enumerate}
+\end{itemize}
+\item \emph{Spearman's rho} \\
+Let $X \sim F_X$, $Y \sim F_Y$ with $F_X, F_Y$ continuous. \\
+Then \emph{Spearman's rho} is:
+\begin{align*}
+\rho_S(X,Y) &= \rho(F_X(X),F_Y(Y))
+\end{align*}
+If $F_X, F_Y$ have the copula $C$, then:
+\begin{empheq}[box=\widefbox]{align*}
+\rho_S(X,Y) &= 12 \int_0^1 \int_0^1 \left( C(u, v) - uv \right) du dv \\
+&= 12 \int_0^1 \int_0^1 C(u,v) du dv - 3
+\end{empheq}
+An alternative definition uses the Pearson correlation coefficient applied to the ranks $\rank X_i, \rank Y_i$ of the samples $X_i, Y_i$, $i = 1, \ldots, n$:
+\begin{align*}
+\rho_S(X,Y) &= \rho_{\rank X, \rank Y} = \frac{\Cov[\rank X, \rank Y]}{\sigma_{\rank X}, \sigma_{\rank Y}}
+\end{align*}
+\textit{Remarks:} ($\kappa$ either $\kappa = \rho_\tau$ or $\kappa = \rho_S$)
+\begin{itemize}
+\item In general, $\kappa = 0$ does \textit{not} imply independence.
+\item The correlation fallacies 1 and 3 are \textit{not} solved by replacing $\rho$ by rank correlation coefficients $\kappa$.
+\item But correlation fallacy 2 (i.e. for $F_X, F_Y$, any $\rho \in [-1,1]$ is attainable) is solved.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Coefficients of tail dependence}
+\begin{itemize}
+\item \textit{Goal:} Measure extremal dependence, i.e. dependence in the \textit{joint tails}.
+\item The coefficients of tail dependence $\lambda_l, \lambda_u$ are \textit{copula properties}, and are thus invariant under strictly increasing transformations of the underlying RVs. \\
+$\lambda_l, \lambda_u$ are \textit{not} defined for all pairs of RVs $X_1, X_2$ (limit!).
+\item \emph{Tail dependence} \\
+Let $X_j \sim F_j$, $j \in \lbrace 1,2 \rbrace$, be continuously distributed RVs. Provided that the limits exist, the following \textit{equivalent} definitions of the \emph{lower tail-dependence coefficient $\lambda_l$} and the \emph{upper tail-dependence coefficient $\lambda_u$} of $X_1$ and $X_2$ exist:
+\begin{itemize}
+\item via the \textit{inverse CDFs $F_1, F_2$}:
+\begin{empheq}[box=\widefbox]{align*}
+\lambda_l &= \lim_{q \downarrow 0} \mathbb{P}[X_2 \leq F_2^\leftarrow(q) \quad | X_1 \leq F_1^\leftarrow(q)] \\
+\lambda_u &= \lim_{q \uparrow 1} \mathbb{P}[X_2 > F_2^\leftarrow(q) \quad | X_1 > F_1^\leftarrow(q)]
+\end{empheq}
+(order of conditioning can be reversed)
+\item via $\VaR_\alpha$:
+\begin{align*}
+\lambda_l &= \lim_{q \downarrow 0} \mathbb{P}[X_2 \leq \VaR_q(X_2) \quad | X_1 \leq \VaR_q(X_1)] \\
+\lambda_u &= \lim_{q \uparrow 1} \mathbb{P}[X_2 > \VaR_q(X_2) \quad | X_1 > \VaR_q(X_1)]
+\end{align*}
+(order of conditioning can be reversed)
+\item via the \textit{copula $C$}:
+\begin{empheq}[box=\widefbox]{align*}
+\lambda_l &= \lim_{q \downarrow 0} \frac{C(q,q)}{q} = \lambda_u^{\hat C} \\
+\lambda_u &= 2 - \lim_{q \uparrow 1} \frac{1-C(q,q)}{1-q} = \lim_{q \uparrow 1} \frac{1-2q+C(q,q)}{1-q} \\
+&= \lim_{q \downarrow 0} \frac{\hat C(q,q)}{q} = \lambda_l^{\hat C}
+\end{empheq}
+\end{itemize}
+\item \emph{Asymptotic dependence/independence}
+\begin{itemize}
+\item If $\lambda_l >0$ / $\lambda_u > 0$, we say that there is \emph{asymptotic dependence} in the lower/upper tail.
+\item If $\lambda_l = 0$ / $\lambda_u = 0$, we say that there is \emph{asymptotic independence} in the lower/upper tail.
+\end{itemize}
+\item \textit{Remarks:}
+\begin{itemize}
+\item Tail dependence of the \textit{survival copula $\hat C$:} \\
+The upper/lower tail dependence coefficients of the survival copula $\hat C$ are equal to the lower/upper tail dependence coefficient of the copula $C$, i.e.
+\begin{align*}
+\lambda_l^{\hat C} &= \lambda_u^C, \qquad \lambda_u^{\hat C} = \lambda_l^C
+\end{align*}
+\item $\lambda_l, \lambda_u$ for the counter-/comonotone copulas $W,M$:
+\begin{align*}
+\lambda_l^W = \lambda_u^W = -1, \qquad \lambda_l^M = \lambda_u^M = +1
+\end{align*}
+\item For all \textit{radially symmetric} copulas (e.g. the bivariate $C_P^\text{Ga}$ and $C_{\nu, P}^t$), we have $\lambda_l = \lambda_u =: \lambda$.
+\item For \textit{Archimedean copulas} with strict $\psi$, it holds e.g. \\
+\textit{Clayton:} $\lambda_l = 2^{-1/\theta}, \lambda_u = 0$ \\
+\textit{Gumbel:} $\lambda_l = 0, \lambda_u = 2 - 2^{1-\theta}$
+\item \textit{Comparison of Gauss copula with Student-t copula w.r.t. extreme values:} \\
+For distributions with a Gauss copula, extreme values are independent (i.e. $\lambda_u = \lambda_l = 0$), while for distributions with a Student-t copula, extreme values are dependent.
+\end{itemize}
+\end{itemize}
+
+\subsection{Normal mixture copulas}
+
+\paragraph{Tail dependence} (for normal mixture copulas)
+\begin{itemize}
+\item \emph{Normal mixture copulas} \\
+The \textit{normal mixture copulas} are the copulas of the \textit{multivariate normal (mean-)variance mixtures}:
+\begin{empheq}[box=\widefbox]{align*}
+\bm X &\overset{d}{=} \bm \mu + \sqrt{W} A \bm Z \qquad \text{or:} \quad \bm X \overset{d}{=} \bm m(W) + \sqrt{W} A \bm Z
+\end{empheq}
+\item \emph{Coefficients of tail dependence} \\
+Let $(X_1, X_2)$ be distributed according to a normal variance mixture and assume (w.l.o.g.) that $\bm \mu = (0,0)^\top$ and $A A^\top = P = \begin{psmallmatrix} 1 & \rho \\ \rho & 1 \end{psmallmatrix}$. \\
+In this case, $F_1 = F_2$ and $C$ is \textit{symmetric} and \textit{radially symmetric}. We thus obtain that:
+\begin{align*}
+\lambda &= \lambda_l = 2 \lim_{x \downarrow -\infty} \mathbb{P}[X_2 \leq x | X_1 = x]
+\end{align*}
+\item \textit{Remarks:}
+\begin{itemize}
+\item What drives tail dependence of normal variance mixtures is $W$. \\
+If $W$ has a power tail, we get tail dependence, otherwise not.
+\item \textit{Covariance matrix} of normal (mean-)variance mixtures $\bm X$:
+\begin{align*}
+\Cov[\bm X] &= \mathbb{E}[W] \Sigma = \mathbb{E}[W] A A^\top
+\end{align*}
+\end{itemize}
+\item \textit{Examples:}
+\begin{itemize}
+\item \emph{Gauss copula} \\
+Considering the bivariate $\mathcal{N}(\bm 0, P)$ density, one can show that $(X_2 | X_1 = x) \sim \mathcal{N}(\rho x, 1-\rho^2)$. This implies that $\lambda = \mathbb{I}_{\rho = 1}$ (essentially \textit{no tail dependence}).
+\item \emph{$t$ copula} \\
+For $C_{\nu, P}$, one can show that:
+\begin{align*}
+(X_2 | X_1 = x) &\sim t_{\nu+1} \left( \rho x, \frac{(1-\rho^2)(\nu+x^2)}{\nu+1} \right) \\
+\text{thus:} \quad \mathbb{P}[X_2 \leq x | X_1 = x] &= t_{\nu+1} \left( \frac{x-\rho x}{\sqrt{\frac{(1-\rho^2)(\nu+x^2)}{\nu+1}}} \right)
+\end{align*}
+and hence:
+\begin{align*}
+\lambda = 2 t_{\nu+1} \left( -\sqrt{\frac{(\nu+1)(1-\rho)}{1+\rho}} \right) \qquad \text{(tail dependence)}
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+\paragraph{Rank correlations} (for normal mixture copulas)
+\begin{itemize}
+\item \emph{Spearman's rho for normal variance mixtures} \\
+Let $\bm X \sim M_2(\bm 0, P, \hat F_W)$ with $\mathbb{P}[\bm X = \bm 0] = 0$, $\rho = P_{12}$. Then:
+\begin{align*}
+\rho_S &= \frac{6}{\pi} \mathbb{E} \left[ \arcsin \left( \frac{W_\rho}{\sqrt{(W + \tilde W)(W + \bar W)}} \right) \right]
+\end{align*}
+for $W, \tilde W, \bar W \sim F_W$ with Laplace-Stieltjes transform $\hat F_W$. \\
+For \textit{Gauss copulas}, $\rho_S = \frac{6}{\pi} \arcsin \left( \frac{\rho}{2} \right)$.
+\item \emph{Kendall's tau for elliptical distributions} \\
+Let $\bm X \sim E_2(\bm 0, P, \psi)$ with $\mathbb{P}[\bm X = \bm 0] = 0$, $\rho = P_{12}$. \\
+Then, $\rho_\tau = \frac{2}{\pi} \arcsin \rho$.
+\end{itemize}
+
+\paragraph{Skewed normal mixture copulas}
+\begin{itemize}
+\item \emph{Skewed normal mixture copulas} are the copulas of normal mixture distributions which are \textit{not elliptical}. \\
+E.g. the skewed $t$ copula $C_{\nu, P, \gamma}^t$ is the copula of a generalized hyperbolic distribution.
+\item \textit{Remarks:}
+\begin{itemize}
+\item It can be sampled as other implicit copulas.
+\item The main advantage of such a copula over $C_{\nu, P}^t$ is its \textit{radial asymmetry} (e.g. for modelling $\lambda_l \neq \lambda_u$).
+\end{itemize}
+\end{itemize}
+
+\paragraph{Grouped normal mixture copulas}
+\begin{itemize}
+\item \emph{Grouped normal mixture copulas} are copulas which \textit{attach together a set of normal mixture copulas}.
+\item \textit{Example:} a \textit{grouped $t$ copula} is the copula of:
+\begin{align*}
+\bm X &= (\sqrt{W_1} Y_1, \ldots, \sqrt{W_1} Y_{s1}, \\
+&\qquad \ldots, \sqrt{W_S} Y_{s_1+\ldots+s_{S-1}+1}, \ldots, \sqrt{W_S} Y_d)
+\end{align*}
+for $(W_1, \ldots, W_S \sim M(\IG(\frac{\nu_1}{2}, \frac{\nu_1}{2}), \ldots, \IG(\frac{\nu_S}{2}, \frac{\nu_S}{2}))$ and $\bm Y \sim \mathcal{N}_d(\bm 0, P)$ (so $\bm Y = A \bm Z$). \\
+\textit{Remarks:}
+\begin{itemize}
+\item The marginals are $t$ distributed, hence:
+\begin{align*}
+\bm U &= (t_{\nu_1}(X_1), \ldots, t_{\nu_1}(X_{s_1}), \\
+&\qquad \ldots, t_{\nu_S}(X_{s_1+\ldots+s_{S-1}+1}), \ldots, t_{\nu_S}(X_d))
+\end{align*}
+follows a \textit{grouped $t$ copula}.
+\item It can be fitted with pairwise inversion of \textit{Kendall's tau}.
+\item If $S=d$, grouped $t$ copulas are also known as \textit{generalized $t$ copulas}.
+\end{itemize}
+\end{itemize}
+
+\subsection{Archimedean copulas}
+
+\paragraph{Bivariate Archimedean copulas}
+\begin{itemize}
+\item For $\psi \in \Psi$: \\
+$C(u_1, u_2) = \psi(\psi^{-1}(u_1) + \psi^{-1}(u_2))$ is a copula \\
+$\iff$ $\psi$ is convex.
+\item For a strict and twice-continuously differentiable $\psi$, it holds that:
+\begin{align*}
+\rho_\tau &= 1-4\int_0^\infty t(\psi'(t))^2 dt = 1+4 \int_0^1 \frac{\psi^{-1}(t)}{(\psi^{-1}(t))'} dt
+\end{align*}
+\item If $\psi$ is strict, it holds that:
+\begin{align*}
+\lambda_l = 2 \lim_{t \to \infty} \frac{\psi'(2t)}{\psi'(t)}, \qquad \lambda_u = 2-2 \lim_{t \downarrow 0} \frac{\psi'(2t)}{\psi'(t)}
+\end{align*}
+\end{itemize}
+
+\paragraph{Multivariate Archimedean copulas}
+\begin{itemize}
+\item $\psi$ is \textit{completely monotone (c.m.)} if $(-1)^k \psi^{(k)}(t) \geq 0$, $\forall t \in (0, \infty)$ and $\forall k \in \mathbb{N}_0$. \\
+The set of all c.m. generators is denoted by $\Psi_\infty$. \\
+Archimedean copulas with $\psi \in \Psi_\infty$ are called \textit{LT-Archimedean copulas}.
+\item \textit{Kimberling (1974)} \\
+If $\psi \in \Psi$, then $C(\bm u) = \psi \left( \sum_{j=1}^d \psi^{-1}(u_j) \right)$ is a copula \\
+$\iff$ $\psi \in \Psi_\infty$.
+\item \textit{Bernstein (1928)} \\
+$\psi(0) = 1$, $\psi$ c.m. $\iff$ $\psi(t) = \mathbb{E}[\exp(-t V)]$ for $V \sim G$ with $V \geq 0$ and $G(0) = 0$.
+\item \emph{Stochastic representation:} \\
+Let $\psi \in \Psi_\infty$ with $V \sim G$ s.t. $\hat G = \psi$ and let $E_1, \ldots, E_d \sim \Exp(1)$ be independent of $V$. Then:
+\begin{enumerate}
+\item The \textit{survival copula} of $\bm X = (\frac{E_1}{V}, \ldots, \frac{E_d}{V})$ is \textit{Archimedean} (with $\psi$).
+\item $\bm U = (\psi(X_1), \ldots, \psi(X_d)) \sim C$ and the $U_j$'s are \textit{conditionally independent} given $V$ with $\mathbb{P}[U_j \leq u | V = v] = \exp(-v \psi^{-1}(u))$.
+\end{enumerate}
+\end{itemize}
+
+\subsection{Fitting copulas to data}
+
+\paragraph{Setting}
+\begin{itemize}
+\item Let $\bm X, \bm X_1, \ldots, \bm X_n$ be independent random vectors with CDF $F$, continuous margins $F_1, \ldots, F_d$ and copula $C$.
+\item We assume that we have data $\bm x_1, \ldots, \bm x_n$ interpreted as realizations of $\bm X_1, \ldots, \bm X_n$.
+\item Assume:
+\begin{itemize}
+\item $F_j = F_j(\cdot, \bm \theta_{0,j})$ for some $\bm \theta_{0,j} \in \Theta_j$, $j \in \lbrace 1, \ldots, d \rbrace$, \\
+$F_j(\cdot, \bm \theta_{0,j})$ continuous $\forall \bm \theta_j \in \Theta_j$.
+\item $C = C(\cdot, \bm \theta_{0,C})$ for some $\bm \theta_{0,C} \in \Theta_C$.
+\end{itemize}
+\item Thus, $F$ has the true but unknown parameter vector $\bm \theta_0 = (\bm \theta_{0,C}', \bm \theta_{0,1}', \ldots, \bm \theta_{0,d}')$ to be estimated.
+\end{itemize}
+
+\paragraph{Method-of-moments using rank correlation}
+\begin{itemize}
+\item Focus: $\bm \theta_{0,C} = \theta_{0,C}$.
+\item For $d=2$, one can estimate $\theta_{0,C}$ by solving $\rho_\tau(\theta_C) = r_n^\tau$ w.r.t. $\theta_C$, i.e.
+\begin{align*}
+\hat \theta_{n,C}^\text{IKTE} = \rho_\tau^{-1}(r_n^\tau) \qquad \text{(inversion of Kendall's tau estimator (IKTE))}
+\end{align*}
+where $\rho_\tau(\cdot)$ denotes Kendall's tau as a function in $\theta$ and $r_n^\tau$ is the sample version of Kendall's tau (computed from $\bm X_1, \ldots, \bm X_n$ or pseudo-observations $\bm U_1, \ldots, \bm U_n$).
+\item The \textit{standardized dispersion matrix $P$} for \textit{elliptical copulas} can be estimated via \textit{pairwise inversion of Kendall's tau}.
+\item For \emph{Gauss copulas}, it is preferable to use \textit{Spearman's rho} based on:
+\begin{align*}
+\rho_S &= \frac{6}{\pi} \arcsin \frac{\rho}{2} \approx \rho
+\end{align*}
+The latter approximation error is comparably small, so that the matrix of pairwise sample versions of Spearman's rho is an estimator for the correlation matrix $P$.
+\item For \emph{$t$ copulas}, $\hat P_n^\text{IKTE}$ can be used to estimate $P$ and then $\nu$ can be estimated via its MLE based on $\hat P_n^\text{IKTE}$.
+\end{itemize}
+
+\paragraph{Forming a pseudo-sample from the copula}
+\begin{itemize}
+\item $\bm X_1, \ldots, \bm X_n$ (almost) never has $\mathcal{U}(0,1)$ margins. For applying a "copula approach" we thus need \textit{pseudo-observations} from $C$.
+\item In general, we take $\hat{\bm U_i} = (\hat U_{i1}, \ldots, \hat U_{id}) = (\hat F_1(X_{i1}, \ldots, \hat F_d(X_{id}))$, $i \in \lbrace 1, \ldots, n \rbrace$, where $\hat F_j$ denotes an estimator of $F_j$.
+\item Possible choices of $\hat F_j$:
+\begin{enumerate}
+\item \textit{Non-parametric} estimators with \textit{scaled empirical CDFs}, so:
+\begin{align*}
+\hat U_{ij} = \frac{n}{n+1} \hat F_{n,j}(X_{ij}) = \frac{R_{ij}}{n+1}
+\end{align*}
+where $R_{ij}$ denotes the \textit{rank} of $X_{ij}$ among all $X_{1j}, \ldots, X_{nj}$.
+\item \textit{Parametric} estimators (e.g. Student-t, Pareto), typically if $n$ is small.
+\item \textit{EVT-based} estimators; bodies are modelled empirically, tails semiparametrically via GDP.
+\end{enumerate}
+\end{itemize}
+
+\paragraph{Maximum likelihood estimation}
+\begin{itemize}
+\item By Sklar's theorem, the PDF of $F$ is given by:
+\begin{align*}
+f(\bm x, \bm \theta_0) &= c(F_1(x_1; \bm \theta_{0,1}), \ldots, F_d(x_d; \bm \theta_{0,d}); \bm \theta_{0,C}) \prod_{j=1}^d f_j(x_j; \bm \theta_{0,j})
+\end{align*}
+from which the \textit{log-likelihood} follows directly.
+\item The \emph{maximum likelihood estimator (MLE)} of $\bm \theta_0$ is thus:
+\begin{align*}
+\hat{\bm \theta_n^\text{MLE}} &= {\arg\sup}_{\bm \theta \in \bm \Theta} \ell(\bm \theta, \bm X_1, \ldots, \bm X_n)
+\end{align*}
+\end{itemize}
+
+\columnbreak
+
+\section*{Probability distributions}
+
+\paragraph{Exponetial distribution}
+$X \sim \Exp(\lambda)$, $\lambda > 0$
+\begin{itemize}
+\item PDF/CDF/Quantile:
+\begin{align*}
+f(x) &= \lambda e^{-\lambda x}, \quad F(x) = 1-e^{-\lambda x}, \quad F^{-1}(x) = -\frac{\log(1-u)}{\lambda}
+\end{align*}
+\item Mean/Standard deviation / Characteristic function:
+\begin{align*}
+\mu &= \frac{1}{\lambda}, \qquad \sigma = \frac{1}{\lambda}, \qquad \qquad \varphi(t) = \frac{\lambda}{\lambda - it}
+\end{align*}
+\item Transformation: \\
+$X \sim \Exp(\lambda)$ has the same distribution as $\frac{E}{\lambda}$, $E \sim \Exp(1)$.
+\end{itemize}
+
+\paragraph{Pareto distribution}
+$X \sim \Pareto(\lambda)$, $\lambda > 0$
+\begin{itemize}
+\item PDF/CDF/Quantile:
+\begin{align*}
+f(x) &= \frac{\lambda}{x^{\lambda + 1}}, \qquad F(x) = 1-\frac{1}{x^\lambda}, \qquad F^{-1}(u) = \frac{1}{(1-u)^{\frac{1}{\lambda}}}
+\end{align*}
+\item Mean/Variance:
+\begin{align*}
+\mu &=
+\begin{cases}
+\infty &\text{for } \lambda \leq 1 \\
+\frac{\lambda}{\lambda-1} &\text{for } \lambda > 1
+\end{cases}
+, \quad
+\sigma^2 =
+\begin{cases}
+\infty &\text{for } \lambda \in (0,2] \\
+\frac{\lambda}{(\lambda-1)^2(\lambda-2)} &\text{for } \lambda > 2
+\end{cases}
+\end{align*}
+\item Characteristic function:
+\begin{align*}
+\varphi(t) &= \lambda(-i t)^\lambda \Gamma(-\lambda, -i t)
+\end{align*}
+\item Relation to the exponential distribution: \\
+If $X \sim \Pareto(\alpha)$, then $Y = \log X \sim \Exp(\alpha)$. \\
+Equivalently, if $Y \sim \Exp(\alpha)$, then $X = e^Y \sim \Pareto(\alpha)$.
+\end{itemize}
+
+\paragraph{Normal distribution}
+\begin{itemize}
+\item Let $X_1, \ldots, X_n \overset{\text{i.i.d.}}{\sim} \mathcal{N}(\mu, \sigma^2)$. \\
+Then $X_1 + \ldots + X_n \sim \mathcal{N}(n \mu, n \sigma^2)$.
+\end{itemize}
+
+\paragraph{Probability transformations}
+\begin{itemize}
+\item If two RVs $X_1, X_2 \sim F_X$, then the CDF of the RV $Y = \max \lbrace X_1, X_2 \rbrace$ is $F_Y(y) = \left( F_X(y) \right)^2$.
+\end{itemize}
+
+\columnbreak
+\begin{center}
+\textit{intentionally left blank}
+\end{center}
+\vfill
+
+\section*{Notations}
+
+Unless otherwise specified, the following notations were used:
+\begin{multicols*}{2}
+
+\begin{description}[style=multiline,leftmargin=0.6cm,font=\textbf]
+\item[$\bm 1_d$] identity vector ($\in \mathbb{R}^d$)
+\item[$\mathbb{I}_d$] identity matrix ($\in \mathbb{R}^{d \times d}$)
+\item[$\mathbb{I}_{\lbrace A \rbrace}$] indicator function
+\item[$\mathcal{U}$] uniform distribution
+\item[$\mathcal{N}$] stand. normal distr.
+\item[$\phi$] standard normal PDF
+\item[$\Phi$] standard normal CDF
+\end{description}
+\end{multicols*}
+
+\section*{Abbreviations}
+
+\begin{multicols*}{2}
+\raggedright
+\begin{description}[style=multiline,leftmargin=1.0cm,font=\textbf]
+\item[a.s.] almost surely
+\item[CDF] cumulative distribution function
+\item[CF] characteristic function
+\item[c.m.] completely monotone
+\item[EDF] empirical density function (CDF)
+\item[GEV] generalized extreme value
+\item[iff] if and only if
+\item[i.i.d.] independent and identically distributed
+\item[IOT] in order to
+\item[MDA] maximum domain of attraction
+\item[MLE] maximum likelihood estimator
+\item[PDF] probability density function
+\item[QRM] quantitative risk management
+\item[RV] random variable
+\item[s.t.] such that
+\item[w/] with
+\item[w.l.o.g.] without loss of generality
+\item[w.r.t.] with respect to
+\end{description}
+\end{multicols*}
+
+\section*{Disclaimer}
+
+\begin{itemize}
+\item This summary is work in progress, i.e. neither completeness nor correctness of the content are guaranteed by the author.
+\item This summary may be extended or modified at the discretion of the readers.
+\item \textit{Source:} Lecture \SummaryTitle, \SummarySemester, ETHZ (lecture notes, script, exercises and literature). Copyright of the content is with the lecturers.
+\item The layout of this summary is based on the summaries of several courses of the BSc ETH ME from Jonas LIECHTI.
+\end{itemize}
+
+\end{multicols*}
+
+\end{document}
